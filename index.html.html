@@ -5,13 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Тапай по клубнике</title>
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:#3b0716;color:#fff;text-align:center;min-height:100vh;overflow-y:auto}
-body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal{background:#240046}
-#menu{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:7px;padding:12px;box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:radial-gradient(circle at top,#6a040f,#2b0611 75%);color:#fff;text-align:center;min-height:100vh;overflow-y:auto}
+body.bg-night{background:radial-gradient(circle at top,#1e293b,#090d16 75%)}
+body.bg-forest{background:radial-gradient(circle at top,#0b4f3a,#031912 75%)}
+body.bg-royal{background:radial-gradient(circle at top,#480ca8,#15002b 75%)}
+#menu{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:8px;padding:14px;box-sizing:border-box}
 #game{display:none;flex-direction:column;align-items:center;justify-content:space-between;min-height:100vh;box-sizing:border-box}
-.m-btn{width:255px;max-width:92%;padding:11px;font-size:14px;font-weight:bold;color:#fff;background:#a4133c;border:2px solid #ff758f;border-radius:12px;cursor:pointer}
-.mp3-box{width:255px;max-width:92%;padding:7px;background:#7209b7;border:2px solid #f72585;border-radius:12px;box-sizing:border-box;font-size:12px;font-weight:bold}
-.box{width:92%;max-width:400px;max-height:240px;overflow-y:auto;background:#2b0611;border:1px solid #ff758f;border-radius:10px;display:none;padding:10px;box-sizing:border-box}
+
+/* Новая обложка-баннер в главном меню */
+.cover-card{width:280px;max-width:94%;background:linear-gradient(145deg,rgba(255,77,109,0.28),rgba(43,6,17,0.85));border:2px solid #ff758f;border-radius:22px;padding:14px 10px;box-shadow:0 0 28px rgba(255,77,109,0.45),inset 0 0 15px rgba(255,214,10,0.2);margin-bottom:4px;position:relative;box-sizing:border-box}
+.cover-crown{font-size:22px;margin-bottom:-6px;filter:drop-shadow(0 0 6px #ffd60a)}
+@keyframes floatBerry{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.06)}}
+#m-ava{font-size:56px;display:inline-block;animation:floatBerry 2.4s ease-in-out infinite;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.6))}
+.cover-title{margin:2px 0 4px;font-size:22px;font-weight:900;letter-spacing:1px;background:linear-gradient(180deg,#fff,#ffccd5 55%,#ff4d6d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.7))}
+.cover-sub{font-size:10px;letter-spacing:2px;color:#ffd60a;font-weight:bold;text-transform:uppercase;margin-bottom:4px}
+
+.m-btn{width:265px;max-width:92%;padding:11px;font-size:14px;font-weight:bold;color:#fff;background:linear-gradient(180deg,#c9184a,#800f2f);border:2px solid #ff8fa3;border-radius:14px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.4)}
+.m-btn:active{transform:scale(0.96)}
+.mp3-box{width:265px;max-width:92%;padding:8px;background:linear-gradient(180deg,#7209b7,#480ca8);border:2px solid #f72585;border-radius:14px;box-sizing:border-box;font-size:12px;font-weight:bold;box-shadow:0 4px 10px rgba(0,0,0,0.4)}
+.box{width:92%;max-width:400px;max-height:240px;overflow-y:auto;background:#2b0611;border:1px solid #ff758f;border-radius:12px;display:none;padding:10px;box-sizing:border-box}
 .t-row{display:flex;justify-content:space-between;padding:4px 8px;border-bottom:1px solid #590d22;font-size:13px}
 .t-row.me{background:#a4133c;color:#ffe066;font-weight:bold}
 .inp{width:88%;padding:7px;border-radius:8px;border:1px solid #ff758f;background:#3b0716;color:#fff;font-size:13px;text-align:center;margin-bottom:6px}
@@ -21,7 +33,7 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
 .grid{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-bottom:8px}
 .card{flex:1 1 28%;background:#590d22;border:1px solid #ff758f;border-radius:6px;padding:5px;font-size:11px}
 .card.act{background:#2b9348;border-color:#aacc00;font-weight:bold}.card.done{opacity:0.4}
-.badge{display:inline-block;background:#b58300;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:bold;border:1px solid #ffe066;margin-top:2px}
+.badge{display:inline-block;background:linear-gradient(90deg,#b58300,#e09f3e);color:#fff;padding:3px 12px;border-radius:12px;font-size:12px;font-weight:bold;border:1px solid #ffe066;margin-top:2px;box-shadow:0 2px 6px rgba(0,0,0,0.4)}
 #score{font-size:44px;font-weight:bold;color:#ffccd5;margin:3px}
 #berry{width:175px;height:175px;margin:6px auto;border-radius:50%;background:#ff4d6d;border:8px solid #ff8fa3;font-size:82px;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 #berry:active{transform:scale(0.92)}
@@ -32,7 +44,6 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
 .shop{background:rgba(0,0,0,0.45);padding:10px;width:100%;max-width:460px;border-radius:20px 20px 0 0;display:flex;flex-wrap:wrap;gap:5px;box-sizing:border-box;margin-top:auto}
 .btn{flex:1 1 30%;padding:9px 4px;background:#a4133c;color:#fff;border:1px solid #ff758f;border-radius:8px;font-size:12px;cursor:pointer;font-weight:bold}
 .btn:disabled{opacity:0.4}
-/* Стили Рюкзака и редкостей питомцев */
 #bag-box{width:92%;max-width:420px;max-height:190px;overflow-y:auto;background:#1a030a;border:2px solid #ffba08;border-radius:12px;display:none;padding:8px;box-sizing:border-box;margin:4px auto}
 .pet-grid{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
 .pet-card{flex:1 1 28%;background:#2b0611;border:2px solid #888;border-radius:8px;padding:5px;font-size:11px;cursor:pointer}
@@ -43,15 +54,21 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
 <body>
 
 <div id="menu">
-    <div id="m-ava" style="font-size:42px">&#127827;</div>
-    <h2 style="margin:0;color:#ffccd5;font-size:20px">ТАПАЙ ПО КЛУБНИКЕ</h2>
-    <div id="m-rank" class="badge">Престиж: Новичок (x1)</div>
-    <div id="m-info" style="color:#ffb3c1;font-size:13px">Загрузка...</div>
-    <button class="m-btn" id="m-cont">Продолжить игру</button>
-    <button class="m-btn" id="m-new" style="background:#6a040f">Новая игра</button>
-    <button class="m-btn" id="m-prof" style="background:#0077b6">Личный профиль / Вход</button>
-    <button class="m-btn" id="m-daily" style="background:#2b9348">Недельный приз</button>
-    <button class="m-btn" id="m-top" style="background:#b58300">Топ-500 игроков</button>
+    <!-- Новая карточка-обложка -->
+    <div class="cover-card">
+        <div class="cover-crown">&#128081;</div>
+        <div id="m-ava">&#127827;</div>
+        <div class="cover-sub">&#9733; BERRY CLICKER EDITION &#9733;</div>
+        <h2 class="cover-title">ТАПАЙ ПО КЛУБНИКЕ</h2>
+        <div id="m-rank" class="badge">Престиж: Новичок (x1)</div>
+        <div id="m-info" style="color:#ffccd5;font-size:13px;margin-top:5px;font-weight:bold">Загрузка...</div>
+    </div>
+
+    <button class="m-btn" id="m-cont" style="background:linear-gradient(180deg,#ff4d6d,#c9184a);border-color:#fff3b0;font-size:16px">Продолжить игру</button>
+    <button class="m-btn" id="m-new" style="background:linear-gradient(180deg,#800f2f,#590d22)">Новая игра</button>
+    <button class="m-btn" id="m-prof" style="background:linear-gradient(180deg,#0096c7,#023e8a);border-color:#90e0ef">Личный профиль / Вход</button>
+    <button class="m-btn" id="m-daily" style="background:linear-gradient(180deg,#38b000,#006400);border-color:#ccff33">Недельный приз</button>
+    <button class="m-btn" id="m-top" style="background:linear-gradient(180deg,#e09f3e,#9e6c00);border-color:#ffe066">Топ-500 игроков</button>
     <label class="mp3-box" style="cursor:pointer;display:block">
         <span id="mp3-lbl">Выбрать музыку (.mp3)</span>
         <input type="file" id="mp3-file" accept="audio/*" style="width:100%;margin-top:4px;font-size:11px">
@@ -95,7 +112,6 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
         <div id="buff" style="color:#ffe066;font-size:12px;font-weight:bold;height:16px"></div>
     </div>
 
-    <!-- Окно Рюкзака -->
     <div id="bag-box">
         <div style="font-size:12px;color:#ffba08;font-weight:bold;margin-bottom:5px">Твой Рюкзак (нажми, чтобы надеть):</div>
         <div class="pet-grid" id="pet-grid"></div>
@@ -105,17 +121,6 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
     <div id="drop-info" style="font-size:12px;color:#ffe066;font-weight:bold;height:16px">Жми на клубнику!</div>
 
     <div class="shop">
-        <button class="btn" id="b-tap">Сила +1 (<span id="c-tap">15</span>)</button>
-        <button class="btn" id="b-auto">Куст +1 (<span id="c-auto">50</span>)</button>
-        <button class="btn" id="b-nrg" style="background:#005f73">Энергия +50 (<span id="c-nrg">200</span>)</button>
-        <button class="btn" id="b-egg" style="flex:1 1 95%;background:#7209b7;border-color:#f72585;font-size:13px">Купить Яйцо питомца (500)</button>
-        <button class="btn" id="b-gold" style="background:#b58300">Золото (1000)</button>
-        <button class="btn" id="b-diam" style="background:#0077b6">Алмаз (10000)</button>
-        <button class="btn" id="b-emer" style="background:#2b9348">Изумруд (50000)</button>
-        <button class="btn" id="b-ruby" style="flex:1 1 65%;background:#9b0000">Рубин x50 (1000000)</button>
-        <button class="btn" id="b-rst" style="flex:1 1 25%;background:#2b0611">Сброс</button>
-    </div>
-</div>
 <script>
 var score=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0;
 var skin='none',hasG=false,hasD=false,hasE=false,hasR=false,day=1,lastDate='',bMult=1,bSec=0;
