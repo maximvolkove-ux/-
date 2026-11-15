@@ -14,10 +14,10 @@ body.bg-royal { background: #240046; }
 #game { display: none; flex-direction: column; align-items: center; justify-content: space-between; height: 100vh; }
 .m-btn { width: 250px; padding: 10px; font-size: 14px; font-weight: bold; color: #fff; background: #a4133c; border: 2px solid #ff758f; border-radius: 12px; cursor: pointer; }
 .mp3-box { width: 250px; padding: 7px; background: #7209b7; border: 2px solid #f72585; border-radius: 12px; box-sizing: border-box; font-size: 12px; font-weight: bold; }
-#top-box, #daily-box, #prof-box { width: 92%; max-width: 400px; max-height: 200px; overflow-y: auto; background: #2b0611; border: 1px solid #ff758f; border-radius: 10px; display: none; padding: 10px; box-sizing: border-box; }
+#top-box, #daily-box, #prof-box { width: 92%; max-width: 400px; max-height: 230px; overflow-y: auto; background: #2b0611; border: 1px solid #ff758f; border-radius: 10px; display: none; padding: 10px; box-sizing: border-box; }
 .t-row { display: flex; justify-content: space-between; padding: 4px 8px; border-bottom: 1px solid #590d22; font-size: 13px; }
 .t-row.me { background: #a4133c; color: #ffe066; font-weight: bold; }
-.prof-input { width: 85%; padding: 8px; border-radius: 8px; border: 1px solid #ff758f; background: #3b0716; color: #fff; font-size: 14px; text-align: center; margin-bottom: 8px; }
+.prof-input { width: 85%; padding: 7px; border-radius: 8px; border: 1px solid #ff758f; background: #3b0716; color: #fff; font-size: 13px; text-align: center; margin-bottom: 6px; }
 .opt-row { display: flex; gap: 6px; justify-content: center; margin-bottom: 8px; flex-wrap: wrap; }
 .opt-btn { padding: 6px 10px; border-radius: 8px; border: 1px solid #ff758f; background: #590d22; color: #fff; cursor: pointer; font-size: 16px; }
 .opt-btn.sel { background: #2b9348; border-color: #aacc00; }
@@ -36,6 +36,7 @@ body.bg-royal { background: #240046; }
 .shop { background: rgba(0,0,0,0.45); padding: 10px; width: 100%; max-width: 460px; border-radius: 20px 20px 0 0; display: flex; flex-wrap: wrap; gap: 5px; box-sizing: border-box; }
 .btn { flex: 1 1 30%; padding: 8px 4px; background: #a4133c; color: #fff; border: 1px solid #ff758f; border-radius: 8px; font-size: 12px; cursor: pointer; font-weight: bold; }
 .btn:disabled { opacity: 0.4; }
+.sync-box { border-top: 1px solid #ff758f; margin-top: 8px; padding-top: 8px; }
 </style>
 </head>
 <body class="bg-berry">
@@ -47,7 +48,7 @@ body.bg-royal { background: #240046; }
     <div id="m-info" style="color:#ffb3c1; font-size:13px;">Загрузка...</div>
     <button class="m-btn" id="m-cont">Продолжить игру</button>
     <button class="m-btn" id="m-new" style="background:#6a040f;">Новая игра</button>
-    <button class="m-btn" id="m-prof" style="background:#0077b6;">Личный профиль</button>
+    <button class="m-btn" id="m-prof" style="background:#0077b6;">Личный профиль / Вход</button>
     <button class="m-btn" id="m-daily" style="background:#2b9348;">Недельный приз</button>
     <button class="m-btn" id="m-top" style="background:#b58300;">Топ-500 игроков</button>
     
@@ -65,6 +66,21 @@ body.bg-royal { background: #240046; }
         <div style="font-size:12px; color:#ffb3c1; margin-bottom:4px;">Выбери фон игры:</div>
         <div class="opt-row" id="bg-row"></div>
         <button class="btn" id="save-prof" style="width:100%; background:#2b9348;">Сохранить профиль</button>
+
+        <!-- Блок переноса аккаунта по QR или Коду -->
+        <div class="sync-box">
+            <div style="font-size:12px; color:#ffe066; font-weight:bold; margin-bottom:5px;">Вход по QR-коду или Коду переноса:</div>
+            <div style="display:flex; gap:5px; margin-bottom:6px;">
+                <button class="btn" id="btn-gen-qr" style="background:#7209b7;">Показать QR / Код</button>
+                <button class="btn" id="btn-copy-code" style="background:#3a0ca3;">Скопировать код</button>
+            </div>
+            <div id="qr-area" style="display:none; background:#fff; padding:8px; border-radius:8px; margin-bottom:6px; color:#000;">
+                <img id="qr-img" src="" alt="QR" style="width:150px; height:150px; display:block; margin:0 auto;">
+                <div style="font-size:10px; margin-top:4px;">Наведи камеру телефона на QR-код!</div>
+            </div>
+            <input type="text" id="code-inp" class="prof-input" placeholder="Вставь код сохранения сюда...">
+            <button class="btn" id="btn-load-code" style="width:100%; background:#e85d04;">Войти по коду</button>
+        </div>
     </div>
 
     <div id="daily-box"><div class="days-grid" id="days-grid"></div><button class="btn" id="claim-btn" style="width:100%; background:#2b9348;">Забрать!</button></div>
@@ -75,7 +91,7 @@ body.bg-royal { background: #240046; }
     <div style="padding-top:8px; width:100%;">
         <button class="btn" id="go-menu" style="padding:5px 12px; margin-bottom:3px;">В главное меню</button>
         <div id="g-user" style="font-size:13px; color:#ffe066; font-weight:bold;">Игрок</div>
-        <div id="g-rank" class="rank-badge">Престиж: Новичок (0 / 1000 тапов)</div>
+        <div id="g-rank" class="badge">Престиж: Новичок (0 / 1000 тапов)</div>
         <div id="score">0</div>
         <div style="font-size:13px;">Клик: <b id="pwr">1</b> | Сек: <b id="auto">0</b> | Энергия: <b id="nrg">100</b>/<b id="max-nrg">100</b></div>
         <div id="buff-info" style="color:#ffe066; font-size:12px; font-weight:bold; height:16px;"></div>
@@ -133,21 +149,50 @@ try {
 
 function snd() { try { if (wav) { var a = new Audio(wav); a.playbackRate = 0.9 + Math.random() * 0.2; a.play(); } } catch(e) {} }
 
+function getDataObj() {
+    return { score: Math.floor(score), power: pwr, auto: auto, energy: Math.floor(nrg), maxNrg: maxNrg, costTap: cTap, costAuto: cAuto, costNrg: cNrg, taps: taps, hasGold: hasG, hasDiamond: hasD, hasEmerald: hasE, hasRuby: hasR, skin: skin, day: day, lastDate: lastDate, nick: nick, ava: ava, bgTheme: bgTheme };
+}
+
+function applyDataObj(d) {
+    if (!d) return;
+    score = +d.score || 0; pwr = +d.power || 1; auto = +d.auto || 0;
+    nrg = +d.energy || 100; maxNrg = +d.maxNrg || 100;
+    cTap = +d.costTap || 15; cAuto = +d.costAuto || 50; cNrg = +d.costNrg || 200;
+    taps = +d.taps || 0;
+    hasG = !!d.hasGold; hasD = !!d.hasDiamond; hasE = !!d.hasEmerald; hasR = !!d.hasRuby;
+    skin = d.skin || 'none'; day = +d.day || 1; lastDate = d.lastDate || '';
+    if (d.nick) nick = d.nick; if (d.ava) ava = d.ava; if (d.bgTheme) bgTheme = d.bgTheme;
+}
+
+// Кодирование сохранения в короткий текстовый код (работает с русскими никами)
+function makeCode() {
+    return btoa(unescape(encodeURIComponent(JSON.stringify(getDataObj()))));
+}
+
+function parseCode(str) {
+    try {
+        var clean = str.trim();
+        if (clean.indexOf('?code=') !== -1) clean = clean.split('?code=')[1].split('&')[0];
+        var obj = JSON.parse(decodeURIComponent(escape(atob(clean))));
+        applyDataObj(obj);
+        save();
+        return true;
+    } catch(e) { return false; }
+}
+
 try {
-    var d = JSON.parse(localStorage.getItem('berry_v3'));
-    if (d) {
-        score = +d.score || 0; pwr = +d.power || 1; auto = +d.auto || 0;
-        nrg = +d.energy || 100; maxNrg = +d.maxNrg || 100;
-        cTap = +d.costTap || 15; cAuto = +d.costAuto || 50; cNrg = +d.costNrg || 200;
-        taps = +d.taps || 0;
-        hasG = !!d.hasGold; hasD = !!d.hasDiamond; hasE = !!d.hasEmerald; hasR = !!d.hasRuby;
-        skin = d.skin || 'none'; day = +d.day || 1; lastDate = d.lastDate || '';
-        if (d.nick) nick = d.nick; if (d.ava) ava = d.ava; if (d.bgTheme) bgTheme = d.bgTheme;
+    var saved = JSON.parse(localStorage.getItem('berry_v3'));
+    if (saved) applyDataObj(saved);
+    // Автоматический вход, если открыли сайт по QR-коду (?code=...)
+    if (window.location.search.indexOf('code=') !== -1) {
+        if (parseCode(window.location.search)) {
+            window.history.replaceState({}, '', window.location.pathname);
+        }
     }
 } catch(e) {}
 
 function save() {
-    try { localStorage.setItem('berry_v3', JSON.stringify({ score: score, power: pwr, auto: auto, energy: nrg, maxNrg: maxNrg, costTap: cTap, costAuto: cAuto, costNrg: cNrg, taps: taps, hasGold: hasG, hasDiamond: hasD, hasEmerald: hasE, hasRuby: hasR, skin: skin, day: day, lastDate: lastDate, nick: nick, ava: ava, bgTheme: bgTheme })); } catch(e) {}
+    try { localStorage.setItem('berry_v3', JSON.stringify(getDataObj())); } catch(e) {}
 }
 
 function mult() {
@@ -172,7 +217,7 @@ function draw() {
     document.getElementById('c-tap').innerText = cTap;
     document.getElementById('c-auto').innerText = cAuto;
     document.getElementById('c-nrg').innerText = cNrg;
-    document.getElementById('buff-info').innerText = bSec > 0 ? ('БОНУС x' + bMult + ': ' + bSec + 'с') : '';
+    document.getElementById('buff').innerText = bSec > 0 ? ('БОНУС x' + bMult + ': ' + bSec + 'с') : '';
     document.getElementById('b-tap').disabled = score < cTap;
     document.getElementById('b-auto').disabled = score < cAuto;
     document.getElementById('b-nrg').disabled = score < cNrg;
@@ -204,6 +249,7 @@ function showProf() {
     var pr = getPrestige();
     document.getElementById('prof-rank-info').innerText = 'Ранг: ' + pr.name + ' (x' + pr.mult + ') | Всего тапов: ' + taps;
     document.getElementById('nick-inp').value = nick;
+    document.getElementById('qr-area').style.display = 'none';
     var ar = document.getElementById('ava-row'); ar.innerHTML = '';
     for (var i = 0; i < avas.length; i++) {
         (function(a) {
@@ -219,6 +265,44 @@ function showProf() {
         })(bgIds[j], bgNames[j]);
     }
 }
+
+// Генерация QR-кода и текстового кода для входа
+document.getElementById('btn-gen-qr').onclick = function() {
+    snd();
+    var code = makeCode();
+    document.getElementById('code-inp').value = code;
+    var baseUrl = window.location.href.split('?')[0];
+    var qrPayload = (baseUrl.indexOf('http') === 0) ? (baseUrl + '?code=' + encodeURIComponent(code)) : code;
+    document.getElementById('qr-img').src = 'https://qrserver.com' + encodeURIComponent(qrPayload);
+    document.getElementById('qr-area').style.display = 'block';
+};
+
+document.getElementById('btn-copy-code').onclick = function() {
+    snd();
+    var code = makeCode();
+    var inp = document.getElementById('code-inp');
+    inp.value = code;
+    inp.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    this.innerText = 'Скопировано!';
+    var btn = this;
+    setTimeout(function() { btn.innerText = 'Скопировать код'; }, 1500);
+};
+
+document.getElementById('btn-load-code').onclick = function() {
+    snd();
+    var val = document.getElementById('code-inp').value;
+    if (parseCode(val)) {
+        draw(); showProf();
+        this.innerText = 'Успешный вход!';
+        var btn = this;
+        setTimeout(function() { btn.innerText = 'Войти по коду'; closeBoxes(); }, 1000);
+    } else {
+        this.innerText = 'Неверный код!';
+        var btn = this;
+        setTimeout(function() { btn.innerText = 'Войти по коду'; }, 1500);
+    }
+};
 
 document.getElementById('m-prof').onclick = function() { snd(); var p = document.getElementById('prof-box'); var open = p.style.display === 'block'; closeBoxes(); if (!open) { showProf(); p.style.display = 'block'; } };
 document.getElementById('save-prof').onclick = function() { snd(); var v = document.getElementById('nick-inp').value.trim(); if (v) nick = v; save(); draw(); closeBoxes(); };
@@ -267,12 +351,3 @@ document.getElementById('b-auto').onclick = function() { if (score >= cAuto) { s
 document.getElementById('b-nrg').onclick = function() { if (score >= cNrg) { score -= cNrg; maxNrg += 50; nrg = maxNrg; cNrg = Math.round(cNrg * 1.8); snd(); draw(); save(); } };
 document.getElementById('b-gold').onclick = function() { if (hasG) skin = skin === 'gold' ? 'none' : 'gold'; else if (score >= 1000) { score -= 1000; hasG = true; skin = 'gold'; } snd(); draw(); save(); };
 document.getElementById('b-diam').onclick = function() { if (hasD) skin = skin === 'diamond' ? 'none' : 'diamond'; else if (score >= 10000) { score -= 10000; hasD = true; skin = 'diamond'; } snd(); draw(); save(); };
-document.getElementById('b-emer').onclick = function() { if (hasE) skin = skin === 'emerald' ? 'none' : 'emerald'; else if (score >= 50000) { score -= 50000; hasE = true; skin = 'emerald'; } snd(); draw(); save(); };
-document.getElementById('b-ruby').onclick = function() { if (hasR) skin = skin === 'ruby' ? 'none' : 'ruby'; else if (score >= 1000000) { score -= 1000000; hasR = true; skin = 'ruby'; } snd(); draw(); save(); };
-document.getElementById('b-rst').onclick = function() { score = 0; pwr = 1; auto = 0; nrg = 100; maxNrg = 100; cTap = 15; cAuto = 50; cNrg = 200; taps = 0; skin = 'none'; hasG = hasD = hasE = hasR = false; bMult = 1; bSec = 0; save(); draw(); };
-
-setInterval(function() { if (auto > 0) score += auto; if (nrg < maxNrg) nrg = Math.min(maxNrg, nrg + Math.max(2, Math.floor(maxNrg / 40))); if (bSec > 0) { bSec--; if (bSec === 0) bMult = 1; } draw(); save(); }, 1000);
-draw();
-</script>
-</body>
-</html>
