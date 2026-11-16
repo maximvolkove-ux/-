@@ -201,11 +201,15 @@ function renderTop(){
 function loadMp3(inp){var f=inp.files.item(0);if(!f)return;if(bgm)bgm.pause();bgm=new Audio(URL.createObjectURL(f));bgm.loop=true;bgm.volume=0.6;$('mp3-lbl').innerText='Играет: '+f.name.slice(0,16);bgm.play()}
 function toggleBag(){snd();var b=$('bag-box'),o=b.style.display==='block';b.style.display=o?'none':'block';if(!o)renderBag()}
 function renderBag(){
-    var g=$('pet-grid');g.innerHTML='';if(!bag.length){g.innerHTML='<div style="font-size:12px;color:#ffb3c1">Рюкзак пуст!</div>';return}
-    for(var i=0;i<bag.length;i++)(function(id){var c=document.createElement('div');c.className='pet r-'+id+(eqPet===id?' eq':'');c.innerHTML='<div style="font-size:22px">'+pIco.slice(id,id+1).shift()+'</div><b>'+pNam.slice(id,id+1).shift()+'</b><br>'+pRar.slice(id,id+1).shift()+'<br><b style="color:#ffe066">x'+pMul.slice(id,id+1).shift()+'</b>';c.onclick=function(){snd();eqPet=(eqPet===id)?-1:id;save();draw();renderBag()};g.appendChild(c)})(+bag.charAt(i));
-}
-
+    var g=$('pet-grid');g.innerHTML='';if(!bag.length){g.innerHTML='<div style="font-size:12px;color:#ffb3c1">Рюкзак пуст!</div>';return}</html>
 function tap(){if(nrg>=1){taps++;score+=pwr*mult();nrg-=1;snd();draw();save()}}
+
+// Железная блокировка двойного зума и щипка двумя пальцами на телефонах
+var berryEl=$('berry');
+berryEl.addEventListener('touchend',function(e){e.preventDefault();tap()},{passive:false});
+document.addEventListener('touchstart',function(e){if(e.touches.length>1)e.preventDefault()},{passive:false});
+document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});
+
 function buyTap(){if(score>=cTap){score-=cTap;pwr++;cTap=Math.round(cTap*1.5);snd();draw();save()}}
 function buyAuto(){if(score>=cAuto){score-=cAuto;auto++;cAuto=Math.round(cAuto*1.6);snd();draw();save()}}
 function buyNrg(){if(score>=cNrg){score-=cNrg;maxNrg+=50;nrg=maxNrg;cNrg=Math.round(cNrg*1.8);snd();draw();save()}}
