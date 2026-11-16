@@ -51,7 +51,7 @@ body.bg-royal{background:#240046}
     <button class="m-btn" onclick="goGame(true)" style="background:#6a040f">Новая игра</button>
     <button class="m-btn" onclick="toggleBox('prof-box')" style="background:#0077b6">Личный профиль / Вход</button>
     <button class="m-btn" onclick="toggleBox('daily-box')" style="background:#2b9348">Недельный приз</button>
-    <button class="m-btn" onclick="toggleBox('top-box')" style="background:#b58300">Топ-500 игроков</button>
+    <button class="m-btn" onclick="toggleBox('top-box')" style="background:#b58300">Онлайн Топ-500</button>
     <label class="mp3">
         <span id="mp3-lbl">Выбрать музыку (.mp3)</span>
         <input type="file" accept="audio/*" onchange="loadMp3(this)" style="width:100%;margin-top:4px;font-size:11px">
@@ -109,6 +109,7 @@ body.bg-royal{background:#240046}
 var score=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0;
 var skin='none',hasG=false,hasD=false,hasE=false,hasR=false,day=1,lastDate='',bMult=1,bSec=0;
 var nick='Игрок',ava='&#127827;',bg='',bgm=null,bag='',eqPet=-1;
+var uid='u_'+Math.random().toString(36).slice(2,10);
 var prizes='+100|x2 тап (60с)|+500|+2 сила|x3 тап (60с)|+1 куст|+5000'.split('|');
 var avas='&#127827;|&#128526;|&#128081;|&#128049;|&#129302;|&#128293;'.split('|');
 var bgIds='|bg-night|bg-forest|bg-royal'.split('|'),bgNms='Ягода|Ночь|Лес|Неон'.split('|');
@@ -140,8 +141,8 @@ try{
 }catch(e){}
 function snd(){try{if(wav){var a=new Audio(wav);a.playbackRate=0.9+Math.random()*0.2;a.play()}}catch(e){}}
 
-function getObj(){return{score:Math.floor(score),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet}}
-function setObj(d){if(!d)return;score=+d.score||0;pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet}
+function getObj(){return{uid:uid,score:Math.floor(score),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet}}
+function setObj(d){if(!d)return;if(d.uid)uid=d.uid;score=+d.score||0;pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet}
 function makeCode(){return btoa(unescape(encodeURIComponent(JSON.stringify(getObj()))))}
 function parseCode(s){try{var c=s.trim(),p=c.indexOf('code=');if(p!==-1)c=decodeURIComponent(c.substring(p+5));var a=c.indexOf('&');if(a!==-1)c=c.substring(0,a);setObj(JSON.parse(decodeURIComponent(escape(atob(c)))));save();return true}catch(e){return false}}
 
@@ -191,20 +192,56 @@ function renderDaily(){
 }
 function claimDaily(){var td=new Date().toISOString().slice(0,10);if(lastDate===td)return;snd();if(day===1)score+=100;else if(day===2){bMult=2;bSec=60}else if(day===3)score+=500;else if(day===4)pwr+=2;else if(day===5){bMult=3;bSec=60}else if(day===6)auto+=1;else if(day===7)score+=5000;lastDate=td;day=day>=7?1:day+1;save();draw();renderDaily()}
 
+// Чистый Онлайн Топ-500 (только живые реальные игроки без ботов)
+var apiUrl='https://kvdb.io';
+function drawLeaderboard(onlineList){
+    var box=$('top-box'),ls=[],map={};
+    if(onlineList&&onlineList.length){
+        for(var k=0;k<onlineList.length;k++){
+            var p=onlineList.slice(k,k+1).shift();
+            if(p&&p.id)map[p.id]=p;
+        }
+    }
+    map[uid]={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score)};
+    for(var key in map){
+        if(map.hasOwnProperty(key)){
+            var item=map[key];
+            ls.push({id:item.id,n:item.n,p:+item.p||0,me:(item.id===uid)});
+        }
+    }
+    ls.sort(function(a,b){return b.p-a.p});
+    if(ls.length>500)ls=ls.slice(0,500);
+    box.innerHTML='<div style="font-size:11px;color:#4cc9f0;margin-bottom:5px;font-weight:bold">Реальных игроков в Топ-500: '+ls.length+'</div>';
+    for(var j=0;j<ls.length;j++){
+        var it=ls.slice(j,j+1).shift(),r=document.createElement('div');
+        r.className=it.me?'row me':'row';
+        r.innerHTML='<span>#'+(j+1)+' '+it.n+'</span><span>'+it.p+'</span>';
+        box.appendChild(r);
+        if(it.me)$('m-info').innerText='Онлайн место: #'+(j+1)+' из '+ls.length;
+    }
+    return ls;
+}
+
 function renderTop(){
-    var box=$('top-box'),nms='КлубникаПро|ТаперКинг|Ягодка|МегаКлик|Фермер|Агроном'.split('|'),ls=[];
-    for(var i=1;i<=499;i++)ls.push({n:nms.slice(i%6,(i%6)+1).shift()+'_'+(100+i),p:Math.floor(Math.pow(500-i,2.2)*1.2)+25,me:false});
-    ls.push({n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score),me:true});ls.sort(function(a,b){return b.p-a.p});box.innerHTML='';
-    for(var j=0;j<ls.length;j++){var it=ls.slice(j,j+1).shift(),r=document.createElement('div');r.className=it.me?'row me':'row';r.innerHTML='<span>#'+(j+1)+' '+it.n+'</span><span>'+it.p+'</span>';box.appendChild(r);if(it.me)$('m-info').innerText='Место: #'+(j+1)+' из 500'}
+    var box=$('top-box');
+    box.innerHTML='<div style="padding:15px;color:#ffe066;font-size:13px">Загрузка Онлайн Топ-500...</div>';
+    fetch(apiUrl).then(function(res){return res.ok?res.json():[]}).then(function(data){
+        var list=Array.isArray(data)?data:[];
+        var cleanTop=drawLeaderboard(list);
+        fetch(apiUrl,{method:'POST',body:JSON.stringify(cleanTop)}).catch(function(){});
+    }).catch(function(){
+        drawLeaderboard([]);
+    });
 }
 
 function loadMp3(inp){var f=inp.files.item(0);if(!f)return;if(bgm)bgm.pause();bgm=new Audio(URL.createObjectURL(f));bgm.loop=true;bgm.volume=0.6;$('mp3-lbl').innerText='Играет: '+f.name.slice(0,16);bgm.play()}
 function toggleBag(){snd();var b=$('bag-box'),o=b.style.display==='block';b.style.display=o?'none':'block';if(!o)renderBag()}
 function renderBag(){
-    var g=$('pet-grid');g.innerHTML='';if(!bag.length){g.innerHTML='<div style="font-size:12px;color:#ffb3c1">Рюкзак пуст!</div>';return}</html>
-function tap(){if(nrg>=1){taps++;score+=pwr*mult();nrg-=1;snd();draw();save()}}
+    var g=$('pet-grid');g.innerHTML='';if(!bag.length){g.innerHTML='<div style="font-size:12px;color:#ffb3c1">Рюкзак пуст!</div>';return}
+    for(var i=0;i<bag.length;i++)(function(id){var c=document.createElement('div');c.className='pet r-'+id+(eqPet===id?' eq':'');c.innerHTML='<div style="font-size:22px">'+pIco.slice(id,id+1).shift()+'</div><b>'+pNam.slice(id,id+1).shift()+'</b><br>'+pRar.slice(id,id+1).shift()+'<br><b style="color:#ffe066">x'+pMul.slice(id,id+1).shift()+'</b>';c.onclick=function(){snd();eqPet=(eqPet===id)?-1:id;save();draw();renderBag()};g.appendChild(c)})(+bag.charAt(i));
+}
 
-// Железная блокировка двойного зума и щипка двумя пальцами на телефонах
+function tap(){if(nrg>=1){taps++;score+=pwr*mult();nrg-=1;snd();draw();save()}}
 var berryEl=$('berry');
 berryEl.addEventListener('touchend',function(e){e.preventDefault();tap()},{passive:false});
 document.addEventListener('touchstart',function(e){if(e.touches.length>1)e.preventDefault()},{passive:false});
