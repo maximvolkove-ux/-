@@ -118,6 +118,7 @@ body.bg-royal{background:radial-gradient(circle at top,#480ca8,#15002b 75%)}
 
     <div class="shop">
         <button class="btn" id="b-tap">Сила +1 (<span id="c-tap">15</span>)</button>
+```html
 <script>
 var score=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0;
 var skin='none',hasG=false,hasD=false,hasE=false,hasR=false,day=1,lastDate='',bMult=1,bSec=0;
@@ -126,7 +127,6 @@ var prizes='+100|x2 тап (60с)|+500|+2 сила|x3 тап (60с)|+1 куст|
 var avas='&#127827;|&#128526;|&#128081;|&#128049;|&#129302;|&#128293;'.split('|');
 var bgIds='|bg-night|bg-forest|bg-royal'.split('|'),bgNms='Ягода|Ночь|Лес|Неон'.split('|');
 
-// База питомцев: 0-Обычный(20%), 1-Редкий(30%), 2-Сверхредкий(20%), 3-Эпик(15%), 4-Мифик(10%), 5-Легендарный(5%)
 var pRar='Обычный|Редкий|Сверхредкий|Эпик|Мифик|Легендарный'.split('|');
 var pNam='Цыплёнок|Собака|Панда|Тигр|Карась|Кот'.split('|');
 var pIco='&#128037;|&#128054;|&#128060;|&#128047;|&#128031;|&#128049;'.split('|');
@@ -155,7 +155,7 @@ try{
 function snd(){try{if(wav){var a=new Audio(wav);a.playbackRate=0.9+Math.random()*0.2;a.play()}}catch(e){}}
 
 function getObj(){return{score:Math.floor(score),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet}}
-function setObj(d){if(!d)return;score=+d.score||0;pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(d.eqPet!==undefined)eqPet=+d.eqPet}
+function setObj(d){if(!d)return;score=+d.score||0;pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet}
 function makeCode(){return btoa(unescape(encodeURIComponent(JSON.stringify(getObj()))))}
 function parseCode(s){try{var c=s.trim(),p=c.indexOf('code=');if(p!==-1)c=decodeURIComponent(c.substring(p+5));var a=c.indexOf('&');if(a!==-1)c=c.substring(0,a);setObj(JSON.parse(decodeURIComponent(escape(atob(c)))));save();return true}catch(e){return false}}
 
@@ -164,8 +164,7 @@ function save(){try{localStorage.setItem('berry_v3',JSON.stringify(getObj()))}ca
 function petMult(){return(eqPet>=0&&eqPet<=5)?+pMul.slice(eqPet,eqPet+1).shift():1}
 function mult(){return(skin==='gold'?2:skin==='diamond'?5:skin==='emerald'?15:skin==='ruby'?50:1)*bMult*getPr().m*petMult()}
 function $(id){return document.getElementById(id)}
-</script>
-<script>
+</script><script>
 function draw(){
     var pr=getPr();document.body.className=bg;$('m-ava').innerHTML=ava;$('g-user').innerHTML=ava+' '+nick;
     $('m-rank').innerText='Престиж: '+pr.n+' (x'+pr.m+')';$('g-rank').innerText=pr.n+' (x'+pr.m+') | Тапы: '+taps+' / '+pr.nx;
@@ -199,7 +198,6 @@ function renderBag(){
 
 $('btn-bag').onclick=function(){snd();var b=$('bag-box'),o=b.style.display==='block';b.style.display=o?'none':'block';if(!o)renderBag()};
 
-// Покупка яйца с шансами: Легенд 5%, Мифик 10%, Эпик 15%, Сверхредкий 20%, Редкий 30%, Обычный 20%
 $('b-egg').onclick=function(){
     if(score<500)return;
     score-=500;snd();
@@ -251,9 +249,10 @@ $('m-top').onclick=function(){
     box.style.display='block';
 };
 
+var lastTouch=0;
 function tap(){if(nrg>=1){taps++;score+=pwr*mult();nrg-=1;snd();draw();save()}}
-$('berry').ontouchstart=function(e){e.preventDefault();var c=e.changedTouches?e.changedTouches.length:1;for(var i=0;i<c;i++)tap()};
-$('berry').onclick=function(){tap()};
+$('berry').ontouchstart=function(e){e.preventDefault();lastTouch=Date.now();var c=e.changedTouches?e.changedTouches.length:1;for(var i=0;i<c;i++)tap()};
+$('berry').onclick=function(){if(Date.now()-lastTouch>300)tap()};
 
 $('b-tap').onclick=function(){if(score>=cTap){score-=cTap;pwr++;cTap=Math.round(cTap*1.5);snd();draw();save()}};
 $('b-auto').onclick=function(){if(score>=cAuto){score-=cAuto;auto++;cAuto=Math.round(cAuto*1.6);snd();draw();save()}};
