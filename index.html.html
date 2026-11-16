@@ -5,19 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Тапай по клубнике</title>
 <style>
-body{margin:0;font-family:Arial,sans-serif;background:radial-gradient(circle at top,#6a040f,#2b0611 75%);color:#fff;text-align:center;min-height:100vh;overflow-y:auto}
-body.bg-night{background:radial-gradient(circle at top,#1e293b,#090d16 75%)}
-body.bg-forest{background:radial-gradient(circle at top,#0b4f3a,#031912 75%)}
-body.bg-royal{background:radial-gradient(circle at top,#480ca8,#15002b 75%)}
-#menu{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:8px;padding:14px;box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#3b0716;color:#fff;text-align:center;min-height:100vh;overflow-y:auto}
+body.bg-night{background:#0f172a}
+body.bg-forest{background:#06281e}
+body.bg-royal{background:#240046}
+#menu{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:7px;padding:12px;box-sizing:border-box}
 #game{display:none;flex-direction:column;align-items:center;justify-content:space-between;min-height:100vh;box-sizing:border-box}
-.cover{width:280px;max-width:94%;background:linear-gradient(145deg,rgba(255,77,109,0.3),rgba(43,6,17,0.85));border:2px solid #ff758f;border-radius:22px;padding:12px;box-shadow:0 0 25px rgba(255,77,109,0.45);margin-bottom:4px;box-sizing:border-box}
-@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-#m-ava{font-size:54px;display:inline-block;animation:fl 2.4s infinite}
-.title{margin:2px 0 4px;font-size:21px;font-weight:900;color:#ffccd5}
-.m-btn{width:265px;max-width:92%;padding:11px;font-size:14px;font-weight:bold;color:#fff;background:linear-gradient(180deg,#c9184a,#800f2f);border:2px solid #ff8fa3;border-radius:14px;cursor:pointer}
-.mp3{width:265px;max-width:92%;padding:8px;background:#7209b7;border:2px solid #f72585;border-radius:14px;box-sizing:border-box;font-size:12px;font-weight:bold;display:block}
-.box{width:92%;max-width:400px;max-height:230px;overflow-y:auto;background:#2b0611;border:1px solid #ff758f;border-radius:12px;display:none;padding:10px;box-sizing:border-box}
+#m-ava{font-size:44px}
+.m-btn{width:255px;max-width:92%;padding:11px;font-size:14px;font-weight:bold;color:#fff;background:#a4133c;border:2px solid #ff758f;border-radius:12px;cursor:pointer}
+.mp3{width:255px;max-width:92%;padding:7px;background:#7209b7;border:2px solid #f72585;border-radius:12px;box-sizing:border-box;font-size:12px;font-weight:bold;display:block}
+.box{width:92%;max-width:400px;max-height:230px;overflow-y:auto;background:#2b0611;border:1px solid #ff758f;border-radius:10px;display:none;padding:10px;box-sizing:border-box}
 .row{display:flex;justify-content:space-between;padding:4px 8px;border-bottom:1px solid #590d22;font-size:13px}
 .row.me{background:#a4133c;color:#ffe066;font-weight:bold}
 .inp{width:88%;padding:7px;border-radius:8px;border:1px solid #ff758f;background:#3b0716;color:#fff;font-size:13px;text-align:center;margin-bottom:6px}
@@ -45,15 +42,12 @@ body.bg-royal{background:radial-gradient(circle at top,#480ca8,#15002b 75%)}
 <body>
 
 <div id="menu">
-    <div class="cover">
-        <div style="font-size:20px">&#128081;</div>
-        <div id="m-ava">&#127827;</div>
-        <h2 class="title">ТАПАЙ ПО КЛУБНИКЕ</h2>
-        <div id="m-rank" class="badge">Престиж: Новичок (x1)</div>
-        <div id="m-info" style="color:#ffccd5;font-size:13px;margin-top:5px;font-weight:bold">Готово к игре!</div>
-    </div>
-    <button class="m-btn" onclick="goGame(false)" style="background:linear-gradient(180deg,#ff4d6d,#c9184a);border-color:#fff3b0;font-size:16px">Продолжить игру</button>
-    <button class="m-btn" onclick="goGame(true)">Новая игра</button>
+    <div id="m-ava">&#127827;</div>
+    <h2 style="margin:0;color:#ffccd5;font-size:20px">ТАПАЙ ПО КЛУБНИКЕ</h2>
+    <div id="m-rank" class="badge">Престиж: Новичок (x1)</div>
+    <div id="m-info" style="color:#ffb3c1;font-size:13px">Готово к игре!</div>
+    <button class="m-btn" onclick="goGame(false)">Продолжить игру</button>
+    <button class="m-btn" onclick="goGame(true)" style="background:#6a040f">Новая игра</button>
     <button class="m-btn" onclick="toggleBox('prof-box')" style="background:#0077b6">Личный профиль / Вход</button>
     <button class="m-btn" onclick="toggleBox('daily-box')" style="background:#2b9348">Недельный приз</button>
     <button class="m-btn" onclick="toggleBox('top-box')" style="background:#b58300">Топ-500 игроков</button>
@@ -122,9 +116,7 @@ var pNam='Цыплёнок|Собака|Панда|Тигр|Карась|Кот'
 var pIco='&#128037;|&#128054;|&#128060;|&#128047;|&#128031;|&#128049;'.split('|');
 var pMul='1.2|1.5|3|5|10|20'.split('|');
 
-// Защита от любых ошибок поиска элементов
 function $(id){return document.getElementById(id)||{style:{}}}
-
 function getPr(){
     if(taps>=150000)return{n:'Бог Клубники',m:10,nx:'МАКС'};
     if(taps>=100000)return{n:'Легенда',m:5,nx:150000};
@@ -156,7 +148,8 @@ try{var sv=JSON.parse(localStorage.getItem('berry_v3'));if(sv)setObj(sv);if(loca
 function save(){try{localStorage.setItem('berry_v3',JSON.stringify(getObj()))}catch(e){}}
 function petMult(){return(eqPet>=0&&eqPet<=5)?+pMul.slice(eqPet,eqPet+1).shift():1}
 function mult(){return(skin==='gold'?2:skin==='diamond'?5:skin==='emerald'?15:skin==='ruby'?50:1)*bMult*getPr().m*petMult()}
-
+</script>
+<script>
 function draw(){
     try{
         var pr=getPr();document.body.className=bg;$('m-ava').innerHTML=ava;$('g-user').innerHTML=ava+' '+nick;
@@ -211,3 +204,16 @@ function renderBag(){
     for(var i=0;i<bag.length;i++)(function(id){var c=document.createElement('div');c.className='pet r-'+id+(eqPet===id?' eq':'');c.innerHTML='<div style="font-size:22px">'+pIco.slice(id,id+1).shift()+'</div><b>'+pNam.slice(id,id+1).shift()+'</b><br>'+pRar.slice(id,id+1).shift()+'<br><b style="color:#ffe066">x'+pMul.slice(id,id+1).shift()+'</b>';c.onclick=function(){snd();eqPet=(eqPet===id)?-1:id;save();draw();renderBag()};g.appendChild(c)})(+bag.charAt(i));
 }
 
+function tap(){if(nrg>=1){taps++;score+=pwr*mult();nrg-=1;snd();draw();save()}}
+function buyTap(){if(score>=cTap){score-=cTap;pwr++;cTap=Math.round(cTap*1.5);snd();draw();save()}}
+function buyAuto(){if(score>=cAuto){score-=cAuto;auto++;cAuto=Math.round(cAuto*1.6);snd();draw();save()}}
+function buyNrg(){if(score>=cNrg){score-=cNrg;maxNrg+=50;nrg=maxNrg;cNrg=Math.round(cNrg*1.8);snd();draw();save()}}
+function buyEgg(){if(score<500)return;score-=500;snd();var rnd=Math.random()*100,id=0;if(rnd<5)id=5;else if(rnd<15)id=4;else if(rnd<30)id=3;else if(rnd<50)id=2;else if(rnd<80)id=1;bag+=String(id);if(petMult()<+pMul.slice(id,id+1).shift())eqPet=id;$('drop-info').innerHTML='Выпал: '+pIco.slice(id,id+1).shift()+' '+pRar.slice(id,id+1).shift()+' '+pNam.slice(id,id+1).shift()+' (x'+pMul.slice(id,id+1).shift()+')!';if($('bag-box').style.display==='block')renderBag();draw();save()}
+function buySkin(s,cost){if(s==='gold'){if(hasG)skin=skin==='gold'?'none':'gold';else if(score>=cost){score-=cost;hasG=true;skin='gold'}}if(s==='diamond'){if(hasD)skin=skin==='diamond'?'none':'diamond';else if(score>=cost){score-=cost;hasD=true;skin='diamond'}}if(s==='emerald'){if(hasE)skin=skin==='emerald'?'none':'emerald';else if(score>=cost){score-=cost;hasE=true;skin='emerald'}}if(s==='ruby'){if(hasR)skin=skin==='ruby'?'none':'ruby';else if(score>=cost){score-=cost;hasR=true;skin='ruby'}}snd();draw();save()}
+function resetAll(){score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;save();draw()}
+
+setInterval(function(){if(auto>0)score+=auto;if(nrg<maxNrg)nrg=Math.min(maxNrg,nrg+Math.max(2,Math.floor(maxNrg/40)));if(bSec>0){bSec--;if(bSec===0)bMult=1}draw();save()},1000);
+draw();
+</script>
+</body>
+</html>
