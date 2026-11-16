@@ -15,7 +15,7 @@ body.bg-royal{background:#240046}
 #m-ava{font-size:44px}
 .m-btn{width:255px;max-width:92%;padding:11px;font-size:14px;font-weight:bold;color:#fff;background:#a4133c;border:2px solid #ff758f;border-radius:12px;cursor:pointer}
 .mp3{width:255px;max-width:92%;padding:7px;background:#7209b7;border:2px solid #f72585;border-radius:12px;box-sizing:border-box;font-size:12px;font-weight:bold;display:block}
-.box{width:92%;max-width:400px;max-height:240px;overflow-y:auto;background:#2b0611;border:1px solid #ff758f;border-radius:10px;display:none;padding:10px;box-sizing:border-box}
+.box{width:92%;max-width:400px;max-height:260px;overflow-y:auto;background:#2b0611;border:1px solid #ff758f;border-radius:10px;display:none;padding:10px;box-sizing:border-box}
 .row{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-bottom:1px solid #590d22;font-size:13px}
 .row.me{background:#a4133c;color:#ffe066;font-weight:bold}
 .inp{width:88%;padding:7px;border-radius:8px;border:1px solid #ff758f;background:#3b0716;color:#fff;font-size:13px;text-align:center;margin-bottom:6px}
@@ -38,6 +38,7 @@ body.bg-royal{background:#240046}
 .pet{display:inline-block;width:28%;margin:2px;background:#2b0611;border:2px solid #888;border-radius:8px;padding:5px;font-size:11px;cursor:pointer}
 .pet.eq{box-shadow:0 0 10px #fff}
 .r-0{border-color:#adb5bd}.r-1{border-color:#38b000}.r-2{border-color:#00b4d8}.r-3{border-color:#9d4edd}.r-4{border-color:#ff0054}.r-5{border-color:#ffd60a;background:#3d2c00}
+.sec-title{font-size:12px;color:#ffe066;font-weight:bold;margin:6px 0 4px;border-bottom:1px solid #590d22;padding-bottom:2px}
 </style>
 </head>
 <body>
@@ -50,9 +51,9 @@ body.bg-royal{background:#240046}
     <button class="m-btn" onclick="goGame(false)">Продолжить игру</button>
     <button class="m-btn" onclick="goGame(true)" style="background:#6a040f">Новая игра</button>
     <button class="m-btn" onclick="toggleBox('prof-box')" style="background:#0077b6">Личный профиль / ID</button>
-    <button class="m-btn" onclick="toggleBox('fr-box')" style="background:#e85d04;border-color:#ffba08">Друзья (<span id="fr-cnt">0</span>)</button>
+    <button class="m-btn" onclick="toggleBox('fr-box')" style="background:#e85d04;border-color:#ffba08">Друзья (<span id="fr-cnt">0</span>)<span id="req-badge" style="color:#ffe066"></span></button>
     <button class="m-btn" onclick="toggleBox('daily-box')" style="background:#2b9348">Недельный приз</button>
-    <button class="m-btn" onclick="toggleBox('top-box')" style="background:#b58300">Онлайн Топ-500</button>
+    <button class="m-btn" onclick="toggleBox('top-box')" style="background:#b58300">Топ-500 по всему миру</button>
     <label class="mp3">
         <span id="mp3-lbl">Выбрать музыку (.mp3)</span>
         <input type="file" accept="audio/*" onchange="loadMp3(this)" style="width:100%;margin-top:4px;font-size:11px">
@@ -76,14 +77,17 @@ body.bg-royal{background:#240046}
         </div>
     </div>
 
-    <!-- Окно Друзей -->
+    <!-- Меню Друзья с входящими заявками -->
     <div id="fr-box" class="box">
-        <div id="fr-my-id" style="font-size:12px;color:#4cc9f0;margin-bottom:6px;font-weight:bold">Твой ID: 00000000</div>
+        <div id="fr-my-id" style="font-size:13px;color:#4cc9f0;margin-bottom:6px;font-weight:bold">Твой ID: 00000000</div>
         <div style="display:flex;gap:4px;margin-bottom:6px">
             <input type="text" id="fr-inp" class="inp" maxlength="8" placeholder="8 цифр ID друга..." style="margin:0;flex:1">
-            <button class="btn" onclick="addFriend()" style="flex:0.5;background:#2b9348">Добавить</button>
+            <button class="btn" onclick="sendFriendReq()" style="flex:0.6;background:#2b9348">Кинуть заявку</button>
         </div>
         <div id="fr-msg" style="font-size:11px;color:#ffe066;margin-bottom:4px"></div>
+        <div class="sec-title">Входящие заявки в друзья:</div>
+        <div id="req-list"></div>
+        <div class="sec-title">Твои друзья:</div>
         <div id="fr-list"></div>
     </div>
 
@@ -124,7 +128,6 @@ var score=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0;
 var skin='none',hasG=false,hasD=false,hasE=false,hasR=false,day=1,lastDate='',bMult=1,bSec=0;
 var nick='Игрок',ava='&#127827;',bg='',bgm=null,bag='',eqPet=-1,friends=[];
 
-// Генератор строго 8-значного числового ID (от 10000000 до 99999999)
 function gen8Id(){return String(Math.floor(10000000+Math.random()*90000000))}
 function is8Id(s){return typeof s==='string'&&s.length===8&&!isNaN(+s)&&+s>=10000000}
 var uid=gen8Id();
@@ -191,7 +194,7 @@ function draw(){
 }
 
 function goGame(rst){snd();if(rst)resetAll();$('menu').style.display='none';$('game').style.display='flex';draw()}
-function goMenu(){snd();$('bag-box').style.display='none';$('game').style.display='none';$('menu').style.display='flex';draw()}
+function goMenu(){snd();$('bag-box').style.display='none';$('game').style.display='none';$('menu').style.display='flex';draw();syncWorld()}
 function toggleBox(id){snd();var el=$(id),op=el.style.display==='block';$('prof-box').style.display='none';$('fr-box').style.display='none';$('daily-box').style.display='none';$('top-box').style.display='none';if(!op){if(id==='prof-box')renderProf();if(id==='fr-box')renderFriends();if(id==='daily-box')renderDaily();if(id==='top-box')renderTop();el.style.display='block'}}
 
 function renderProf(){
@@ -199,21 +202,24 @@ function renderProf(){
     var ar=$('ava-row');ar.innerHTML='';for(var i=0;i<avas.length;i++)(function(a){var b=document.createElement('button');b.className='opt'+(ava===a?' sel':'');b.innerHTML=a;b.onclick=function(){snd();ava=a;renderProf();draw()};ar.appendChild(b)})(avas.slice(i,i+1).shift());
     var br=$('bg-row');br.innerHTML='';for(var j=0;j<bgIds.length;j++)(function(id,nm){var b=document.createElement('button');b.className='opt'+(bg===id?' sel':'');b.style.fontSize='12px';b.innerText=nm;b.onclick=function(){snd();bg=id;renderProf();draw()};br.appendChild(b)})(bgIds.slice(j,j+1).shift(),bgNms.slice(j,j+1).shift());
 }
-function saveProf(){snd();var v=$('nick-inp').value.trim();if(v)nick=v;save();draw();$('prof-box').style.display='none'}
+function saveProf(){snd();var v=$('nick-inp').value.trim();if(v)nick=v;save();draw();$('prof-box').style.display='none';syncWorld()}
 function showQr(){snd();var c=makeCode();$('code-inp').value=c;var h=location.href,q=h.indexOf('?'),u=q!==-1?h.substring(0,q):h,p=u.indexOf('http')===0?u+'?code='+encodeURIComponent(c):c;$('qr-img').src='https://qrserver.com'}
 function copyCode(){snd();var i=$('code-inp');i.value=makeCode();i.select();try{document.execCommand('copy')}catch(e){}}
-function loadCode(){snd();if(parseCode($('code-inp').value)){draw();renderProf();$('prof-box').style.display='none'}}
+function loadCode(){snd();if(parseCode($('code-inp').value)){draw();renderProf();$('prof-box').style.display='none';syncWorld()}}
 
-var apiUrl='https://kvdb.io';
-function syncCloud(cb){
-    fetch(apiUrl).then(function(res){return res.ok?res.json():[]}).then(function(data){
+// Мировой Топ-500 и система заявок в друзья
+var worldUrl='https://kvdb.io';
+var reqUrl='https://kvdb.io';
+
+function syncWorld(cb){
+    fetch(worldUrl).then(function(res){return res.ok?res.json():[]}).then(function(data){
         var list=Array.isArray(data)?data:[],map={};
         for(var k=0;k<list.length;k++){var p=list.slice(k,k+1).shift();if(p&&is8Id(String(p.id)))map[String(p.id)]=p}
         map[uid]={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score)};
         var clean=[];for(var key in map){if(map.hasOwnProperty(key))clean.push(map[key])}
         clean.sort(function(a,b){return b.p-a.p});
         if(clean.length>500)clean=clean.slice(0,500);
-        fetch(apiUrl,{method:'POST',body:JSON.stringify(clean)}).catch(function(){});
+        fetch(worldUrl,{method:'POST',body:JSON.stringify(clean)}).catch(function(){});
         if(cb)cb(clean,map);
     }).catch(function(){
         var me={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score)},m={};m[uid]=me;
@@ -222,35 +228,101 @@ function syncCloud(cb){
 }
 </script>
 <script>
-function addFriend(){
-    snd();var val=$('fr-inp').value.trim();
-    if(!is8Id(val)){$('fr-msg').innerText='Введи ровно 8 цифр ID!';return}
-    if(val===uid){$('fr-msg').innerText='Это твой собственный ID!';return}
-    if(friends.indexOf(val)!==-1){$('fr-msg').innerText='Этот игрок уже в друзьях!';return}
-    friends.push(val);save();draw();$('fr-inp').value='';$('fr-msg').innerText='Друг добавлен!';renderFriends();
+function syncReqs(modFn,cb){
+    fetch(reqUrl).then(function(res){return res.ok?res.json():[]}).then(function(data){
+        var arr=Array.isArray(data)?data:[];
+        if(modFn)arr=modFn(arr);
+        fetch(reqUrl,{method:'POST',body:JSON.stringify(arr.slice(-300))}).catch(function(){});
+        if(cb)cb(arr);
+    }).catch(function(){if(cb)cb([])});
 }
+
+function sendFriendReq(){
+    snd();var val=$('fr-inp').value.trim();
+    if(!is8Id(val)){$('fr-msg').innerText='Введи ровно 8 цифр ID друга!';return}
+    if(val===uid){$('fr-msg').innerText='Нельзя кинуть заявку самому себе!';return}
+    if(friends.indexOf(val)!==-1){$('fr-msg').innerText='Вы уже друзья!';return}
+    $('fr-msg').innerText='Отправка заявки...';
+    syncReqs(function(arr){
+        var exists=false;
+        for(var i=0;i<arr.length;i++){var item=arr.slice(i,i+1).shift();if(item&&item.from===uid&&item.to===val)exists=true}
+        if(!exists)arr.push({from:uid,to:val,name:ava+' '+nick,st:'wait'});
+        return arr;
+    },function(){
+        $('fr-inp').value='';$('fr-msg').innerText='Заявка отправлена игроку ID: '+val+'!';
+    });
+}
+
+function answerReq(fromId,accept){
+    snd();
+    if(accept&&friends.indexOf(fromId)===-1){friends.push(fromId);save();draw()}
+    syncReqs(function(arr){
+        var next=[];
+        for(var i=0;i<arr.length;i++){
+            var item=arr.slice(i,i+1).shift();
+            if(!item)continue;
+            if(item.from===fromId&&item.to===uid){
+                if(accept)next.push({from:uid,to:fromId,name:ava+' '+nick,st:'ok'});
+            }else{next.push(item)}
+        }
+        return next;
+    },function(){renderFriends()});
+}
+
 function delFriend(fid){
     snd();var next=[];for(var i=0;i<friends.length;i++){var x=friends.slice(i,i+1).shift();if(x!==fid)next.push(x)}
     friends=next;save();draw();renderFriends();
 }
+
 function renderFriends(){
     $('fr-my-id').innerText='Твой ID для друзей: '+uid;
-    var box=$('fr-list');
-    if(!friends.length){box.innerHTML='<div style="font-size:12px;color:#ffb3c1">Список друзей пуст. Введи 8-значный ID друга сверху!</div>';return}
-    box.innerHTML='<div style="font-size:12px;color:#ffe066">Обновляем очки друзей...</div>';
-    syncCloud(function(clean,map){
-        box.innerHTML='';
-        for(var i=0;i<friends.length;i++){
-            (function(fid){
-                var f=map[fid],r=document.createElement('div');r.className='row';
-                var sp=document.createElement('span');sp.style.textAlign='left';sp.style.fontSize='12px';
-                sp.innerHTML=f?(f.n+' (ID:'+fid+') — '+f.p):('Игрок ID:'+fid+' (ещё не заходил в Топ)');
-                var delBtn=document.createElement('button');delBtn.className='btn';
-                delBtn.style.flex='0';delBtn.style.padding='3px 7px';delBtn.style.background='#6a040f';delBtn.innerText='X';
-                delBtn.onclick=function(){delFriend(fid)};
-                r.appendChild(sp);r.appendChild(delBtn);box.appendChild(r);
-            })(friends.slice(i,i+1).shift());
+    var rBox=$('req-list'),fBox=$('fr-list');
+    rBox.innerHTML='<div style="font-size:11px;color:#ffb3c1">Проверка заявок...</div>';
+    fBox.innerHTML='<div style="font-size:11px;color:#ffb3c1">Загрузка списка друзей...</div>';
+
+    syncReqs(function(arr){
+        var cleaned=[];
+        for(var i=0;i<arr.length;i++){
+            var it=arr.slice(i,i+1).shift();
+            if(!it)continue;
+            if(it.to===uid&&it.st==='ok'){
+                if(friends.indexOf(it.from)===-1){friends.push(it.from);save();draw()}
+            }else{cleaned.push(it)}
         }
+        return cleaned;
+    },function(arr){
+        var incoming=[];
+        for(var j=0;j<arr.length;j++){var it=arr.slice(j,j+1).shift();if(it&&it.to===uid&&it.st==='wait')incoming.push(it)}
+        $('req-badge').innerText=incoming.length?(' [+'+incoming.length+']'):'';
+        rBox.innerHTML='';
+        if(!incoming.length){rBox.innerHTML='<div style="font-size:11px;color:#ffb3c1">Новых заявок нет</div>'}
+        for(var k=0;k<incoming.length;k++){
+            (function(req){
+                var row=document.createElement('div');row.className='row';
+                var sp=document.createElement('span');sp.style.fontSize='12px';sp.innerHTML=req.name+' (ID:'+req.from+')';
+                var wrap=document.createElement('span');
+                var bOk=document.createElement('button');bOk.className='btn';bOk.style.padding='3px 6px';bOk.style.background='#2b9348';bOk.innerText='Принять';
+                bOk.onclick=function(){answerReq(req.from,true)};
+                var bNo=document.createElement('button');bNo.className='btn';bNo.style.padding='3px 6px';bNo.style.marginLeft='4px';bNo.style.background='#6a040f';bNo.innerText='X';
+                bNo.onclick=function(){answerReq(req.from,false)};
+                wrap.appendChild(bOk);wrap.appendChild(bNo);row.appendChild(sp);row.appendChild(wrap);rBox.appendChild(row);
+            })(incoming.slice(k,k+1).shift());
+        }
+
+        syncWorld(function(clean,map){
+            fBox.innerHTML='';
+            if(!friends.length){fBox.innerHTML='<div style="font-size:11px;color:#ffb3c1">Пока нет друзей. Кинь заявку по ID!</div>';return}
+            for(var m=0;m<friends.length;m++){
+                (function(fid){
+                    var f=map[fid],row=document.createElement('div');row.className='row';
+                    var sp=document.createElement('span');sp.style.textAlign='left';sp.style.fontSize='12px';
+                    sp.innerHTML=f?(f.n+' (ID:'+fid+') — '+f.p):('Игрок ID:'+fid+' — 0');
+                    var delBtn=document.createElement('button');delBtn.className='btn';delBtn.style.flex='0';delBtn.style.padding='3px 7px';delBtn.style.background='#6a040f';delBtn.innerText='X';
+                    delBtn.onclick=function(){delFriend(fid)};
+                    row.appendChild(sp);row.appendChild(delBtn);fBox.appendChild(row);
+                })(friends.slice(m,m+1).shift());
+            }
+        });
     });
 }
 
@@ -262,15 +334,15 @@ function renderDaily(){
 function claimDaily(){var td=new Date().toISOString().slice(0,10);if(lastDate===td)return;snd();if(day===1)score+=100;else if(day===2){bMult=2;bSec=60}else if(day===3)score+=500;else if(day===4)pwr+=2;else if(day===5){bMult=3;bSec=60}else if(day===6)auto+=1;else if(day===7)score+=5000;lastDate=td;day=day>=7?1:day+1;save();draw();renderDaily()}
 
 function renderTop(){
-    var box=$('top-box');box.innerHTML='<div style="padding:15px;color:#ffe066;font-size:13px">Загрузка Онлайн Топ-500...</div>';
-    syncCloud(function(ls){
-        box.innerHTML='<div style="font-size:11px;color:#4cc9f0;margin-bottom:5px;font-weight:bold">Реальных игроков в Топ-500: '+ls.length+'</div>';
+    var box=$('top-box');box.innerHTML='<div style="padding:15px;color:#ffe066;font-size:13px">Загрузка Мирового Топ-500...</div>';
+    syncWorld(function(ls){
+        box.innerHTML='<div style="font-size:11px;color:#4cc9f0;margin-bottom:5px;font-weight:bold">Мировой Топ-500 (реальных игроков: '+ls.length+')</div>';
         for(var j=0;j<ls.length;j++){
             var it=ls.slice(j,j+1).shift(),r=document.createElement('div');
             r.className=(it.id===uid)?'row me':'row';
             r.innerHTML='<span style="text-align:left">#'+(j+1)+' '+it.n+' <small style="color:#90e0ef">#'+it.id+'</small></span><span>'+it.p+'</span>';
             box.appendChild(r);
-            if(it.id===uid)$('m-info').innerText='Онлайн место: #'+(j+1)+' из '+ls.length;
+            if(it.id===uid)$('m-info').innerText='Место в мире: #'+(j+1)+' из '+ls.length;
         }
     });
 }
@@ -296,7 +368,7 @@ function buySkin(s,cost){if(s==='gold'){if(hasG)skin=skin==='gold'?'none':'gold'
 function resetAll(){score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;save();draw()}
 
 setInterval(function(){if(auto>0)score+=auto;if(nrg<maxNrg)nrg=Math.min(maxNrg,nrg+Math.max(2,Math.floor(maxNrg/40)));if(bSec>0){bSec--;if(bSec===0)bMult=1}draw();save()},1000);
-draw();
+draw();syncWorld();
 </script>
 </body>
 </html>
