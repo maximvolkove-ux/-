@@ -124,7 +124,7 @@ body.bg-royal{background:#240046}
     </div>
 </div>
 <script>
-var score=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0;
+var score=0,maxScore=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0;
 var skin='none',hasG=false,hasD=false,hasE=false,hasR=false,day=1,lastDate='',bMult=1,bSec=0;
 var nick='Игрок',ava='&#127827;',bg='',bgm=null,bag='',eqPet=-1,friends=[];
 
@@ -142,12 +142,13 @@ var pMul='1.2|1.5|3|5|10|20'.split('|');
 
 function $(id){return document.getElementById(id)||{style:{}}}
 function getPr(){
-    if(taps>=150000)return{n:'Бог Клубники',m:10,nx:'МАКС'};
-    if(taps>=100000)return{n:'Легенда',m:5,nx:150000};
-    if(taps>=50000)return{n:'Про',m:3,nx:100000};
-    if(taps>=10000)return{n:'Полу-про',m:2,nx:50000};
-    if(taps>=1000)return{n:'Любитель',m:1.5,nx:10000};
-    return{n:'Новичок',m:1,nx:1000};
+    var s=Math.max(Math.floor(score),Math.floor(maxScore));
+    if(s>=1000000)return{n:'Бог Клубники',m:10,nx:'МАКС',cur:s};
+    if(s>=250000)return{n:'Легенда',m:5,nx:1000000,cur:s};
+    if(s>=50000)return{n:'Про',m:3,nx:250000,cur:s};
+    if(s>=10000)return{n:'Полу-про',m:2,nx:50000,cur:s};
+    if(s>=1000)return{n:'Любитель',m:1.5,nx:10000,cur:s};
+    return{n:'Новичок',m:1,nx:1000,cur:s};
 }
 
 var wav='';
@@ -163,21 +164,22 @@ try{
 }catch(e){}
 function snd(){try{if(wav){var a=new Audio(wav);a.playbackRate=0.9+Math.random()*0.2;a.play()}}catch(e){}}
 
-function getObj(){return{uid:uid,score:Math.floor(score),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet,friends:friends}}
-function setObj(d){if(!d)return;if(is8Id(String(d.uid)))uid=String(d.uid);score=+d.score||0;pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet;if(Array.isArray(d.friends))friends=d.friends}
+function getObj(){if(score>maxScore)maxScore=score;return{uid:uid,score:Math.floor(score),maxScore:Math.floor(maxScore),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet,friends:friends}}
+function setObj(d){if(!d)return;if(is8Id(String(d.uid)))uid=String(d.uid);score=+d.score||0;maxScore=Math.max(score,+d.maxScore||0);pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet;if(Array.isArray(d.friends))friends=d.friends}
 function makeCode(){return btoa(unescape(encodeURIComponent(JSON.stringify(getObj()))))}
 function parseCode(s){try{var c=s.trim(),p=c.indexOf('code=');if(p!==-1)c=decodeURIComponent(c.substring(p+5));var a=c.indexOf('&');if(a!==-1)c=c.substring(0,a);setObj(JSON.parse(decodeURIComponent(escape(atob(c)))));save();return true}catch(e){return false}}
 
 try{var sv=JSON.parse(localStorage.getItem('berry_v3'));if(sv)setObj(sv);if(location.search.indexOf('code=')!==-1&&parseCode(location.search))history.replaceState({},'',location.pathname);save()}catch(e){}
-function save(){try{localStorage.setItem('berry_v3',JSON.stringify(getObj()))}catch(e){}}
+function save(){try{if(score>maxScore)maxScore=score;localStorage.setItem('berry_v3',JSON.stringify(getObj()))}catch(e){}}
 function petMult(){return(eqPet>=0&&eqPet<=5)?+pMul.slice(eqPet,eqPet+1).shift():1}
 function mult(){return(skin==='gold'?2:skin==='diamond'?5:skin==='emerald'?15:skin==='ruby'?50:1)*bMult*getPr().m*petMult()}
 </script>
 <script>
 function draw(){
     try{
+        if(score>maxScore)maxScore=score;
         var pr=getPr();document.body.className=bg;$('m-ava').innerHTML=ava;$('g-user').innerHTML=ava+' '+nick;
-        $('m-rank').innerText='Престиж: '+pr.n+' (x'+pr.m+')';$('g-rank').innerText=pr.n+' (x'+pr.m+') | Тапы: '+taps+' / '+pr.nx;
+        $('m-rank').innerText='Престиж: '+pr.n+' (x'+pr.m+')';$('g-rank').innerText=pr.n+' (x'+pr.m+') | Рекорд: '+pr.cur+' / '+pr.nx;
         $('bag-cnt').innerText=bag.length;$('fr-cnt').innerText=friends.length;
         $('g-pet').innerHTML=(eqPet>=0&&eqPet<=5)?('Питомец: '+pIco.slice(eqPet,eqPet+1).shift()+' '+pNam.slice(eqPet,eqPet+1).shift()+' (x'+petMult()+')'):'Питомец: Нет (x1)';
         $('score').innerText=Math.floor(score);$('m-info').innerText=nick+' (ID: '+uid+') | Счёт: '+Math.floor(score);
@@ -198,7 +200,7 @@ function goMenu(){snd();$('bag-box').style.display='none';$('game').style.displa
 function toggleBox(id){snd();var el=$(id),op=el.style.display==='block';$('prof-box').style.display='none';$('fr-box').style.display='none';$('daily-box').style.display='none';$('top-box').style.display='none';if(!op){if(id==='prof-box')renderProf();if(id==='fr-box')renderFriends();if(id==='daily-box')renderDaily();if(id==='top-box')renderTop();el.style.display='block'}}
 
 function renderProf(){
-    var pr=getPr();$('p-id').innerText='Твой ID: '+uid;$('p-rank').innerText='Ранг: '+pr.n+' (x'+pr.m+') | Тапов: '+taps;$('nick-inp').value=nick;$('qr-area').style.display='none';
+    var pr=getPr();$('p-id').innerText='Твой ID: '+uid;$('p-rank').innerText='Ранг: '+pr.n+' (x'+pr.m+') | Рекорд: '+pr.cur;$('nick-inp').value=nick;$('qr-area').style.display='none';
     var ar=$('ava-row');ar.innerHTML='';for(var i=0;i<avas.length;i++)(function(a){var b=document.createElement('button');b.className='opt'+(ava===a?' sel':'');b.innerHTML=a;b.onclick=function(){snd();ava=a;renderProf();draw()};ar.appendChild(b)})(avas.slice(i,i+1).shift());
     var br=$('bg-row');br.innerHTML='';for(var j=0;j<bgIds.length;j++)(function(id,nm){var b=document.createElement('button');b.className='opt'+(bg===id?' sel':'');b.style.fontSize='12px';b.innerText=nm;b.onclick=function(){snd();bg=id;renderProf();draw()};br.appendChild(b)})(bgIds.slice(j,j+1).shift(),bgNms.slice(j,j+1).shift());
 }
@@ -207,7 +209,6 @@ function showQr(){snd();var c=makeCode();$('code-inp').value=c;var h=location.hr
 function copyCode(){snd();var i=$('code-inp');i.value=makeCode();i.select();try{document.execCommand('copy')}catch(e){}}
 function loadCode(){snd();if(parseCode($('code-inp').value)){draw();renderProf();$('prof-box').style.display='none';syncWorld()}}
 
-// Мировой Топ-500 и система заявок в друзья
 var worldUrl='https://kvdb.io';
 var reqUrl='https://kvdb.io';
 
