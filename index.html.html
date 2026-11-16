@@ -15,8 +15,8 @@ body.bg-royal{background:#240046}
 #m-ava{font-size:44px}
 .m-btn{width:255px;max-width:92%;padding:11px;font-size:14px;font-weight:bold;color:#fff;background:#a4133c;border:2px solid #ff758f;border-radius:12px;cursor:pointer}
 .mp3{width:255px;max-width:92%;padding:7px;background:#7209b7;border:2px solid #f72585;border-radius:12px;box-sizing:border-box;font-size:12px;font-weight:bold;display:block}
-.box{width:92%;max-width:400px;max-height:230px;overflow-y:auto;background:#2b0611;border:1px solid #ff758f;border-radius:10px;display:none;padding:10px;box-sizing:border-box}
-.row{display:flex;justify-content:space-between;padding:4px 8px;border-bottom:1px solid #590d22;font-size:13px}
+.box{width:92%;max-width:400px;max-height:240px;overflow-y:auto;background:#2b0611;border:1px solid #ff758f;border-radius:10px;display:none;padding:10px;box-sizing:border-box}
+.row{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-bottom:1px solid #590d22;font-size:13px}
 .row.me{background:#a4133c;color:#ffe066;font-weight:bold}
 .inp{width:88%;padding:7px;border-radius:8px;border:1px solid #ff758f;background:#3b0716;color:#fff;font-size:13px;text-align:center;margin-bottom:6px}
 .opt{padding:6px 10px;border-radius:8px;border:1px solid #ff758f;background:#590d22;color:#fff;cursor:pointer;font-size:15px;margin:2px}
@@ -49,7 +49,8 @@ body.bg-royal{background:#240046}
     <div id="m-info" style="color:#ffb3c1;font-size:13px">Готово к игре!</div>
     <button class="m-btn" onclick="goGame(false)">Продолжить игру</button>
     <button class="m-btn" onclick="goGame(true)" style="background:#6a040f">Новая игра</button>
-    <button class="m-btn" onclick="toggleBox('prof-box')" style="background:#0077b6">Личный профиль / Вход</button>
+    <button class="m-btn" onclick="toggleBox('prof-box')" style="background:#0077b6">Личный профиль / ID</button>
+    <button class="m-btn" onclick="toggleBox('fr-box')" style="background:#e85d04;border-color:#ffba08">Друзья (<span id="fr-cnt">0</span>)</button>
     <button class="m-btn" onclick="toggleBox('daily-box')" style="background:#2b9348">Недельный приз</button>
     <button class="m-btn" onclick="toggleBox('top-box')" style="background:#b58300">Онлайн Топ-500</button>
     <label class="mp3">
@@ -58,6 +59,7 @@ body.bg-royal{background:#240046}
     </label>
 
     <div id="prof-box" class="box">
+        <div id="p-id" style="font-size:14px;color:#4cc9f0;margin-bottom:4px;font-weight:bold">Твой ID: 00000000</div>
         <div id="p-rank" style="font-size:12px;color:#ffe066;margin-bottom:6px;font-weight:bold">Тапов: 0</div>
         <input type="text" id="nick-inp" class="inp" maxlength="15" placeholder="Введи ник...">
         <div id="ava-row"></div>
@@ -73,6 +75,18 @@ body.bg-royal{background:#240046}
             <button class="btn" onclick="loadCode()" style="width:100%;background:#e85d04">Войти по коду</button>
         </div>
     </div>
+
+    <!-- Окно Друзей -->
+    <div id="fr-box" class="box">
+        <div id="fr-my-id" style="font-size:12px;color:#4cc9f0;margin-bottom:6px;font-weight:bold">Твой ID: 00000000</div>
+        <div style="display:flex;gap:4px;margin-bottom:6px">
+            <input type="text" id="fr-inp" class="inp" maxlength="8" placeholder="8 цифр ID друга..." style="margin:0;flex:1">
+            <button class="btn" onclick="addFriend()" style="flex:0.5;background:#2b9348">Добавить</button>
+        </div>
+        <div id="fr-msg" style="font-size:11px;color:#ffe066;margin-bottom:4px"></div>
+        <div id="fr-list"></div>
+    </div>
+
     <div id="daily-box" class="box"><div id="days-grid"></div><button class="btn" id="claim-btn" onclick="claimDaily()" style="width:100%;background:#2b9348;margin-top:6px">Забрать!</button></div>
     <div id="top-box" class="box"></div>
 </div>
@@ -108,8 +122,13 @@ body.bg-royal{background:#240046}
 <script>
 var score=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0;
 var skin='none',hasG=false,hasD=false,hasE=false,hasR=false,day=1,lastDate='',bMult=1,bSec=0;
-var nick='Игрок',ava='&#127827;',bg='',bgm=null,bag='',eqPet=-1;
-var uid='u_'+Math.random().toString(36).slice(2,10);
+var nick='Игрок',ava='&#127827;',bg='',bgm=null,bag='',eqPet=-1,friends=[];
+
+// Генератор строго 8-значного числового ID (от 10000000 до 99999999)
+function gen8Id(){return String(Math.floor(10000000+Math.random()*90000000))}
+function is8Id(s){return typeof s==='string'&&s.length===8&&!isNaN(+s)&&+s>=10000000}
+var uid=gen8Id();
+
 var prizes='+100|x2 тап (60с)|+500|+2 сила|x3 тап (60с)|+1 куст|+5000'.split('|');
 var avas='&#127827;|&#128526;|&#128081;|&#128049;|&#129302;|&#128293;'.split('|');
 var bgIds='|bg-night|bg-forest|bg-royal'.split('|'),bgNms='Ягода|Ночь|Лес|Неон'.split('|');
@@ -141,12 +160,12 @@ try{
 }catch(e){}
 function snd(){try{if(wav){var a=new Audio(wav);a.playbackRate=0.9+Math.random()*0.2;a.play()}}catch(e){}}
 
-function getObj(){return{uid:uid,score:Math.floor(score),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet}}
-function setObj(d){if(!d)return;if(d.uid)uid=d.uid;score=+d.score||0;pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet}
+function getObj(){return{uid:uid,score:Math.floor(score),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet,friends:friends}}
+function setObj(d){if(!d)return;if(is8Id(String(d.uid)))uid=String(d.uid);score=+d.score||0;pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet;if(Array.isArray(d.friends))friends=d.friends}
 function makeCode(){return btoa(unescape(encodeURIComponent(JSON.stringify(getObj()))))}
 function parseCode(s){try{var c=s.trim(),p=c.indexOf('code=');if(p!==-1)c=decodeURIComponent(c.substring(p+5));var a=c.indexOf('&');if(a!==-1)c=c.substring(0,a);setObj(JSON.parse(decodeURIComponent(escape(atob(c)))));save();return true}catch(e){return false}}
 
-try{var sv=JSON.parse(localStorage.getItem('berry_v3'));if(sv)setObj(sv);if(location.search.indexOf('code=')!==-1&&parseCode(location.search))history.replaceState({},'',location.pathname)}catch(e){}
+try{var sv=JSON.parse(localStorage.getItem('berry_v3'));if(sv)setObj(sv);if(location.search.indexOf('code=')!==-1&&parseCode(location.search))history.replaceState({},'',location.pathname);save()}catch(e){}
 function save(){try{localStorage.setItem('berry_v3',JSON.stringify(getObj()))}catch(e){}}
 function petMult(){return(eqPet>=0&&eqPet<=5)?+pMul.slice(eqPet,eqPet+1).shift():1}
 function mult(){return(skin==='gold'?2:skin==='diamond'?5:skin==='emerald'?15:skin==='ruby'?50:1)*bMult*getPr().m*petMult()}
@@ -156,9 +175,9 @@ function draw(){
     try{
         var pr=getPr();document.body.className=bg;$('m-ava').innerHTML=ava;$('g-user').innerHTML=ava+' '+nick;
         $('m-rank').innerText='Престиж: '+pr.n+' (x'+pr.m+')';$('g-rank').innerText=pr.n+' (x'+pr.m+') | Тапы: '+taps+' / '+pr.nx;
-        $('bag-cnt').innerText=bag.length;
+        $('bag-cnt').innerText=bag.length;$('fr-cnt').innerText=friends.length;
         $('g-pet').innerHTML=(eqPet>=0&&eqPet<=5)?('Питомец: '+pIco.slice(eqPet,eqPet+1).shift()+' '+pNam.slice(eqPet,eqPet+1).shift()+' (x'+petMult()+')'):'Питомец: Нет (x1)';
-        $('score').innerText=Math.floor(score);$('m-info').innerText=nick+' | Счёт: '+Math.floor(score);
+        $('score').innerText=Math.floor(score);$('m-info').innerText=nick+' (ID: '+uid+') | Счёт: '+Math.floor(score);
         $('pwr').innerText=Math.round(pwr*mult()*10)/10;$('auto').innerText=auto;$('nrg').innerText=Math.floor(nrg);$('max-nrg').innerText=maxNrg;
         $('c-tap').innerText=cTap;$('c-auto').innerText=cAuto;$('c-nrg').innerText=cNrg;
         $('buff').innerText=bSec>0?('БОНУС x'+bMult+': '+bSec+'с'):'';
@@ -173,10 +192,10 @@ function draw(){
 
 function goGame(rst){snd();if(rst)resetAll();$('menu').style.display='none';$('game').style.display='flex';draw()}
 function goMenu(){snd();$('bag-box').style.display='none';$('game').style.display='none';$('menu').style.display='flex';draw()}
-function toggleBox(id){snd();var el=$(id),op=el.style.display==='block';$('prof-box').style.display='none';$('daily-box').style.display='none';$('top-box').style.display='none';if(!op){if(id==='prof-box')renderProf();if(id==='daily-box')renderDaily();if(id==='top-box')renderTop();el.style.display='block'}}
+function toggleBox(id){snd();var el=$(id),op=el.style.display==='block';$('prof-box').style.display='none';$('fr-box').style.display='none';$('daily-box').style.display='none';$('top-box').style.display='none';if(!op){if(id==='prof-box')renderProf();if(id==='fr-box')renderFriends();if(id==='daily-box')renderDaily();if(id==='top-box')renderTop();el.style.display='block'}}
 
 function renderProf(){
-    var pr=getPr();$('p-rank').innerText='Ранг: '+pr.n+' (x'+pr.m+') | Тапов: '+taps;$('nick-inp').value=nick;$('qr-area').style.display='none';
+    var pr=getPr();$('p-id').innerText='Твой ID: '+uid;$('p-rank').innerText='Ранг: '+pr.n+' (x'+pr.m+') | Тапов: '+taps;$('nick-inp').value=nick;$('qr-area').style.display='none';
     var ar=$('ava-row');ar.innerHTML='';for(var i=0;i<avas.length;i++)(function(a){var b=document.createElement('button');b.className='opt'+(ava===a?' sel':'');b.innerHTML=a;b.onclick=function(){snd();ava=a;renderProf();draw()};ar.appendChild(b)})(avas.slice(i,i+1).shift());
     var br=$('bg-row');br.innerHTML='';for(var j=0;j<bgIds.length;j++)(function(id,nm){var b=document.createElement('button');b.className='opt'+(bg===id?' sel':'');b.style.fontSize='12px';b.innerText=nm;b.onclick=function(){snd();bg=id;renderProf();draw()};br.appendChild(b)})(bgIds.slice(j,j+1).shift(),bgNms.slice(j,j+1).shift());
 }
@@ -185,6 +204,53 @@ function showQr(){snd();var c=makeCode();$('code-inp').value=c;var h=location.hr
 function copyCode(){snd();var i=$('code-inp');i.value=makeCode();i.select();try{document.execCommand('copy')}catch(e){}}
 function loadCode(){snd();if(parseCode($('code-inp').value)){draw();renderProf();$('prof-box').style.display='none'}}
 
+// Система друзей по 8-значному ID
+var apiUrl='https://kvdb.io';
+function syncCloud(cb){
+    fetch(apiUrl).then(function(res){return res.ok?res.json():[]}).then(function(data){
+        var list=Array.isArray(data)?data:[],map={};
+        for(var k=0;k<list.length;k++){var p=list.slice(k,k+1).shift();if(p&&is8Id(String(p.id)))map[String(p.id)]=p}
+        map[uid]={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score)};
+        var clean=[];for(var key in map){if(map.hasOwnProperty(key))clean.push(map[key])}
+        clean.sort(function(a,b){return b.p-a.p});
+        if(clean.length>500)clean=clean.slice(0,500);
+        fetch(apiUrl,{method:'POST',body:JSON.stringify(clean)}).catch(function(){});
+        if(cb)cb(clean,map);
+    }).catch(function(){
+        var me={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score)},m={};m[uid]=me;
+        if(cb)cb([me],m);
+    });
+}
+
+function addFriend(){
+    snd();var val=$('fr-inp').value.trim();
+    if(!is8Id(val)){$('fr-msg').innerText='Введи ровно 8 цифр ID!';return}
+    if(val===uid){$('fr-msg').innerText='Это твой собственный ID!';return}
+    if(friends.indexOf(val)!==-1){$('fr-msg').innerText='Этот игрок уже в друзьях!';return}
+    friends.push(val);save();draw();$('fr-inp').value='';$('fr-msg').innerText='Друг добавлен!';renderFriends();
+}
+function delFriend(fid){
+    snd();var next=[];for(var i=0;i<friends.length;i++){var x=friends.slice(i,i+1).shift();if(x!==fid)next.push(x)}
+    friends=next;save();draw();renderFriends();
+}
+function renderFriends(){
+    $('fr-my-id').innerText='Твой ID для друзей: '+uid;
+    var box=$('fr-list');
+    if(!friends.length){box.innerHTML='<div style="font-size:12px;color:#ffb3c1">Список друзей пуст. Введи 8-значный ID друга сверху!</div>';return}
+    box.innerHTML='<div style="font-size:12px;color:#ffe066">Обновляем очки друзей...</div>';
+    syncCloud(function(clean,map){
+        box.innerHTML='';
+        for(var i=0;i<friends.length;i++){
+            (function(fid){
+                var f=map[fid],r=document.createElement('div');r.className='row';
+                var info=f?(f.n+' (ID:'+fid+') — '+f.p):('Игрок ID:'+fid+' (ещё не заходил в Топ)');
+                r.innerHTML='<span style="text-align:left;font-size:12px">'+info+'</span><button class="btn" style="flex:0;padding:3px 7px;background:#6a040f" onclick="delFriend(\''+fid+'\')">X</button>';
+                box.appendChild(r);
+            })(friends.slice(i,i+1).shift());
+        }
+    });
+}
+
 function renderDaily(){
     var g=$('days-grid');g.innerHTML='';var td=new Date().toISOString().slice(0,10),dn=lastDate===td;
     for(var i=0;i<7;i++){var c=document.createElement('div');c.className='card'+((i+1<day||(i+1===day&&dn))?' done':(i+1===day?' act':''));c.innerHTML='<b>День '+(i+1)+'</b><br>'+prizes.slice(i,i+1).shift();g.appendChild(c)}
@@ -192,45 +258,17 @@ function renderDaily(){
 }
 function claimDaily(){var td=new Date().toISOString().slice(0,10);if(lastDate===td)return;snd();if(day===1)score+=100;else if(day===2){bMult=2;bSec=60}else if(day===3)score+=500;else if(day===4)pwr+=2;else if(day===5){bMult=3;bSec=60}else if(day===6)auto+=1;else if(day===7)score+=5000;lastDate=td;day=day>=7?1:day+1;save();draw();renderDaily()}
 
-// Чистый Онлайн Топ-500 (только живые реальные игроки без ботов)
-var apiUrl='https://kvdb.io';
-function drawLeaderboard(onlineList){
-    var box=$('top-box'),ls=[],map={};
-    if(onlineList&&onlineList.length){
-        for(var k=0;k<onlineList.length;k++){
-            var p=onlineList.slice(k,k+1).shift();
-            if(p&&p.id)map[p.id]=p;
-        }
-    }
-    map[uid]={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score)};
-    for(var key in map){
-        if(map.hasOwnProperty(key)){
-            var item=map[key];
-            ls.push({id:item.id,n:item.n,p:+item.p||0,me:(item.id===uid)});
-        }
-    }
-    ls.sort(function(a,b){return b.p-a.p});
-    if(ls.length>500)ls=ls.slice(0,500);
-    box.innerHTML='<div style="font-size:11px;color:#4cc9f0;margin-bottom:5px;font-weight:bold">Реальных игроков в Топ-500: '+ls.length+'</div>';
-    for(var j=0;j<ls.length;j++){
-        var it=ls.slice(j,j+1).shift(),r=document.createElement('div');
-        r.className=it.me?'row me':'row';
-        r.innerHTML='<span>#'+(j+1)+' '+it.n+'</span><span>'+it.p+'</span>';
-        box.appendChild(r);
-        if(it.me)$('m-info').innerText='Онлайн место: #'+(j+1)+' из '+ls.length;
-    }
-    return ls;
-}
-
 function renderTop(){
-    var box=$('top-box');
-    box.innerHTML='<div style="padding:15px;color:#ffe066;font-size:13px">Загрузка Онлайн Топ-500...</div>';
-    fetch(apiUrl).then(function(res){return res.ok?res.json():[]}).then(function(data){
-        var list=Array.isArray(data)?data:[];
-        var cleanTop=drawLeaderboard(list);
-        fetch(apiUrl,{method:'POST',body:JSON.stringify(cleanTop)}).catch(function(){});
-    }).catch(function(){
-        drawLeaderboard([]);
+    var box=$('top-box');box.innerHTML='<div style="padding:15px;color:#ffe066;font-size:13px">Загрузка Онлайн Топ-500...</div>';
+    syncCloud(function(ls){
+        box.innerHTML='<div style="font-size:11px;color:#4cc9f0;margin-bottom:5px;font-weight:bold">Реальных игроков в Топ-500: '+ls.length+'</div>';
+        for(var j=0;j<ls.length;j++){
+            var it=ls.slice(j,j+1).shift(),r=document.createElement('div');
+            r.className=(it.id===uid)?'row me':'row';
+            r.innerHTML='<span style="text-align:left">#'+(j+1)+' '+it.n+' <small style="color:#90e0ef">#'+it.id+'</small></span><span>'+it.p+'</span>';
+            box.appendChild(r);
+            if(it.id===uid)$('m-info').innerText='Онлайн место: #'+(j+1)+' из '+ls.length;
+        }
     });
 }
 
@@ -250,12 +288,3 @@ document.addEventListener('gesturestart',function(e){e.preventDefault()},{passiv
 function buyTap(){if(score>=cTap){score-=cTap;pwr++;cTap=Math.round(cTap*1.5);snd();draw();save()}}
 function buyAuto(){if(score>=cAuto){score-=cAuto;auto++;cAuto=Math.round(cAuto*1.6);snd();draw();save()}}
 function buyNrg(){if(score>=cNrg){score-=cNrg;maxNrg+=50;nrg=maxNrg;cNrg=Math.round(cNrg*1.8);snd();draw();save()}}
-function buyEgg(){if(score<500)return;score-=500;snd();var rnd=Math.random()*100,id=0;if(rnd<5)id=5;else if(rnd<15)id=4;else if(rnd<30)id=3;else if(rnd<50)id=2;else if(rnd<80)id=1;bag+=String(id);if(petMult()<+pMul.slice(id,id+1).shift())eqPet=id;$('drop-info').innerHTML='Выпал: '+pIco.slice(id,id+1).shift()+' '+pRar.slice(id,id+1).shift()+' '+pNam.slice(id,id+1).shift()+' (x'+pMul.slice(id,id+1).shift()+')!';if($('bag-box').style.display==='block')renderBag();draw();save()}
-function buySkin(s,cost){if(s==='gold'){if(hasG)skin=skin==='gold'?'none':'gold';else if(score>=cost){score-=cost;hasG=true;skin='gold'}}if(s==='diamond'){if(hasD)skin=skin==='diamond'?'none':'diamond';else if(score>=cost){score-=cost;hasD=true;skin='diamond'}}if(s==='emerald'){if(hasE)skin=skin==='emerald'?'none':'emerald';else if(score>=cost){score-=cost;hasE=true;skin='emerald'}}if(s==='ruby'){if(hasR)skin=skin==='ruby'?'none':'ruby';else if(score>=cost){score-=cost;hasR=true;skin='ruby'}}snd();draw();save()}
-function resetAll(){score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;save();draw()}
-
-setInterval(function(){if(auto>0)score+=auto;if(nrg<maxNrg)nrg=Math.min(maxNrg,nrg+Math.max(2,Math.floor(maxNrg/40)));if(bSec>0){bSec--;if(bSec===0)bMult=1}draw();save()},1000);
-draw();
-</script>
-</body>
-</html>
