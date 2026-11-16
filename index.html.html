@@ -11,15 +11,12 @@ body.bg-forest{background:radial-gradient(circle at top,#0b4f3a,#031912 75%)}
 body.bg-royal{background:radial-gradient(circle at top,#480ca8,#15002b 75%)}
 #menu{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:8px;padding:14px;box-sizing:border-box}
 #game{display:none;flex-direction:column;align-items:center;justify-content:space-between;min-height:100vh;box-sizing:border-box}
-
-/* Новая обложка-баннер в главном меню */
-.cover-card{width:280px;max-width:94%;background:linear-gradient(145deg,rgba(255,77,109,0.28),rgba(43,6,17,0.85));border:2px solid #ff758f;border-radius:22px;padding:14px 10px;box-shadow:0 0 28px rgba(255,77,109,0.45),inset 0 0 15px rgba(255,214,10,0.2);margin-bottom:4px;position:relative;box-sizing:border-box}
+.cover-card{width:280px;max-width:94%;background:linear-gradient(145deg,rgba(255,77,109,0.28),rgba(43,6,17,0.85));border:2px solid #ff758f;border-radius:22px;padding:14px 10px;box-shadow:0 0 28px rgba(255,77,109,0.45),inset 0 0 15px rgba(255,214,10,0.2);margin-bottom:4px;box-sizing:border-box}
 .cover-crown{font-size:22px;margin-bottom:-6px;filter:drop-shadow(0 0 6px #ffd60a)}
 @keyframes floatBerry{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.06)}}
 #m-ava{font-size:56px;display:inline-block;animation:floatBerry 2.4s ease-in-out infinite;filter:drop-shadow(0 6px 12px rgba(0,0,0,0.6))}
 .cover-title{margin:2px 0 4px;font-size:22px;font-weight:900;letter-spacing:1px;background:linear-gradient(180deg,#fff,#ffccd5 55%,#ff4d6d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.7))}
 .cover-sub{font-size:10px;letter-spacing:2px;color:#ffd60a;font-weight:bold;text-transform:uppercase;margin-bottom:4px}
-
 .m-btn{width:265px;max-width:92%;padding:11px;font-size:14px;font-weight:bold;color:#fff;background:linear-gradient(180deg,#c9184a,#800f2f);border:2px solid #ff8fa3;border-radius:14px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.4)}
 .m-btn:active{transform:scale(0.96)}
 .mp3-box{width:265px;max-width:92%;padding:8px;background:linear-gradient(180deg,#7209b7,#480ca8);border:2px solid #f72585;border-radius:14px;box-sizing:border-box;font-size:12px;font-weight:bold;box-shadow:0 4px 10px rgba(0,0,0,0.4)}
@@ -54,7 +51,6 @@ body.bg-royal{background:radial-gradient(circle at top,#480ca8,#15002b 75%)}
 <body>
 
 <div id="menu">
-    <!-- Новая карточка-обложка -->
     <div class="cover-card">
         <div class="cover-crown">&#128081;</div>
         <div id="m-ava">&#127827;</div>
@@ -121,6 +117,7 @@ body.bg-royal{background:radial-gradient(circle at top,#480ca8,#15002b 75%)}
     <div id="drop-info" style="font-size:12px;color:#ffe066;font-weight:bold;height:16px">Жми на клубнику!</div>
 
     <div class="shop">
+        <button class="btn" id="b-tap">Сила +1 (<span id="c-tap">15</span>)</button>
 <script>
 var score=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0;
 var skin='none',hasG=false,hasD=false,hasE=false,hasR=false,day=1,lastDate='',bMult=1,bSec=0;
