@@ -204,7 +204,6 @@ function showQr(){snd();var c=makeCode();$('code-inp').value=c;var h=location.hr
 function copyCode(){snd();var i=$('code-inp');i.value=makeCode();i.select();try{document.execCommand('copy')}catch(e){}}
 function loadCode(){snd();if(parseCode($('code-inp').value)){draw();renderProf();$('prof-box').style.display='none'}}
 
-// Система друзей по 8-значному ID
 var apiUrl='https://kvdb.io';
 function syncCloud(cb){
     fetch(apiUrl).then(function(res){return res.ok?res.json():[]}).then(function(data){
@@ -221,7 +220,8 @@ function syncCloud(cb){
         if(cb)cb([me],m);
     });
 }
-
+</script>
+<script>
 function addFriend(){
     snd();var val=$('fr-inp').value.trim();
     if(!is8Id(val)){$('fr-msg').innerText='Введи ровно 8 цифр ID!';return}
@@ -243,9 +243,12 @@ function renderFriends(){
         for(var i=0;i<friends.length;i++){
             (function(fid){
                 var f=map[fid],r=document.createElement('div');r.className='row';
-                var info=f?(f.n+' (ID:'+fid+') — '+f.p):('Игрок ID:'+fid+' (ещё не заходил в Топ)');
-                r.innerHTML='<span style="text-align:left;font-size:12px">'+info+'</span><button class="btn" style="flex:0;padding:3px 7px;background:#6a040f" onclick="delFriend(\''+fid+'\')">X</button>';
-                box.appendChild(r);
+                var sp=document.createElement('span');sp.style.textAlign='left';sp.style.fontSize='12px';
+                sp.innerHTML=f?(f.n+' (ID:'+fid+') — '+f.p):('Игрок ID:'+fid+' (ещё не заходил в Топ)');
+                var delBtn=document.createElement('button');delBtn.className='btn';
+                delBtn.style.flex='0';delBtn.style.padding='3px 7px';delBtn.style.background='#6a040f';delBtn.innerText='X';
+                delBtn.onclick=function(){delFriend(fid)};
+                r.appendChild(sp);r.appendChild(delBtn);box.appendChild(r);
             })(friends.slice(i,i+1).shift());
         }
     });
@@ -288,3 +291,12 @@ document.addEventListener('gesturestart',function(e){e.preventDefault()},{passiv
 function buyTap(){if(score>=cTap){score-=cTap;pwr++;cTap=Math.round(cTap*1.5);snd();draw();save()}}
 function buyAuto(){if(score>=cAuto){score-=cAuto;auto++;cAuto=Math.round(cAuto*1.6);snd();draw();save()}}
 function buyNrg(){if(score>=cNrg){score-=cNrg;maxNrg+=50;nrg=maxNrg;cNrg=Math.round(cNrg*1.8);snd();draw();save()}}
+function buyEgg(){if(score<500)return;score-=500;snd();var rnd=Math.random()*100,id=0;if(rnd<5)id=5;else if(rnd<15)id=4;else if(rnd<30)id=3;else if(rnd<50)id=2;else if(rnd<80)id=1;bag+=String(id);if(petMult()<+pMul.slice(id,id+1).shift())eqPet=id;$('drop-info').innerHTML='Выпал: '+pIco.slice(id,id+1).shift()+' '+pRar.slice(id,id+1).shift()+' '+pNam.slice(id,id+1).shift()+' (x'+pMul.slice(id,id+1).shift()+')!';if($('bag-box').style.display==='block')renderBag();draw();save()}
+function buySkin(s,cost){if(s==='gold'){if(hasG)skin=skin==='gold'?'none':'gold';else if(score>=cost){score-=cost;hasG=true;skin='gold'}}if(s==='diamond'){if(hasD)skin=skin==='diamond'?'none':'diamond';else if(score>=cost){score-=cost;hasD=true;skin='diamond'}}if(s==='emerald'){if(hasE)skin=skin==='emerald'?'none':'emerald';else if(score>=cost){score-=cost;hasE=true;skin='emerald'}}if(s==='ruby'){if(hasR)skin=skin==='ruby'?'none':'ruby';else if(score>=cost){score-=cost;hasR=true;skin='ruby'}}snd();draw();save()}
+function resetAll(){score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;save();draw()}
+
+setInterval(function(){if(auto>0)score+=auto;if(nrg<maxNrg)nrg=Math.min(maxNrg,nrg+Math.max(2,Math.floor(maxNrg/40)));if(bSec>0){bSec--;if(bSec===0)bMult=1}draw();save()},1000);
+draw();
+</script>
+</body>
+</html>
