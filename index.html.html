@@ -62,7 +62,6 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
         <span id="mp3-lbl">Выбрать музыку (.mp3)</span>
         <input type="file" accept="audio/*" onchange="loadMp3(this)" style="width:100%;margin-top:4px;font-size:11px">
     </label>
-
     <div id="quest-box" class="box">
         <div style="font-size:13px;color:#ffd60a;font-weight:bold">НЕДЕЛЬНОЕ ИСПЫТАНИЕ</div>
         <div style="font-size:12px;color:#ffccd5;margin-top:3px">Собери <b>100 000 клубник</b> и получи 1 из 20 редких скинов (<b>x25</b>)!</div>
@@ -80,7 +79,6 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
         <div id="ava-row"></div>
         <div id="bg-row"></div>
         <button class="btn" onclick="saveProf()" style="width:100%;background:#2b9348;margin:6px 0">Сохранить профиль</button>
-
         <div class="sec">Вход и привязка по Почте (Email):</div>
         <input type="email" id="mail-inp" class="inp" placeholder="Введи свою почту (email)...">
         <input type="password" id="pass-inp" class="inp" placeholder="Придумай пароль...">
@@ -89,7 +87,6 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
             <button class="btn" onclick="mailLogin()" style="background:#e85d04">Войти по почте</button>
         </div>
         <div id="mail-msg" style="font-size:11px;color:#4cc9f0;margin-bottom:6px"></div>
-
         <div style="border-top:1px solid #ff758f;padding-top:6px">
             <button class="btn" onclick="showQr()" style="background:#7209b7">Показать QR</button>
             <button class="btn" onclick="copyCode()" style="background:#3a0ca3">Скопировать код</button>
@@ -122,6 +119,32 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
     <div style="padding-top:8px;width:100%">
         <div style="display:flex;gap:5px;justify-content:center;padding:0 10px">
             <button class="btn" onclick="goMenu()" style="padding:7px">В меню</button>
+            <button class="btn" onclick="toggleBag()" style="padding:7px;background:#e85d04">Рюкзак (<span id="bag-cnt">0</span>)</button>
+            <button class="btn" onclick="toggleWardrobe()" style="padding:7px;background:#7209b7;border-color:#ffd60a">Скины (<span id="sk-cnt">0</span>/20)</button>
+        </div>
+        <div id="g-user" style="font-size:13px;color:#ffe066;font-weight:bold;margin-top:3px">Игрок</div>
+        <div id="g-pet" style="font-size:12px;color:#90e0ef">Питомец: Нет (x1)</div>
+        <div id="g-rank" class="badge">Новичок (0 / 1000)</div>
+        <div id="score">0</div>
+        <div style="font-size:13px">Клик: <b id="pwr">1</b> | Сек: <b id="auto">0</b> | Энергия: <b id="nrg">100</b>/<b id="max-nrg">100</b></div>
+        <div id="buff" style="color:#ffe066;font-size:12px;font-weight:bold;height:16px"></div>
+    </div>
+    <div id="bag-box"><div id="pet-grid"></div></div>
+    <div id="wardrobe-box"><div style="font-size:12px;color:#ffd60a;font-weight:bold;margin-bottom:4px">Выбитые скины (x25 к тапу):</div><div id="sk-grid"></div></div>
+    <div id="berry">&#127827;</div>
+    <div id="drop-info" style="font-size:12px;color:#ffe066;font-weight:bold;height:16px">Жми на клубнику!</div>
+    <div class="shop">
+        <button class="btn" id="b-tap" onclick="buyTap()">Сила +1 (<span id="c-tap">15</span>)</button>
+        <button class="btn" id="b-auto" onclick="buyAuto()">Куст +1 (<span id="c-auto">50</span>)</button>
+        <button class="btn" id="b-nrg" onclick="buyNrg()" style="background:#005f73">Энергия +50 (<span id="c-nrg">200</span>)</button>
+        <button class="btn" id="b-egg" onclick="buyEgg()" style="flex:1 1 95%;background:#7209b7;border-color:#f72585">Купить Яйцо питомца (500)</button>
+        <button class="btn" id="b-gold" onclick="buySkin('gold',1000)" style="background:#b58300">Золото (1000)</button>
+        <button class="btn" id="b-diam" onclick="buySkin('diamond',10000)" style="background:#0077b6">Алмаз (10000)</button>
+        <button class="btn" id="b-emer" onclick="buySkin('emerald',50000)" style="background:#2b9348">Изумруд (50000)</button>
+        <button class="btn" id="b-ruby" onclick="buySkin('ruby',1000000)" style="flex:1 1 65%;background:#9b0000">Рубин x50 (1000000)</button>
+        <button class="btn" onclick="resetAll()" style="flex:1 1 25%;background:#2b0611">Сброс</button>
+    </div>
+</div>
 ```html
 <script>
 var score=0,maxScore=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0;
