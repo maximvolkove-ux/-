@@ -13,7 +13,7 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
 #m-ava{font-size:44px}
 .m-btn{width:255px;max-width:92%;padding:10px;font-size:14px;font-weight:bold;color:#fff;background:#a4133c;border:2px solid #ff758f;border-radius:12px;cursor:pointer}
 .mp3{width:255px;max-width:92%;padding:7px;background:#7209b7;border:2px solid #f72585;border-radius:12px;box-sizing:border-box;font-size:12px;font-weight:bold;display:block}
-.box{width:92%;max-width:400px;max-height:250px;overflow-y:auto;background:#2b0611;border:1px solid #ff758f;border-radius:10px;display:none;padding:10px;box-sizing:border-box}
+.box{width:92%;max-width:400px;max-height:260px;overflow-y:auto;background:#2b0611;border:1px solid #ff758f;border-radius:10px;display:none;padding:10px;box-sizing:border-box}
 .row{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-bottom:1px solid #590d22;font-size:13px}
 .row.me{background:#a4133c;color:#ffe066;font-weight:bold}
 .inp{width:88%;padding:7px;border-radius:8px;border:1px solid #ff758f;background:#3b0716;color:#fff;font-size:13px;text-align:center;margin-bottom:6px}
@@ -54,10 +54,10 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
     <button class="m-btn" onclick="goGame(false)">Продолжить игру</button>
     <button class="m-btn" onclick="goGame(true)" style="background:#6a040f">Новая игра</button>
     <button class="m-btn" onclick="toggleBox('quest-box')" style="background:linear-gradient(90deg,#9d4edd,#ff0054);border-color:#ffd60a">Недельное испытание (100к)</button>
-    <button class="m-btn" onclick="toggleBox('prof-box')" style="background:#0077b6">Личный профиль / ID</button>
+    <button class="m-btn" onclick="toggleBox('prof-box')" style="background:#0077b6">Личный профиль / Почта</button>
     <button class="m-btn" onclick="toggleBox('fr-box')" style="background:#e85d04;border-color:#ffba08">Друзья (<span id="fr-cnt">0</span>)<span id="req-b" style="color:#ffe066"></span></button>
     <button class="m-btn" onclick="toggleBox('daily-box')" style="background:#2b9348">Ежедневный приз</button>
-    <button class="m-btn" onclick="toggleBox('top-box')" style="background:#b58300">Топ-500 по всему миру</button>
+    <button class="m-btn" onclick="toggleBox('top-box')" style="background:#b58300">Топ 500 лучших</button>
     <label class="mp3">
         <span id="mp3-lbl">Выбрать музыку (.mp3)</span>
         <input type="file" accept="audio/*" onchange="loadMp3(this)" style="width:100%;margin-top:4px;font-size:11px">
@@ -80,14 +80,24 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
         <div id="ava-row"></div>
         <div id="bg-row"></div>
         <button class="btn" onclick="saveProf()" style="width:100%;background:#2b9348;margin:6px 0">Сохранить профиль</button>
+
+        <div class="sec">Вход и привязка по Почте (Email):</div>
+        <input type="email" id="mail-inp" class="inp" placeholder="Введи свою почту (email)...">
+        <input type="password" id="pass-inp" class="inp" placeholder="Придумай пароль...">
+        <div style="display:flex;gap:4px;margin-bottom:4px">
+            <button class="btn" onclick="mailBind()" style="background:#0096c7">Привязать / Сохранить</button>
+            <button class="btn" onclick="mailLogin()" style="background:#e85d04">Войти по почте</button>
+        </div>
+        <div id="mail-msg" style="font-size:11px;color:#4cc9f0;margin-bottom:6px"></div>
+
         <div style="border-top:1px solid #ff758f;padding-top:6px">
             <button class="btn" onclick="showQr()" style="background:#7209b7">Показать QR</button>
             <button class="btn" onclick="copyCode()" style="background:#3a0ca3">Скопировать код</button>
             <div id="qr-area" style="display:none;background:#fff;padding:6px;border-radius:8px;margin:6px 0;color:#000">
                 <img id="qr-img" src="" style="width:130px;height:130px;display:block;margin:0 auto">
             </div>
-            <input type="text" id="code-inp" class="inp" placeholder="Вставь код сюда..." style="margin-top:6px">
-            <button class="btn" onclick="loadCode()" style="width:100%;background:#e85d04">Войти по коду</button>
+            <input type="text" id="code-inp" class="inp" placeholder="Или вставь код сюда..." style="margin-top:6px">
+            <button class="btn" onclick="loadCode()" style="width:100%;background:#6a040f">Загрузить по коду</button>
         </div>
     </div>
 
@@ -112,18 +122,11 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
     <div style="padding-top:8px;width:100%">
         <div style="display:flex;gap:5px;justify-content:center;padding:0 10px">
             <button class="btn" onclick="goMenu()" style="padding:7px">В меню</button>
-            <button class="btn" onclick="toggleBag()" style="padding:7px;background:#e85d04">Рюкзак (<span id="bag-cnt">0</span>)</button>
-            <button class="btn" onclick="toggleWardrobe()" style="padding:7px;background:#7209b7;border-color:#ffd60a">Скины (<span id="sk-cnt">0</span>/20)</button>
-        </div>
-        <div id="g-user" style="font-size:13px;color:#ffe066;font-weight:bold;margin-top:3px">Игрок</div>
-        <div id="g-pet" style="font-size:12px;color:#90e0ef">Питомец: Нет (x1)</div>
-        <div id="g-rank" class="badge">Новичок (0 / 1000)</div>
-        <div id="score">0</div>
 ```html
 <script>
 var score=0,maxScore=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0;
 var skin='none',hasG=false,hasD=false,hasE=false,hasR=false,day=1,lastDate='',bMult=1,bSec=0;
-var nick='Игрок',ava='&#127827;',bg='',bgm=null,bag='',eqPet=-1,friends=[],qProg=0,mySkins=[],eqEvSkin=-1;
+var nick='Игрок',ava='&#127827;',bg='',bgm=null,bag='',eqPet=-1,friends=[],qProg=0,mySkins=[],eqEvSkin=-1,uMail='';
 
 var evNames='В противогазе ГП-5|Скелет|Тыква|Радужная клубника|Кот|Чёрная клубника|Робот-клубника|С клюшкой для хоккея|В боксёрских перчатках|Лысый кот ♥|Кибер-панк|Призрак|Дракон|Ниндзя|Космонавт|Пират|Король|Вампир|Инопланетянин|Огненная клубника'.split('|');
 var evIcons='&#127827;&#128567;|&#128128;|&#127875;|&#127752;&#127827;|&#128049;|&#128420;&#127827;|&#129302;|&#127954;&#127827;|&#129354;&#127827;|&#128008;&#9829;|&#128374;&#127827;|&#128123;|&#128009;|&#129399;|&#128640;&#127827;|&#127988;&#8205;&#9760;&#65039;|&#128081;&#127827;|&#129499;|&#128125;|&#128293;&#127827;'.split('|');
@@ -163,8 +166,8 @@ try{
 }catch(e){}
 function snd(){try{if(wav){var a=new Audio(wav);a.playbackRate=0.9+Math.random()*0.2;a.play()}}catch(e){}}
 
-function getObj(){if(score>maxScore)maxScore=score;return{uid:uid,score:Math.floor(score),maxScore:Math.floor(maxScore),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet,friends:friends,qProg:Math.floor(qProg),mySkins:mySkins,eqEvSkin:eqEvSkin}}
-function setObj(d){if(!d)return;if(is8Id(String(d.uid)))uid=String(d.uid);score=+d.score||0;maxScore=Math.max(score,+d.maxScore||0);pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet;if(Array.isArray(d.friends))friends=d.friends;qProg=+d.qProg||0;if(Array.isArray(d.mySkins))mySkins=d.mySkins;if(typeof d.eqEvSkin==='number')eqEvSkin=d.eqEvSkin}
+function getObj(){if(score>maxScore)maxScore=score;return{uid:uid,score:Math.floor(score),maxScore:Math.floor(maxScore),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet,friends:friends,qProg:Math.floor(qProg),mySkins:mySkins,eqEvSkin:eqEvSkin,uMail:uMail}}
+function setObj(d){if(!d)return;if(is8Id(String(d.uid)))uid=String(d.uid);score=+d.score||0;maxScore=Math.max(score,+d.maxScore||0);pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet;if(Array.isArray(d.friends))friends=d.friends;qProg=+d.qProg||0;if(Array.isArray(d.mySkins))mySkins=d.mySkins;if(typeof d.eqEvSkin==='number')eqEvSkin=d.eqEvSkin;if(d.uMail)uMail=d.uMail}
 function makeCode(){return btoa(unescape(encodeURIComponent(JSON.stringify(getObj()))))}
 function parseCode(s){try{var c=s.trim(),p=c.indexOf('code=');if(p!==-1)c=decodeURIComponent(c.substring(p+5));var a=c.indexOf('&');if(a!==-1)c=c.substring(0,a);setObj(JSON.parse(decodeURIComponent(escape(atob(c)))));save();return true}catch(e){return false}}
 
@@ -207,23 +210,36 @@ function claimQuest(){if(qProg<100000||mySkins.length>=20)return;snd();var pool=
 function toggleWardrobe(){snd();$('bag-box').style.display='none';var w=$('wardrobe-box'),op=w.style.display==='block';w.style.display=op?'none':'block';if(!op)renderWardrobe()}
 function renderWardrobe(){var g=$('sk-grid');g.innerHTML='';if(!mySkins.length){g.innerHTML='<div style="font-size:12px;color:#ffb3c1">Пока нет скинов! Выполни Недельное испытание.</div>';return}for(var i=0;i<mySkins.length;i++)(function(id){var c=document.createElement('div');c.className='pet'+(eqEvSkin===id?' eq':'');c.innerHTML='<div style="font-size:20px">'+evIcons.slice(id,id+1).shift()+'</div><b>'+evNames.slice(id,id+1).shift()+'</b><br><b style="color:#ffe066">x25</b>';c.onclick=function(){snd();eqEvSkin=(eqEvSkin===id)?-1:id;save();draw();renderWardrobe()};g.appendChild(c)})(mySkins.slice(i,i+1).shift())}
 
-function renderProf(){var pr=getPr();$('p-id').innerText='Твой ID: '+uid;$('p-rank').innerText='Ранг: '+pr.n+' (x'+pr.m+') | Рекорд: '+pr.cur;$('nick-inp').value=nick;$('qr-area').style.display='none';var ar=$('ava-row');ar.innerHTML='';for(var i=0;i<avas.length;i++)(function(a){var b=document.createElement('button');b.className='opt'+(ava===a?' sel':'');b.innerHTML=a;b.onclick=function(){snd();ava=a;renderProf();draw()};ar.appendChild(b)})(avas.slice(i,i+1).shift());var br=$('bg-row');br.innerHTML='';for(var j=0;j<bgIds.length;j++)(function(id,nm){var b=document.createElement('button');b.className='opt'+(bg===id?' sel':'');b.style.fontSize='12px';b.innerText=nm;b.onclick=function(){snd();bg=id;renderProf();draw()};br.appendChild(b)})(bgIds.slice(j,j+1).shift(),bgNms.slice(j,j+1).shift())}
+function renderProf(){var pr=getPr();$('p-id').innerText='Твой ID: '+uid;$('p-rank').innerText='Ранг: '+pr.n+' (x'+pr.m+') | Рекорд: '+pr.cur;$('nick-inp').value=nick;$('mail-inp').value=uMail;$('qr-area').style.display='none';var ar=$('ava-row');ar.innerHTML='';for(var i=0;i<avas.length;i++)(function(a){var b=document.createElement('button');b.className='opt'+(ava===a?' sel':'');b.innerHTML=a;b.onclick=function(){snd();ava=a;renderProf();draw()};ar.appendChild(b)})(avas.slice(i,i+1).shift());var br=$('bg-row');br.innerHTML='';for(var j=0;j<bgIds.length;j++)(function(id,nm){var b=document.createElement('button');b.className='opt'+(bg===id?' sel':'');b.style.fontSize='12px';b.innerText=nm;b.onclick=function(){snd();bg=id;renderProf();draw()};br.appendChild(b)})(bgIds.slice(j,j+1).shift(),bgNms.slice(j,j+1).shift())}
 function saveProf(){snd();var v=$('nick-inp').value.trim();if(v)nick=v;save();draw();$('prof-box').style.display='none';syncWorld()}
 function showQr(){snd();var c=makeCode();$('code-inp').value=c;var h=location.href,q=h.indexOf('?'),u=q!==-1?h.substring(0,q):h,p=u.indexOf('http')===0?u+'?code='+encodeURIComponent(c):c;$('qr-img').src='https://qrserver.com'}
 function copyCode(){snd();var i=$('code-inp');i.value=makeCode();i.select();try{document.execCommand('copy')}catch(e){}}
 function loadCode(){snd();if(parseCode($('code-inp').value)){draw();renderProf();$('prof-box').style.display='none';syncWorld()}}
 
-var worldUrl='https://kvdb.io';
+// Вход и сохранение аккаунта по Email + Паролю
+var baseApi='https://kvdb.io';
+function mailKey(m){return 'berry_mail_'+btoa(unescape(encodeURIComponent(m.toLowerCase().trim()))).replace(/[^a-zA-Z0-9]/g,'').slice(0,32)}
+function mailBind(){
+    snd();var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();
+    if(m.indexOf('@')===-1||p.length<3){$('mail-msg').innerText='Введи правильный Email и пароль (от 3 символов)!';return}
+    uMail=m;save();$('mail-msg').innerText='Сохраняем аккаунт в облако...';
+    fetch(baseApi+mailKey(m),{method:'POST',body:JSON.stringify({pass:p,data:getObj()})}).then(function(){$('mail-msg').innerText='Почта '+m+' привязана! Прогресс сохранён.'}).catch(function(){$('mail-msg').innerText='Ошибка сети, попробуй позже.'});
+}
+function mailLogin(){
+    snd();var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();
+    if(m.indexOf('@')===-1||!p){$('mail-msg').innerText='Введи Email и пароль для входа!';return}
+    $('mail-msg').innerText='Поиск аккаунта...';
+    fetch(baseApi+mailKey(m)).then(function(r){return r.ok?r.json():null}).then(function(res){
+        if(!res||!res.data){$('mail-msg').innerText='Аккаунт с такой почтой не найден!';return}
+        if(res.pass!==p){$('mail-msg').innerText='Неверный пароль!';return}
+        setObj(res.data);uMail=m;save();draw();renderProf();syncWorld();$('mail-msg').innerText='Успешный вход в аккаунт '+m+'!';
+    }).catch(function(){$('mail-msg').innerText='Ошибка подключения к серверу.'});
+}
+
+// Топ 500 лучших (отслеживает всех игроков в мире)
+var worldUrl=baseApi+'berry_world_top500',reqUrl=baseApi+'berry_friend_reqs';
 function syncWorld(cb){fetch(worldUrl).then(function(r){return r.ok?r.json():[]}).then(function(d){var l=Array.isArray(d)?d:[],m={};for(var k=0;k<l.length;k++){var p=l.slice(k,k+1).shift();if(p&&is8Id(String(p.id)))m[String(p.id)]=p}m[uid]={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score)};var c=[];for(var key in m){if(m.hasOwnProperty(key))c.push(m[key])}c.sort(function(a,b){return b.p-a.p});if(c.length>500)c=c.slice(0,500);fetch(worldUrl,{method:'POST',body:JSON.stringify(c)}).catch(function(){});if(cb)cb(c,m)}).catch(function(){var me={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score)},m={};m[uid]=me;if(cb)cb([me],m)})}
 function syncReqs(mod,cb){fetch(reqUrl).then(function(r){return r.ok?r.json():[]}).then(function(d){var a=Array.isArray(d)?d:[];if(mod)a=mod(a);fetch(reqUrl,{method:'POST',body:JSON.stringify(a.slice(-300))}).catch(function(){});if(cb)cb(a)}).catch(function(){if(cb)cb([])})}
 
 function sendReq(){snd();var v=$('fr-inp').value.trim();if(!is8Id(v)){$('fr-msg').innerText='Введи ровно 8 цифр ID!';return}if(v===uid){$('fr-msg').innerText='Нельзя себе!';return}if(friends.indexOf(v)!==-1){$('fr-msg').innerText='Уже в друзьях!';return}$('fr-msg').innerText='Отправка...';syncReqs(function(a){var ex=false;for(var i=0;i<a.length;i++){var it=a.slice(i,i+1).shift();if(it&&it.from===uid&&it.to===v)ex=true}if(!ex)a.push({from:uid,to:v,name:ava+' '+nick,st:'wait'});return a},function(){$('fr-inp').value='';$('fr-msg').innerText='Заявка отправлена ID: '+v})}
 function answerReq(fid,ok){snd();if(ok&&friends.indexOf(fid)===-1){friends.push(fid);save();draw()}syncReqs(function(a){var n=[];for(var i=0;i<a.length;i++){var it=a.slice(i,i+1).shift();if(!it)continue;if(it.from===fid&&it.to===uid){if(ok)n.push({from:uid,to:fid,name:ava+' '+nick,st:'ok'})}else n.push(it)}return n},function(){renderFriends()})}
-function delFriend(fid){snd();var n=[];for(var i=0;i<friends.length;i++){var x=friends.slice(i,i+1).shift();if(x!==fid)n.push(x)}friends=n;save();draw();renderFriends()}
-
-function renderFriends(){
-    $('fr-my-id').innerText='Твой ID: '+uid;var rB=$('req-list'),fB=$('fr-list');rB.innerHTML='Проверка...';fB.innerHTML='Загрузка...';
-    syncReqs(function(a){var cl=[];for(var i=0;i<a.length;i++){var it=a.slice(i,i+1).shift();if(!it)continue;if(it.to===uid&&it.st==='ok'){if(friends.indexOf(it.from)===-1){friends.push(it.from);save();draw()}}else cl.push(it)}return cl},function(a){
-        var inc=[];for(var j=0;j<a.length;j++){var it=a.slice(j,j+1).shift();if(it&&it.to===uid&&it.st==='wait')inc.push(it)}
-        $('req-b').innerText=inc.length?(' [+'+inc.length+']'):'';rB.innerHTML=inc.length?'':'<div style="font-size:11px;color:#ffb3c1">Заявок нет</div>';
-        for(var k=0;k<inc.length;k++)(function(req){var r=document.createElement('div');r.className='row';var sp=document.createElement('span');sp.style.fontSize='12px';sp.innerHTML=req.name+' (#'+req.from+')';var w=document.createElement('span'),b1=document.createElement('button');b1.className='btn';b1.style.padding='3px 6px';b1.style.background='#2b9348';b1.innerText='Принять';b1.onclick=function(){answerReq(req.from,true)};var b2=document.createElement('button');b2.className='btn';b2.style.padding='3px 6px';b2.style.marginLeft='4px';b2.style.background='#6a040f';b2.innerText='X';b2.onclick=function(){answerReq(req.from,false)};w.appendChild(b1);w.appendChild(b2);r.appendChild(sp);r.appendChild(w);rB.appendChild(r)})(inc.slice(k,k+1).shift());
