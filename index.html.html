@@ -249,68 +249,74 @@ function showQr(){snd();var c=makeCode();$('code-inp').value=c;var h=location.hr
 function copyCode(){snd();var i=$('code-inp');i.value=makeCode();i.select();try{document.execCommand('copy')}catch(e){}}
 function loadCode(){snd();if(parseCode($('code-inp').value)){draw();renderProf();$('prof-box').style.display='none';syncWorld()}}
 
-var baseApi='https://kvdb.io';
-function mailKey(m){var s=m.toLowerCase().trim(),h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))&2147483647;return 'berry_mail_'+h+'_'+s.length}
+var cloudBlob='https://jsonblob.com';
+var cloudCache={users:{},mails:{},reqs:[]};
+
+function apiSync(modFn,cb){
+    fetch(cloudBlob,{headers:{'Accept':'application/json'}}).then(function(r){return r.ok?r.json():cloudCache}).then(function(d){
+        if(!d||typeof d!=='object')d={users:{},mails:{},reqs:[]};
+        if(!d.users)d.users={};if(!d.mails)d.mails={};if(!Array.isArray(d.reqs))d.reqs=[];
+        if(modFn)modFn(d);
+        cloudCache=d;
+        fetch(cloudBlob,{method:'PUT',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(d)}).catch(function(){});
+        if(cb)cb(d);
+    }).catch(function(){
+        if(modFn)modFn(cloudCache);
+        if(cb)cb(cloudCache);
+    });
+}
+
+function mailKey(m){return m.toLowerCase().trim()}
 function mailBind(){
     snd();var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();
     if(m.indexOf('@')===-1||p.length<3){$('mail-msg').innerText='Введи правильный Email и пароль (от 3 символов)!';return}
     uMail=m;save();$('mail-msg').innerText='Сохраняем аккаунт в облако...';
-    fetch(baseApi+mailKey(m),{method:'POST',body:JSON.stringify({pass:p,data:getObj()})}).then(function(){$('mail-msg').innerText='Почта '+m+' привязана! Прогресс сохранён.'}).catch(function(){$('mail-msg').innerText='Ошибка сети, попробуй позже.'});
+    apiSync(function(d){
+        d.mails[mailKey(m)]={pass:p,data:getObj()};
+    },function(){
+        $('mail-msg').innerText='Почта '+m+' привязана! Прогресс сохранён.';
+    });
 }
 function mailLogin(){
     snd();var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();
     if(m.indexOf('@')===-1||!p){$('mail-msg').innerText='Введи Email и пароль для входа!';return}
     $('mail-msg').innerText='Поиск аккаунта...';
-    fetch(baseApi+mailKey(m)).then(function(r){return r.ok?r.json():null}).then(function(res){
+    apiSync(null,function(d){
+        var res=d.mails[mailKey(m)];
         if(!res||!res.data){$('mail-msg').innerText='Аккаунт с такой почтой не найден!';return}
         if(res.pass!==p){$('mail-msg').innerText='Неверный пароль!';return}
-        setObj(res.data);uMail=m;save();draw();renderProf();syncWorld();$('mail-msg').innerText='Успешный вход в аккаунт '+m+'!';
-    }).catch(function(){$('mail-msg').innerText='Ошибка подключения к серверу.'});
+        setObj(res.data);uMail=m;save();draw();renderProf();syncWorld();
+        $('mail-msg').innerText='Успешный вход в аккаунт '+m+'!';
+    });
 }
 
-// Отслеживание устройства + индивидуальные облачные ячейки без перезаписи друзей
 function getDevName(){
     var ua=navigator.userAgent||'';
     if(ua.indexOf('iPhone')!==-1||ua.indexOf('iPad')!==-1)return 'iPhone';
     if(ua.indexOf('Android')!==-1)return 'Android';
     return 'ПК';
 }
-var idxUrl=baseApi+'berry_dev_index',reqUrl=baseApi+'berry_friend_reqs';
 
 function syncWorld(cb){
     var me={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score),dev:getDevName(),ts:Date.now()};
-    // 1. Записываем данные этого устройства в его персональную ячейку
-    fetch(baseApi+'berry_u_'+uid,{method:'POST',body:JSON.stringify(me)}).catch(function(){});
-    // 2. Обновляем общий реестр всех ID устройств
-    fetch(idxUrl).then(function(r){return r.ok?r.json():[]}).then(function(d){
-        var ids=Array.isArray(d)?d:[],set={},allIds=[];
-        for(var i=0;i<ids.length;i++){var x=String(ids.slice(i,i+1).shift());if(is8Id(x)&&!set[x]){set[x]=1;allIds.push(x)}}
-        for(var f=0;f<friends.length;f++){var fx=String(friends.slice(f,f+1).shift());if(is8Id(fx)&&!set[fx]){set[fx]=1;allIds.push(fx)}}
-        if(!set[uid]){set[uid]=1;allIds.push(uid)}
-        if(allIds.length>500)allIds=allIds.slice(-500);
-        fetch(idxUrl,{method:'POST',body:JSON.stringify(allIds)}).catch(function(){});
+    apiSync(function(d){
+        d.users[uid]=me;
+    },function(d){
         if(!cb)return;
-        // 3. Скачиваем актуальный счёт каждого устройства параллельно
-        var reqs=[];
-        for(var j=0;j<allIds.length;j++){
-            (function(targetId){
-                if(targetId===uid){reqs.push(Promise.resolve(me));return}
-                reqs.push(fetch(baseApi+'berry_u_'+targetId).then(function(r){return r.ok?r.json():null}).catch(function(){return null}));
-            })(allIds.slice(j,j+1).shift());
-        }
-        Promise.all(reqs).then(function(res){
-            var map={},clean=[];map[uid]=me;
-            for(var k=0;k<res.length;k++){
-                var item=res.slice(k,k+1).shift();
-                if(item&&is8Id(String(item.id)))map[String(item.id)]=item;
-            }
-            for(var key in map){if(map.hasOwnProperty(key))clean.push(map[key])}
-            clean.sort(function(a,b){return(+b.p||0)-(+a.p||0)});
-            cb(clean,map);
-        });
-    }).catch(function(){var m={};m[uid]=me;if(cb)cb([me],m)});
+        var map=d.users,clean=[];
+        for(var k in map){if(map.hasOwnProperty(k)&&is8Id(String(k)))clean.push(map[k])}
+        clean.sort(function(a,b){return(+b.p||0)-(+a.p||0)});
+        cb(clean.slice(0,500),map);
+    });
 }
-function syncReqs(mod,cb){fetch(reqUrl).then(function(r){return r.ok?r.json():[]}).then(function(d){var a=Array.isArray(d)?d:[];if(mod)a=mod(a);fetch(reqUrl,{method:'POST',body:JSON.stringify(a.slice(-300))}).catch(function(){});if(cb)cb(a)}).catch(function(){if(cb)cb([])})}
+
+function syncReqs(mod,cb){
+    apiSync(function(d){
+        if(mod)d.reqs=mod(d.reqs).slice(-300);
+    },function(d){
+        if(cb)cb(d.reqs);
+    });
+}
 </script>
 <script>
 function sendReq(){snd();var v=$('fr-inp').value.trim();if(!is8Id(v)){$('fr-msg').innerText='Введи ровно 8 цифр ID!';return}if(v===uid){$('fr-msg').innerText='Нельзя себе!';return}if(friends.indexOf(v)!==-1){$('fr-msg').innerText='Уже в друзьях!';return}$('fr-msg').innerText='Отправка...';syncReqs(function(a){var ex=false;for(var i=0;i<a.length;i++){var it=a.slice(i,i+1).shift();if(it&&it.from===uid&&it.to===v)ex=true}if(!ex)a.push({from:uid,to:v,name:ava+' '+nick,st:'wait'});return a},function(){$('fr-inp').value='';$('fr-msg').innerText='Заявка отправлена ID: '+v})}
