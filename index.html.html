@@ -8,12 +8,13 @@
 *{touch-action:manipulation}
 body{margin:0;font-family:Arial,sans-serif;background:#3b0716;color:#fff;text-align:center;min-height:100vh;overflow-y:auto}
 body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal{background:#240046}
-#menu{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:7px;padding:12px;box-sizing:border-box}
+#menu{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:7px;padding:54px 12px 12px;box-sizing:border-box;position:relative}
 #game{display:none;flex-direction:column;align-items:center;justify-content:space-between;min-height:100vh;box-sizing:border-box}
+.top-prof-btn{position:fixed;top:10px;right:10px;z-index:20;padding:7px 12px;background:linear-gradient(180deg,#0096c7,#023e8a);color:#fff;border:2px solid #90e0ef;border-radius:14px;font-size:12px;font-weight:bold;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,0.5)}
 #m-ava{font-size:44px}
 .m-btn{width:255px;max-width:92%;padding:10px;font-size:14px;font-weight:bold;color:#fff;background:#a4133c;border:2px solid #ff758f;border-radius:12px;cursor:pointer}
 .mp3{width:255px;max-width:92%;padding:7px;background:#7209b7;border:2px solid #f72585;border-radius:12px;box-sizing:border-box;font-size:12px;font-weight:bold;display:block}
-.box{width:92%;max-width:400px;max-height:260px;overflow-y:auto;background:#2b0611;border:1px solid #ff758f;border-radius:10px;display:none;padding:10px;box-sizing:border-box}
+.box{width:92%;max-width:400px;max-height:290px;overflow-y:auto;background:#2b0611;border:1px solid #ff758f;border-radius:10px;display:none;padding:10px;box-sizing:border-box}
 .row{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-bottom:1px solid #590d22;font-size:13px}
 .row.me{background:#a4133c;color:#ffe066;font-weight:bold}
 .inp{width:88%;padding:7px;border-radius:8px;border:1px solid #ff758f;background:#3b0716;color:#fff;font-size:13px;text-align:center;margin-bottom:6px}
@@ -39,7 +40,7 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
 .pet{display:inline-block;width:28%;margin:2px;background:#2b0611;border:2px solid #888;border-radius:8px;padding:5px;font-size:11px;cursor:pointer}
 .pet.eq{box-shadow:0 0 10px #fff;border-color:#ffd60a;background:#3d2c00}
 .r-0{border-color:#adb5bd}.r-1{border-color:#38b000}.r-2{border-color:#00b4d8}.r-3{border-color:#9d4edd}.r-4{border-color:#ff0054}.r-5{border-color:#ffd60a;background:#3d2c00}
-.sec{font-size:12px;color:#ffe066;font-weight:bold;margin:6px 0 4px;border-bottom:1px solid #590d22;padding-bottom:2px}
+.sec{font-size:12px;color:#ffe066;font-weight:bold;margin:8px 0 4px;border-bottom:1px solid #590d22;padding-bottom:2px}
 .p-bg{width:100%;height:14px;background:#3b0716;border:1px solid #ff758f;border-radius:8px;overflow:hidden;margin:6px 0}
 .p-fl{height:100%;background:linear-gradient(90deg,#ff4d6d,#ffd60a);width:0%}
 </style>
@@ -47,6 +48,9 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
 <body>
 
 <div id="menu">
+    <!-- Кнопка Личного профиля и Друзей в правом верхнем углу -->
+    <button class="top-prof-btn" onclick="toggleBox('prof-box')">Профиль / Друзья (<span id="fr-cnt">0</span>)<span id="req-b" style="color:#ffe066"></span></button>
+
     <div id="m-ava">&#127827;</div>
     <h2 style="margin:0;color:#ffccd5;font-size:20px">ТАПАЙ ПО КЛУБНИКЕ</h2>
     <div id="m-rank" class="badge">Престиж: Новичок (x1)</div>
@@ -54,8 +58,6 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
     <button class="m-btn" onclick="goGame(false)">Продолжить игру</button>
     <button class="m-btn" onclick="goGame(true)" style="background:#6a040f">Новая игра</button>
     <button class="m-btn" onclick="toggleBox('quest-box')" style="background:linear-gradient(90deg,#9d4edd,#ff0054);border-color:#ffd60a">Недельное испытание (100к)</button>
-    <button class="m-btn" onclick="toggleBox('prof-box')" style="background:#0077b6">Личный профиль / Почта</button>
-    <button class="m-btn" onclick="toggleBox('fr-box')" style="background:#e85d04;border-color:#ffba08">Друзья (<span id="fr-cnt">0</span>)<span id="req-b" style="color:#ffe066"></span></button>
     <button class="m-btn" onclick="toggleBox('daily-box')" style="background:#2b9348">Ежедневный приз</button>
     <button class="m-btn" onclick="toggleBox('top-box')" style="background:#b58300">Топ 500 лучших</button>
     <label class="mp3">
@@ -72,6 +74,7 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
         <div style="font-size:11px;color:#ffb3c1">Собрано скинов: <b id="q-col">0</b> / 20</div>
     </div>
 
+    <!-- Объединённый Личный профиль + Друзья с ником и ID -->
     <div id="prof-box" class="box">
         <div id="p-id" style="font-size:14px;color:#4cc9f0;margin-bottom:4px;font-weight:bold">Твой ID: 00000000</div>
         <div id="p-rank" style="font-size:12px;color:#ffe066;margin-bottom:6px;font-weight:bold">Рекорд: 0</div>
@@ -79,6 +82,19 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
         <div id="ava-row"></div>
         <div id="bg-row"></div>
         <button class="btn" onclick="saveProf()" style="width:100%;background:#2b9348;margin:6px 0">Сохранить профиль</button>
+
+        <div class="sec">Друзья (поиск по 8-значному ID):</div>
+        <div id="fr-my-id" style="font-size:11px;color:#90e0ef;margin-bottom:4px">Твой ID для друзей: 00000000</div>
+        <div style="display:flex;gap:4px;margin-bottom:4px">
+            <input type="text" id="fr-inp" class="inp" maxlength="8" placeholder="8 цифр ID друга..." style="margin:0;flex:1">
+            <button class="btn" onclick="sendReq()" style="flex:0.6;background:#e85d04">Добавить</button>
+        </div>
+        <div id="fr-msg" style="font-size:11px;color:#ffe066;margin-bottom:4px"></div>
+        <div style="font-size:11px;color:#ffb3c1;font-weight:bold;text-align:left">Входящие заявки:</div>
+        <div id="req-list"></div>
+        <div style="font-size:11px;color:#ffb3c1;font-weight:bold;text-align:left;margin-top:4px">Твои друзья (Ник и ID):</div>
+        <div id="fr-list"></div>
+
         <div class="sec">Вход и привязка по Почте (Email):</div>
         <input type="email" id="mail-inp" class="inp" placeholder="Введи свою почту (email)...">
         <input type="password" id="pass-inp" class="inp" placeholder="Придумай пароль...">
@@ -87,6 +103,7 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
             <button class="btn" onclick="mailLogin()" style="background:#e85d04">Войти по почте</button>
         </div>
         <div id="mail-msg" style="font-size:11px;color:#4cc9f0;margin-bottom:6px"></div>
+
         <div style="border-top:1px solid #ff758f;padding-top:6px">
             <button class="btn" onclick="showQr()" style="background:#7209b7">Показать QR</button>
             <button class="btn" onclick="copyCode()" style="background:#3a0ca3">Скопировать код</button>
@@ -96,19 +113,6 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
             <input type="text" id="code-inp" class="inp" placeholder="Или вставь код сюда..." style="margin-top:6px">
             <button class="btn" onclick="loadCode()" style="width:100%;background:#6a040f">Загрузить по коду</button>
         </div>
-    </div>
-
-    <div id="fr-box" class="box">
-        <div id="fr-my-id" style="font-size:13px;color:#4cc9f0;margin-bottom:6px;font-weight:bold">Твой ID: 00000000</div>
-        <div style="display:flex;gap:4px;margin-bottom:6px">
-            <input type="text" id="fr-inp" class="inp" maxlength="8" placeholder="8 цифр ID друга..." style="margin:0;flex:1">
-            <button class="btn" onclick="sendReq()" style="flex:0.6;background:#2b9348">Кинуть заявку</button>
-        </div>
-        <div id="fr-msg" style="font-size:11px;color:#ffe066;margin-bottom:4px"></div>
-        <div class="sec">Входящие заявки в друзья:</div>
-        <div id="req-list"></div>
-        <div class="sec">Твои друзья:</div>
-        <div id="fr-list"></div>
     </div>
 
     <div id="daily-box" class="box"><div id="days-grid"></div><button class="btn" id="claim-btn" onclick="claimDaily()" style="width:100%;background:#2b9348;margin-top:6px">Забрать!</button></div>
@@ -234,7 +238,12 @@ function toggleWardrobe(){snd();$('bag-box').style.display='none';var w=$('wardr
 function renderWardrobe(){var g=$('sk-grid');g.innerHTML='';if(!mySkins.length){g.innerHTML='<div style="font-size:12px;color:#ffb3c1">Пока нет скинов! Выполни Недельное испытание.</div>';return}for(var i=0;i<mySkins.length;i++)(function(id){var c=document.createElement('div');c.className='pet'+(eqEvSkin===id?' eq':'');c.innerHTML='<div style="font-size:20px">'+evIcons.slice(id,id+1).shift()+'</div><b>'+evNames.slice(id,id+1).shift()+'</b><br><b style="color:#ffe066">x25</b>';c.onclick=function(){snd();eqEvSkin=(eqEvSkin===id)?-1:id;save();draw();renderWardrobe()};g.appendChild(c)})(mySkins.slice(i,i+1).shift())}
 </script>
 <script>
-function renderProf(){var pr=getPr();$('p-id').innerText='Твой ID: '+uid;$('p-rank').innerText='Ранг: '+pr.n+' (x'+pr.m+') | Рекорд: '+pr.cur;$('nick-inp').value=nick;$('mail-inp').value=uMail;$('qr-area').style.display='none';var ar=$('ava-row');ar.innerHTML='';for(var i=0;i<avas.length;i++)(function(a){var b=document.createElement('button');b.className='opt'+(ava===a?' sel':'');b.innerHTML=a;b.onclick=function(){snd();ava=a;renderProf();draw()};ar.appendChild(b)})(avas.slice(i,i+1).shift());var br=$('bg-row');br.innerHTML='';for(var j=0;j<bgIds.length;j++)(function(id,nm){var b=document.createElement('button');b.className='opt'+(bg===id?' sel':'');b.style.fontSize='12px';b.innerText=nm;b.onclick=function(){snd();bg=id;renderProf();draw()};br.appendChild(b)})(bgIds.slice(j,j+1).shift(),bgNms.slice(j,j+1).shift())}
+function renderProf(){
+    var pr=getPr();$('p-id').innerText='Твой ID: '+uid;$('p-rank').innerText='Ранг: '+pr.n+' (x'+pr.m+') | Рекорд: '+pr.cur;$('nick-inp').value=nick;$('mail-inp').value=uMail;$('qr-area').style.display='none';
+    var ar=$('ava-row');ar.innerHTML='';for(var i=0;i<avas.length;i++)(function(a){var b=document.createElement('button');b.className='opt'+(ava===a?' sel':'');b.innerHTML=a;b.onclick=function(){snd();ava=a;renderProf();draw()};ar.appendChild(b)})(avas.slice(i,i+1).shift());
+    var br=$('bg-row');br.innerHTML='';for(var j=0;j<bgIds.length;j++)(function(id,nm){var b=document.createElement('button');b.className='opt'+(bg===id?' sel':'');b.style.fontSize='12px';b.innerText=nm;b.onclick=function(){snd();bg=id;renderProf();draw()};br.appendChild(b)})(bgIds.slice(j,j+1).shift(),bgNms.slice(j,j+1).shift());
+    renderFriends();
+}
 function saveProf(){snd();var v=$('nick-inp').value.trim();if(v)nick=v;save();draw();$('prof-box').style.display='none';syncWorld()}
 function showQr(){snd();var c=makeCode();$('code-inp').value=c;var h=location.href,q=h.indexOf('?'),u=q!==-1?h.substring(0,q):h,p=u.indexOf('http')===0?u+'?code='+encodeURIComponent(c):c;$('qr-img').src='https://qrserver.com'}
 function copyCode(){snd();var i=$('code-inp');i.value=makeCode();i.select();try{document.execCommand('copy')}catch(e){}}
@@ -259,8 +268,48 @@ function mailLogin(){
     }).catch(function(){$('mail-msg').innerText='Ошибка подключения к серверу.'});
 }
 
-var worldUrl=baseApi+'berry_world_top500',reqUrl=baseApi+'berry_friend_reqs';
-function syncWorld(cb){fetch(worldUrl).then(function(r){return r.ok?r.json():[]}).then(function(d){var l=Array.isArray(d)?d:[],m={};for(var k=0;k<l.length;k++){var p=l.slice(k,k+1).shift();if(p&&is8Id(String(p.id)))m[String(p.id)]=p}m[uid]={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score)};var c=[];for(var key in m){if(m.hasOwnProperty(key))c.push(m[key])}c.sort(function(a,b){return b.p-a.p});if(c.length>500)c=c.slice(0,500);fetch(worldUrl,{method:'POST',body:JSON.stringify(c)}).catch(function(){});if(cb)cb(c,m)}).catch(function(){var me={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score)},m={};m[uid]=me;if(cb)cb([me],m)})}
+// Отслеживание устройства + индивидуальные облачные ячейки без перезаписи друзей
+function getDevName(){
+    var ua=navigator.userAgent||'';
+    if(ua.indexOf('iPhone')!==-1||ua.indexOf('iPad')!==-1)return 'iPhone';
+    if(ua.indexOf('Android')!==-1)return 'Android';
+    return 'ПК';
+}
+var idxUrl=baseApi+'berry_dev_index',reqUrl=baseApi+'berry_friend_reqs';
+
+function syncWorld(cb){
+    var me={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score),dev:getDevName(),ts:Date.now()};
+    // 1. Записываем данные этого устройства в его персональную ячейку
+    fetch(baseApi+'berry_u_'+uid,{method:'POST',body:JSON.stringify(me)}).catch(function(){});
+    // 2. Обновляем общий реестр всех ID устройств
+    fetch(idxUrl).then(function(r){return r.ok?r.json():[]}).then(function(d){
+        var ids=Array.isArray(d)?d:[],set={},allIds=[];
+        for(var i=0;i<ids.length;i++){var x=String(ids.slice(i,i+1).shift());if(is8Id(x)&&!set[x]){set[x]=1;allIds.push(x)}}
+        for(var f=0;f<friends.length;f++){var fx=String(friends.slice(f,f+1).shift());if(is8Id(fx)&&!set[fx]){set[fx]=1;allIds.push(fx)}}
+        if(!set[uid]){set[uid]=1;allIds.push(uid)}
+        if(allIds.length>500)allIds=allIds.slice(-500);
+        fetch(idxUrl,{method:'POST',body:JSON.stringify(allIds)}).catch(function(){});
+        if(!cb)return;
+        // 3. Скачиваем актуальный счёт каждого устройства параллельно
+        var reqs=[];
+        for(var j=0;j<allIds.length;j++){
+            (function(targetId){
+                if(targetId===uid){reqs.push(Promise.resolve(me));return}
+                reqs.push(fetch(baseApi+'berry_u_'+targetId).then(function(r){return r.ok?r.json():null}).catch(function(){return null}));
+            })(allIds.slice(j,j+1).shift());
+        }
+        Promise.all(reqs).then(function(res){
+            var map={},clean=[];map[uid]=me;
+            for(var k=0;k<res.length;k++){
+                var item=res.slice(k,k+1).shift();
+                if(item&&is8Id(String(item.id)))map[String(item.id)]=item;
+            }
+            for(var key in map){if(map.hasOwnProperty(key))clean.push(map[key])}
+            clean.sort(function(a,b){return(+b.p||0)-(+a.p||0)});
+            cb(clean,map);
+        });
+    }).catch(function(){var m={};m[uid]=me;if(cb)cb([me],m)});
+}
 function syncReqs(mod,cb){fetch(reqUrl).then(function(r){return r.ok?r.json():[]}).then(function(d){var a=Array.isArray(d)?d:[];if(mod)a=mod(a);fetch(reqUrl,{method:'POST',body:JSON.stringify(a.slice(-300))}).catch(function(){});if(cb)cb(a)}).catch(function(){if(cb)cb([])})}
 </script>
 <script>
@@ -269,18 +318,35 @@ function answerReq(fid,ok){snd();if(ok&&friends.indexOf(fid)===-1){friends.push(
 function delFriend(fid){snd();var n=[];for(var i=0;i<friends.length;i++){var x=friends.slice(i,i+1).shift();if(x!==fid)n.push(x)}friends=n;save();draw();renderFriends()}
 
 function renderFriends(){
-    $('fr-my-id').innerText='Твой ID: '+uid;var rB=$('req-list'),fB=$('fr-list');rB.innerHTML='Проверка...';fB.innerHTML='Загрузка...';
+    $('fr-my-id').innerText='Твой ID: '+uid+' ['+getDevName()+']';var rB=$('req-list'),fB=$('fr-list');rB.innerHTML='Проверка...';fB.innerHTML='Загрузка...';
     syncReqs(function(a){var cl=[];for(var i=0;i<a.length;i++){var it=a.slice(i,i+1).shift();if(!it)continue;if(it.to===uid&&it.st==='ok'){if(friends.indexOf(it.from)===-1){friends.push(it.from);save();draw()}}else cl.push(it)}return cl},function(a){
         var inc=[];for(var j=0;j<a.length;j++){var it=a.slice(j,j+1).shift();if(it&&it.to===uid&&it.st==='wait')inc.push(it)}
         $('req-b').innerText=inc.length?(' [+'+inc.length+']'):'';rB.innerHTML=inc.length?'':'<div style="font-size:11px;color:#ffb3c1">Заявок нет</div>';
         for(var k=0;k<inc.length;k++)(function(req){var r=document.createElement('div');r.className='row';var sp=document.createElement('span');sp.style.fontSize='12px';sp.innerHTML=req.name+' (#'+req.from+')';var w=document.createElement('span'),b1=document.createElement('button');b1.className='btn';b1.style.padding='3px 6px';b1.style.background='#2b9348';b1.innerText='Принять';b1.onclick=function(){answerReq(req.from,true)};var b2=document.createElement('button');b2.className='btn';b2.style.padding='3px 6px';b2.style.marginLeft='4px';b2.style.background='#6a040f';b2.innerText='X';b2.onclick=function(){answerReq(req.from,false)};w.appendChild(b1);w.appendChild(b2);r.appendChild(sp);r.appendChild(w);rB.appendChild(r)})(inc.slice(k,k+1).shift());
-        syncWorld(function(c,m){fB.innerHTML=friends.length?'':'<div style="font-size:11px;color:#ffb3c1">Друзей пока нет</div>';for(var z=0;z<friends.length;z++)(function(fid){var f=m[fid],r=document.createElement('div');r.className='row';var sp=document.createElement('span');sp.style.fontSize='12px';sp.innerHTML=f?(f.n+' (#'+fid+') — '+f.p):('ID:'+fid+' — 0');var db=document.createElement('button');db.className='btn';db.style.flex='0';db.style.padding='3px 7px';db.style.background='#6a040f';db.innerText='X';db.onclick=function(){delFriend(fid)};r.appendChild(sp);r.appendChild(db);fB.appendChild(r)})(friends.slice(z,z+1).shift())});
+        syncWorld(function(c,m){fB.innerHTML=friends.length?'':'<div style="font-size:11px;color:#ffb3c1">Друзей пока нет</div>';for(var z=0;z<friends.length;z++)(function(fid){var f=m[fid],r=document.createElement('div');r.className='row';var sp=document.createElement('span');sp.style.fontSize='12px';var dv=(f&&f.dev)?(' ['+f.dev+']'):'';sp.innerHTML=f?(f.n+' (#'+fid+')'+dv+' — '+f.p):('ID:'+fid+' (ещё не обновил игру)');var db=document.createElement('button');db.className='btn';db.style.flex='0';db.style.padding='3px 7px';db.style.background='#6a040f';db.innerText='X';db.onclick=function(){delFriend(fid)};r.appendChild(sp);r.appendChild(db);fB.appendChild(r)})(friends.slice(z,z+1).shift())});
     });
 }
 
 function renderDaily(){var g=$('days-grid');g.innerHTML='';var td=new Date().toISOString().slice(0,10),dn=lastDate===td;for(var i=0;i<7;i++){var c=document.createElement('div');c.className='card'+((i+1<day||(i+1===day&&dn))?' done':(i+1===day?' act':''));c.innerHTML='<b>День '+(i+1)+'</b><br>'+prizes.slice(i,i+1).shift();g.appendChild(c)}var cb=$('claim-btn');cb.disabled=dn;cb.innerText=dn?'Забрано! Приходи завтра':'Забрать День '+day}
 function claimDaily(){var td=new Date().toISOString().slice(0,10);if(lastDate===td)return;snd();if(day===1){score+=100;qProg+=100}else if(day===2){bMult=2;bSec=60}else if(day===3){score+=500;qProg+=500}else if(day===4)pwr+=2;else if(day===5){bMult=3;bSec=60}else if(day===6)auto+=1;else if(day===7){score+=5000;qProg+=5000}lastDate=td;day=day>=7?1:day+1;save();draw();renderDaily()}
-function renderTop(){var b=$('top-box');b.innerHTML='Загрузка...';syncWorld(function(ls){b.innerHTML='<div style="font-size:11px;color:#4cc9f0;margin-bottom:5px;font-weight:bold">Топ 500 лучших (всего игроков: '+ls.length+')</div>';for(var j=0;j<ls.length;j++){var it=ls.slice(j,j+1).shift(),r=document.createElement('div');r.className=(it.id===uid)?'row me':'row';r.innerHTML='<span style="text-align:left">#'+(j+1)+' '+it.n+' <small style="color:#90e0ef">#'+it.id+'</small></span><span>'+it.p+'</span>';b.appendChild(r);if(it.id===uid)$('m-info').innerText='Место в Топ 500 лучших: #'+(j+1)+' из '+ls.length}})}
+function renderTop(){
+    var b=$('top-box');b.innerHTML='Сканируем все устройства в мире...';
+    syncWorld(function(ls){
+        b.innerHTML='<div style="font-size:11px;color:#4cc9f0;margin-bottom:5px;font-weight:bold">Топ 500 лучших (устройств в базе: '+ls.length+')</div>';
+        var now=Date.now();
+        for(var j=0;j<ls.length;j++){
+            var it=ls.slice(j,j+1).shift(),r=document.createElement('div');
+            r.className=(it.id===uid)?'row me':'row';
+            var isOnline=(it.ts&&(now-it.ts)<60000);
+            var st=isOnline?'<span style="color:#80ed99">●</span>':'<span style="color:#adb5bd">○</span>';
+            var dv=it.dev?('['+it.dev+']'):'';
+            var isFr=(friends.indexOf(String(it.id))!==-1)?' <b style="color:#ffba08">[Друг]</b>':'';
+            r.innerHTML='<span style="text-align:left;font-size:12px">'+st+' #'+(j+1)+' '+it.n+isFr+' <small style="color:#90e0ef">#'+it.id+' '+dv+'</small></span><b>'+it.p+'</b>';
+            b.appendChild(r);
+            if(it.id===uid)$('m-info').innerText='Место в Топ 500 лучших: #'+(j+1)+' из '+ls.length;
+        }
+    });
+}
 
 function loadMp3(inp){var f=inp.files.item(0);if(!f)return;if(bgm)bgm.pause();bgm=new Audio(URL.createObjectURL(f));bgm.loop=true;bgm.volume=0.6;$('mp3-lbl').innerText='Играет: '+f.name.slice(0,16);bgm.play()}
 function toggleBag(){snd();$('wardrobe-box').style.display='none';var b=$('bag-box'),o=b.style.display==='block';b.style.display=o?'none':'block';if(!o)renderBag()}
@@ -302,7 +368,7 @@ function resetAll(){score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNr
 
 setInterval(function(){if(auto>0){score+=auto;qProg+=auto}if(nrg<maxNrg)nrg=Math.min(maxNrg,nrg+Math.max(2,Math.floor(maxNrg/40)));if(bSec>0){bSec--;if(bSec===0)bMult=1}draw();save()},1000);
 setInterval(function(){syncWorld()},15000);
-draw();syncWorld();$('drop-info').innerText='V10 OK — Жми на клубнику!';
+draw();syncWorld();$('drop-info').innerText='V12 OK — Жми на клубнику!';
 </script>
 </body>
 </html>
