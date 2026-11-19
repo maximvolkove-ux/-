@@ -48,7 +48,6 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
 <body>
 
 <div id="menu">
-    <!-- Кнопка Личного профиля и Друзей в правом верхнем углу -->
     <button class="top-prof-btn" onclick="toggleBox('prof-box')">Профиль / Друзья (<span id="fr-cnt">0</span>)<span id="req-b" style="color:#ffe066"></span></button>
 
     <div id="m-ava">&#127827;</div>
@@ -74,7 +73,6 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
         <div style="font-size:11px;color:#ffb3c1">Собрано скинов: <b id="q-col">0</b> / 20</div>
     </div>
 
-    <!-- Объединённый Личный профиль + Друзья с ником и ID -->
     <div id="prof-box" class="box">
         <div id="p-id" style="font-size:14px;color:#4cc9f0;margin-bottom:4px;font-weight:bold">Твой ID: 00000000</div>
         <div id="p-rank" style="font-size:12px;color:#ffe066;margin-bottom:6px;font-weight:bold">Рекорд: 0</div>
@@ -149,59 +147,7 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
         <button class="btn" onclick="resetAll()" style="flex:1 1 25%;background:#2b0611">Сброс</button>
     </div>
 </div>
-```html
 <script>
-var score=0,maxScore=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0;
-var skin='none',hasG=false,hasD=false,hasE=false,hasR=false,day=1,lastDate='',bMult=1,bSec=0;
-var nick='Игрок',ava='&#127827;',bg='',bgm=null,bag='',eqPet=-1,friends=[],qProg=0,mySkins=[],eqEvSkin=-1,uMail='';
-
-var evNames='В противогазе ГП-5|Скелет|Тыква|Радужная клубника|Кот|Чёрная клубника|Робот-клубника|С клюшкой для хоккея|В боксёрских перчатках|Лысый кот ♥|Кибер-панк|Призрак|Дракон|Ниндзя|Космонавт|Пират|Король|Вампир|Инопланетянин|Огненная клубника'.split('|');
-var evIcons='&#127827;&#128567;|&#128128;|&#127875;|&#127752;&#127827;|&#128049;|&#128420;&#127827;|&#129302;|&#127954;&#127827;|&#129354;&#127827;|&#128008;&#9829;|&#128374;&#127827;|&#128123;|&#128009;|&#129399;|&#128640;&#127827;|&#127988;&#8205;&#9760;&#65039;|&#128081;&#127827;|&#129499;|&#128125;|&#128293;&#127827;'.split('|');
-var prizes='+100|x2 тап (60с)|+500|+2 сила|x3 тап (60с)|+1 куст|+5000'.split('|');
-var avas='&#127827;|&#128526;|&#128081;|&#128049;|&#129302;|&#128293;'.split('|');
-var bgIds='|bg-night|bg-forest|bg-royal'.split('|'),bgNms='Ягода|Ночь|Лес|Неон'.split('|');
-var pRar='Обычный|Редкий|Сверхредкий|Эпик|Мифик|Легендарный'.split('|');
-var pNam='Цыплёнок|Собака|Панда|Тигр|Карась|Кот'.split('|');
-var pIco='&#128037;|&#128054;|&#128060;|&#128047;|&#128031;|&#128049;'.split('|');
-var pMul='1.2|1.5|3|5|10|20'.split('|');
-
-function gen8Id(){return String(Math.floor(10000000+Math.random()*90000000))}
-function is8Id(s){return typeof s==='string'&&s.length===8&&!isNaN(+s)&&+s>=10000000}
-var uid=gen8Id();
-function $(id){return document.getElementById(id)||{style:{}}}
-
-function getPr(){
-    var s=Math.max(Math.floor(score),Math.floor(maxScore));
-    if(s>=1000000)return{n:'Бог Клубники',m:10,nx:'МАКС',cur:s};
-    if(s>=250000)return{n:'Легенда',m:5,nx:1000000,cur:s};
-    if(s>=50000)return{n:'Про',m:3,nx:250000,cur:s};
-    if(s>=10000)return{n:'Полу-про',m:2,nx:50000,cur:s};
-    if(s>=1000)return{n:'Любитель',m:1.5,nx:10000,cur:s};
-    return{n:'Новичок',m:1,nx:1000,cur:s};
-}
-
-var wav='';
-try{
-    var r=11025,l=900,b=new ArrayBuffer(44+l),v=new DataView(b);
-    function w(o,s){for(var i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))}
-    w(0,'RIFF');v.setUint32(4,36+l,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);
-    v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,r,true);v.setUint32(28,r,true);
-    v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,'data');v.setUint32(40,l,true);
-    for(var i=0;i<l;i++){var t=i/r,f=(t<0.015?(Math.random()*2-1)*Math.exp(-t*250)*110:0)+(t<0.05?Math.sin(1100*t)*Math.exp(-t*100)*90:0);v.setUint8(44+i,Math.max(0,Math.min(255,128+f)))}
-    var bin='',u=new Uint8Array(b);for(var j=0;j<u.length;j++)bin+=String.fromCharCode(u[j]);
-    wav='data:audio/wav;base64,'+btoa(bin);
-}catch(e){}
-function snd(){try{if(wav){var a=new Audio(wav);a.playbackRate=0.9+Math.random()*0.2;a.play()}}catch(e){}}
-
-function getObj(){if(score>maxScore)maxScore=score;return{uid:uid,score:Math.floor(score),maxScore:Math.floor(maxScore),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet,friends:friends,qProg:Math.floor(qProg),mySkins:mySkins,eqEvSkin:eqEvSkin,uMail:uMail}}
-function setObj(d){if(!d)return;if(is8Id(String(d.uid)))uid=String(d.uid);score=+d.score||0;maxScore=Math.max(score,+d.maxScore||0);pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet;if(Array.isArray(d.friends))friends=d.friends;qProg=+d.qProg||0;if(Array.isArray(d.mySkins))mySkins=d.mySkins;if(typeof d.eqEvSkin==='number')eqEvSkin=d.eqEvSkin;if(d.uMail)uMail=d.uMail}
-function makeCode(){return btoa(unescape(encodeURIComponent(JSON.stringify(getObj()))))}
-function parseCode(s){try{var c=s.trim(),p=c.indexOf('code=');if(p!==-1)c=decodeURIComponent(c.substring(p+5));var a=c.indexOf('&');if(a!==-1)c=c.substring(0,a);setObj(JSON.parse(decodeURIComponent(escape(atob(c)))));save();return true}catch(e){return false}}
-
-try{var sv=JSON.parse(localStorage.getItem('berry_v3'));if(sv)setObj(sv);if(location.search.indexOf('code=')!==-1&&parseCode(location.search))history.replaceState({},'',location.pathname);save()}catch(e){}
-function save(){try{if(score>maxScore)maxScore=score;localStorage.setItem('berry_v3',JSON.stringify(getObj()))}catch(e){}}
-function petMult(){return(eqPet>=0&&eqPet<=5)?+pMul.slice(eqPet,eqPet+1).shift():1}
-function skinMult(){if(eqEvSkin>=0&&eqEvSkin<20)return 25;return skin==='gold'?2:skin==='diamond'?5:skin==='emerald'?15:skin==='ruby'?50:1}<script>
 function draw(){
     try{
         if(score>maxScore)maxScore=score;
@@ -261,7 +207,7 @@ function fastFetch(url,opts){
 
 function apiSync(modFn,cb){
     fastFetch(fastSrv+'/json?poll=1').then(function(r){return r.text()}).then(function(txt){
-        var lines=txt.trim().split('\n');
+        var lines=txt.trim().split(String.fromCharCode(10));
         for(var i=0;i<lines.length;i++){
             try{
                 var msg=JSON.parse(lines[i]);
@@ -408,7 +354,7 @@ function buySkin(s,cost){eqEvSkin=-1;if(s==='gold'){if(hasG)skin=skin==='gold'?'
 function resetAll(){score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;eqEvSkin=-1;save();draw()}
 
 setInterval(function(){if(auto>0){score+=auto;qProg+=auto}if(nrg<maxNrg)nrg=Math.min(maxNrg,nrg+Math.max(2,Math.floor(maxNrg/40)));if(bSec>0){bSec--;if(bSec===0)bMult=1}draw();save()},1000);
-draw();syncWorld();$('drop-info').innerText='V15 FAST — Жми на клубнику!';
+draw();syncWorld();$('drop-info').innerText='V16 ALL OK — Жми на клубнику!';
 </script>
 </body>
 </html>
