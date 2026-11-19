@@ -210,7 +210,7 @@ function copyCode(){snd();var i=$('code-inp');i.value=makeCode();i.select();try{
 function loadCode(){snd();if(parseCode($('code-inp').value)){draw();renderProf();$('prof-box').style.display='none';syncWorld()}}
 </script>
 <script>
-var fastSrv='https://ntfy.sh';
+var fbBase='https://firebaseio.com';
 var cloudCache={users:{},mails:{},reqs:[]};
 try{
     var cc=JSON.parse(localStorage.getItem('berry_cloud_cache'));
@@ -221,92 +221,72 @@ function saveCache(){
     try{localStorage.setItem('berry_cloud_cache',JSON.stringify(cloudCache))}catch(e){}
 }
 
-function fastFetch(url,opts){
-    return new Promise(function(res,rej){
-        var d=false;
-        var t=setTimeout(function(){if(!d){d=true;rej()}},2000);
-        fetch(url,opts).then(function(r){
-            clearTimeout(t);
-            if(!d){d=true;res(r)}
-        }).catch(function(){
-            clearTimeout(t);
-            if(!d){d=true;rej()}
-        });
-    });
+function fbReq(path,method,bodyObj){
+    var opts={method:method||'GET'};
+    if(bodyObj!==undefined){
+        opts.headers={'Content-Type':'application/json'};
+        opts.body=JSON.stringify(bodyObj);
+    }
+    return fetch(fbBase+path+'.json',opts).then(function(r){return r.ok?r.json():null}).catch(function(){return null});
 }
 
-function apiSync(modFn,cb){
-    fastFetch(fastSrv+'/json?poll=1').then(function(r){return r.text()}).then(function(txt){
-        var lines=txt.trim().split(String.fromCharCode(10));
-        for(var i=0;i<lines.length;i++){
-            try{
-                var msg=JSON.parse(lines[i]);
-                if(msg&&msg.message){
-                    var p=JSON.parse(msg.message);
-                    if(p.u&&p.u.id)cloudCache.users[p.u.id]=p.u;
-                    if(p.m&&p.m.k)cloudCache.mails[p.m.k]=p.m.v;
-                    if(p.r)cloudCache.reqs=p.r;
-                }
-            }catch(e){}
-        }
-        var pkt={};
-        if(modFn)modFn(cloudCache,pkt);
-        saveCache();
-        if(pkt.u||pkt.m||pkt.r){
-            fastFetch(fastSrv,{method:'POST',body:JSON.stringify(pkt)}).catch(function(){});
-        }
-        if(cb)cb(cloudCache);
-    }).catch(function(){
-        var pkt={};
-        if(modFn)modFn(cloudCache,pkt);
-        saveCache();
-        if(pkt.u||pkt.m||pkt.r){
-            fastFetch(fastSrv,{method:'POST',body:JSON.stringify(pkt)}).catch(function(){});
-        }
-        if(cb)cb(cloudCache);
-    });
+function safeMail(m){
+    var s=m.toLowerCase().trim(),out='';
+    for(var i=0;i<s.length;i++){
+        var c=s.charAt(i);
+        if((c>='a'&&c<='z')||(c>='0'&&c<='9'))out+=c;
+        else out+='_'+s.charCodeAt(i)+'_';
+    }
+    return out;
 }
-
-function mailKey(m){return m.toLowerCase().trim()}
 
 function mailBind(){
     snd();
     var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();
     if(m.indexOf('@')===-1||p.length<3){
-        $('mail-msg').innerText='Введи Email и пароль!';
+        $('mail-msg').innerText='Введи Email и пароль (от 3 символов)!';
         return;
     }
-    uMail=m;save();
-    $('mail-msg').innerText='Сохраняем...';
-    apiSync(function(d,pkt){
-        var val={pass:p,data:getObj()};
-        d.mails[mailKey(m)]=val;
-        pkt.m={k:mailKey(m),v:val};
-    },function(){
-        $('mail-msg').innerText='Почта '+m+' привязана!';
+    uMail=m;
+    try{localStorage.setItem('berry_auto_auth',JSON.stringify({m:m,p:p}))}catch(e){}
+    save();
+    $('mail-msg').innerText='Сохраняем на общий сервер...';
+    var payload={pass:p,data:getObj()};
+    cloudCache.mails[safeMail(m)]=payload;
+    saveCache();
+    fbReq('/mails/'+safeMail(m),'PUT',payload).then(function(res){
+        $('mail-msg').innerText=res?'Почта привязана! В следующий раз вход будет автоматическим.':'Сохранено локально (проверь интернет).';
     });
 }
 
-function mailLogin(){
-    snd();
+function mailLogin(silent){
+    if(!silent)snd();
     var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();
     if(m.indexOf('@')===-1||!p){
-        $('mail-msg').innerText='Введи Email и пароль!';
+        if(!silent)$('mail-msg').innerText='Введи Email и пароль!';
         return;
     }
-    $('mail-msg').innerText='Входим...';
-    apiSync(null,function(d){
-        var res=d.mails[mailKey(m)];
-        if(!res||!res.data){$('mail-msg').innerText='Не найдено!';return}
-        if(res.pass!==p){$('mail-msg').innerText='Неверный пароль!';return}
-        setObj(res.data);uMail=m;save();draw();renderProf();syncWorld();
-        $('mail-msg').innerText='Успешный вход!';
+    if(!silent)$('mail-msg').innerText='Входим на общий сервер...';
+    fbReq('/mails/'+safeMail(m),'GET').then(function(res){
+        if(!res||!res.data){
+            if(!silent)$('mail-msg').innerText='Аккаунт с такой почтой не найден!';
+            return;
+        }
+        if(res.pass!==p){
+            if(!silent)$('mail-msg').innerText='Неверный пароль!';
+            return;
+        }
+        setObj(res.data);uMail=m;
+        try{localStorage.setItem('berry_auto_auth',JSON.stringify({m:m,p:p}))}catch(e){}
+        save();draw();
+        if(!silent){renderProf();$('mail-msg').innerText='Успешный вход! Пароль запомнен.'}
+        syncWorld();
     });
 }
 
 function getDevName(){
     var ua=navigator.userAgent||'';
-    if(ua.indexOf('iPhone')!==-1||ua.indexOf('iPad')!==-1)return 'iPhone';
+    if(ua.indexOf('iPhone')!==-1||ua.indexOf('iPad')!==-1)return 'iOS';
     if(ua.indexOf('Android')!==-1)return 'Android';
     return 'ПК';
 }
@@ -314,6 +294,7 @@ function getDevName(){
 function syncWorld(cb){
     var me={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score),dev:getDevName(),ts:Date.now()};
     cloudCache.users[uid]=me;
+    saveCache();
     if(cb){
         var fl=[];
         for(var k in cloudCache.users){
@@ -322,27 +303,48 @@ function syncWorld(cb){
         fl.sort(function(a,b){return(+b.p||0)-(+a.p||0)});
         cb(fl.slice(0,500),cloudCache.users);
     }
-    apiSync(function(d,pkt){
-        d.users[uid]=me;
-        pkt.u=me;
-    },function(d){
+    fbReq('/users/'+uid,'PUT',me).then(function(){
         if(!cb)return;
-        var map=d.users,cl=[];
-        for(var k in map){
-            if(map.hasOwnProperty(k)&&is8Id(String(k)))cl.push(map[k]);
-        }
-        cl.sort(function(a,b){return(+b.p||0)-(+a.p||0)});
-        cb(cl.slice(0,500),map);
+        fbReq('/users','GET').then(function(all){
+            if(!all||typeof all!=='object')return;
+            var clean=[];
+            for(var k in all){
+                if(all.hasOwnProperty(k)&&is8Id(String(k))&&all[k]){
+                    cloudCache.users[k]=all[k];
+                    clean.push(all[k]);
+                }
+            }
+            saveCache();
+            clean.sort(function(a,b){return(+b.p||0)-(+a.p||0)});
+            cb(clean.slice(0,500),cloudCache.users);
+        });
     });
 }
 
 function syncReqs(mod,cb){
-    apiSync(function(d,pkt){
-        if(mod){d.reqs=mod(d.reqs).slice(-200);pkt.r=d.reqs}
-    },function(d){
-        if(cb)cb(d.reqs);
+    fbReq('/reqs','GET').then(function(d){
+        var arr=Array.isArray(d)?d:cloudCache.reqs;
+        if(mod){
+            arr=mod(arr).slice(-200);
+            cloudCache.reqs=arr;
+            saveCache();
+            fbReq('/reqs','PUT',arr);
+        }else{
+            cloudCache.reqs=arr;
+            saveCache();
+        }
+        if(cb)cb(arr);
     });
 }
+
+try{
+    var aa=JSON.parse(localStorage.getItem('berry_auto_auth'));
+    if(aa&&aa.m&&aa.p){
+        $('mail-inp').value=aa.m;
+        $('pass-inp').value=aa.p;
+        mailLogin(true);
+    }
+}catch(e){}
 </script>
 <script>
 function sendReq(){
@@ -508,7 +510,7 @@ function buySkin(s,cost){eqEvSkin=-1;if(s==='gold'){if(hasG)skin=skin==='gold'?'
 function resetAll(){score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;eqEvSkin=-1;save();draw()}
 
 setInterval(function(){if(auto>0){score+=auto;qProg+=auto}if(nrg<maxNrg)nrg=Math.min(maxNrg,nrg+Math.max(2,Math.floor(maxNrg/40)));if(bSec>0){bSec--;if(bSec===0)bMult=1}draw();save()},1000);
-draw();syncWorld();$('drop-info').innerText='V21 OK — Жми на клубнику!';
+draw();syncWorld();$('drop-info').innerText='V22 ALL OK — Жми на клубнику!';
 </script>
 </body>
 </html>
