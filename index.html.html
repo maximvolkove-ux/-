@@ -210,38 +210,296 @@ function copyCode(){snd();var i=$('code-inp');i.value=makeCode();i.select();try{
 function loadCode(){snd();if(parseCode($('code-inp').value)){draw();renderProf();$('prof-box').style.display='none';syncWorld()}}
 </script>
 <script>
-var fastSrv='https://ntfy.sh{users:{},mails:{},reqs:[]};
-try{var cc=JSON.parse(localStorage.getItem('berry_cloud_cache'));if(cc&&cc.users)cloudCache=cc}catch(e){}
-function saveCache(){try{localStorage.setItem('berry_cloud_cache',JSON.stringify(cloudCache))}catch(e){}}
-function fastFetch(url,opts){return new Promise(function(res,rej){var d=false,t=setTimeout(function(){if(!d){d=true;rej()}},2000);fetch(url,opts).then(function(r){clearTimeout(t);if(!d){d=true;res(r)}}).catch(function(){clearTimeout(t);if(!d){d=true;rej()}})})}
+var fastSrv='https://ntfy.sh';
+var cloudCache={users:{},mails:{},reqs:[]};
+try{
+    var cc=JSON.parse(localStorage.getItem('berry_cloud_cache'));
+    if(cc&&cc.users)cloudCache=cc;
+}catch(e){}
 
-function apiSync(modFn,cb){fastFetch(fastSrv+'/json?poll=1').then(function(r){return r.text()}).then(function(txt){var lines=txt.trim().split(String.fromCharCode(10));for(var i=0;i<lines.length;i++){try{var msg=JSON.parse(lines[i]);if(msg&&msg.message){var p=JSON.parse(msg.message);if(p.u&&p.u.id)cloudCache.users[p.u.id]=p.u;if(p.m&&p.m.k)cloudCache.mails[p.m.k]=p.m.v;if(p.r)cloudCache.reqs=p.r}}catch(e){}}var pkt={};if(modFn)modFn(cloudCache,pkt);saveCache();if(pkt.u||pkt.m||pkt.r)fastFetch(fastSrv,{method:'POST',body:JSON.stringify(pkt)}).catch(function(){});if(cb)cb(cloudCache)}).catch(function(){var pkt={};if(modFn)modFn(cloudCache,pkt);saveCache();if(pkt.u||pkt.m||pkt.r)fastFetch(fastSrv,{method:'POST',body:JSON.stringify(pkt)}).catch(function(){});if(cb)cb(cloudCache)})}
+function saveCache(){
+    try{localStorage.setItem('berry_cloud_cache',JSON.stringify(cloudCache))}catch(e){}
+}
+
+function fastFetch(url,opts){
+    return new Promise(function(res,rej){
+        var d=false;
+        var t=setTimeout(function(){if(!d){d=true;rej()}},2000);
+        fetch(url,opts).then(function(r){
+            clearTimeout(t);
+            if(!d){d=true;res(r)}
+        }).catch(function(){
+            clearTimeout(t);
+            if(!d){d=true;rej()}
+        });
+    });
+}
+
+function apiSync(modFn,cb){
+    fastFetch(fastSrv+'/json?poll=1').then(function(r){return r.text()}).then(function(txt){
+        var lines=txt.trim().split(String.fromCharCode(10));
+        for(var i=0;i<lines.length;i++){
+            try{
+                var msg=JSON.parse(lines[i]);
+                if(msg&&msg.message){
+                    var p=JSON.parse(msg.message);
+                    if(p.u&&p.u.id)cloudCache.users[p.u.id]=p.u;
+                    if(p.m&&p.m.k)cloudCache.mails[p.m.k]=p.m.v;
+                    if(p.r)cloudCache.reqs=p.r;
+                }
+            }catch(e){}
+        }
+        var pkt={};
+        if(modFn)modFn(cloudCache,pkt);
+        saveCache();
+        if(pkt.u||pkt.m||pkt.r){
+            fastFetch(fastSrv,{method:'POST',body:JSON.stringify(pkt)}).catch(function(){});
+        }
+        if(cb)cb(cloudCache);
+    }).catch(function(){
+        var pkt={};
+        if(modFn)modFn(cloudCache,pkt);
+        saveCache();
+        if(pkt.u||pkt.m||pkt.r){
+            fastFetch(fastSrv,{method:'POST',body:JSON.stringify(pkt)}).catch(function(){});
+        }
+        if(cb)cb(cloudCache);
+    });
+}
 
 function mailKey(m){return m.toLowerCase().trim()}
-function mailBind(){snd();var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();if(m.indexOf('@')===-1||p.length<3){$('mail-msg').innerText='Введи Email и пароль!';return}uMail=m;save();$('mail-msg').innerText='Сохраняем...';apiSync(function(d,pkt){var val={pass:p,data:getObj()};d.mails[mailKey(m)]=val;pkt.m={k:mailKey(m),v:val}},function(){$('mail-msg').innerText='Почта '+m+' привязана!'})}
-function mailLogin(){snd();var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();if(m.indexOf('@')===-1||!p){$('mail-msg').innerText='Введи Email и пароль!';return}$('mail-msg').innerText='Входим...';apiSync(null,function(d){var res=d.mails[mailKey(m)];if(!res||!res.data){$('mail-msg').innerText='Не найдено!';return}if(res.pass!==p){$('mail-msg').innerText='Неверный пароль!';return}setObj(res.data);uMail=m;save();draw();renderProf();syncWorld();$('mail-msg').innerText='Успешный вход!'})}
 
-function getDevName(){var ua=navigator.userAgent||'';if(ua.indexOf('iPhone')!==-1||ua.indexOf('iPad')!==-1)return 'iPhone';if(ua.indexOf('Android')!==-1)return 'Android';return 'ПК'}
-function syncWorld(cb){var me={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score),dev:getDevName(),ts:Date.now()};cloudCache.users[uid]=me;if(cb){var fl=[];for(var k in cloudCache.users){if(cloudCache.users.hasOwnProperty(k)&&is8Id(String(k)))fl.push(cloudCache.users[k])}fl.sort(function(a,b){return(+b.p||0)-(+a.p||0)});cb(fl.slice(0,500),cloudCache.users)}apiSync(function(d,pkt){d.users[uid]=me;pkt.u=me},function(d){if(!cb)return;var map=d.users,cl=[];for(var k in map){if(map.hasOwnProperty(k)&&is8Id(String(k)))cl.push(map[k])}cl.sort(function(a,b){return(+b.p||0)-(+a.p||0)});cb(cl.slice(0,500),map)})}
-function syncReqs(mod,cb){apiSync(function(d,pkt){if(mod){d.reqs=mod(d.reqs).slice(-200);pkt.r=d.reqs}},function(d){if(cb)cb(d.reqs)})}
+function mailBind(){
+    snd();
+    var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();
+    if(m.indexOf('@')===-1||p.length<3){
+        $('mail-msg').innerText='Введи Email и пароль!';
+        return;
+    }
+    uMail=m;save();
+    $('mail-msg').innerText='Сохраняем...';
+    apiSync(function(d,pkt){
+        var val={pass:p,data:getObj()};
+        d.mails[mailKey(m)]=val;
+        pkt.m={k:mailKey(m),v:val};
+    },function(){
+        $('mail-msg').innerText='Почта '+m+' привязана!';
+    });
+}
+
+function mailLogin(){
+    snd();
+    var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();
+    if(m.indexOf('@')===-1||!p){
+        $('mail-msg').innerText='Введи Email и пароль!';
+        return;
+    }
+    $('mail-msg').innerText='Входим...';
+    apiSync(null,function(d){
+        var res=d.mails[mailKey(m)];
+        if(!res||!res.data){$('mail-msg').innerText='Не найдено!';return}
+        if(res.pass!==p){$('mail-msg').innerText='Неверный пароль!';return}
+        setObj(res.data);uMail=m;save();draw();renderProf();syncWorld();
+        $('mail-msg').innerText='Успешный вход!';
+    });
+}
+
+function getDevName(){
+    var ua=navigator.userAgent||'';
+    if(ua.indexOf('iPhone')!==-1||ua.indexOf('iPad')!==-1)return 'iPhone';
+    if(ua.indexOf('Android')!==-1)return 'Android';
+    return 'ПК';
+}
+
+function syncWorld(cb){
+    var me={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score),dev:getDevName(),ts:Date.now()};
+    cloudCache.users[uid]=me;
+    if(cb){
+        var fl=[];
+        for(var k in cloudCache.users){
+            if(cloudCache.users.hasOwnProperty(k)&&is8Id(String(k)))fl.push(cloudCache.users[k]);
+        }
+        fl.sort(function(a,b){return(+b.p||0)-(+a.p||0)});
+        cb(fl.slice(0,500),cloudCache.users);
+    }
+    apiSync(function(d,pkt){
+        d.users[uid]=me;
+        pkt.u=me;
+    },function(d){
+        if(!cb)return;
+        var map=d.users,cl=[];
+        for(var k in map){
+            if(map.hasOwnProperty(k)&&is8Id(String(k)))cl.push(map[k]);
+        }
+        cl.sort(function(a,b){return(+b.p||0)-(+a.p||0)});
+        cb(cl.slice(0,500),map);
+    });
+}
+
+function syncReqs(mod,cb){
+    apiSync(function(d,pkt){
+        if(mod){d.reqs=mod(d.reqs).slice(-200);pkt.r=d.reqs}
+    },function(d){
+        if(cb)cb(d.reqs);
+    });
+}
 </script>
 <script>
-function sendReq(){snd();var v=$('fr-inp').value.trim();if(!is8Id(v)){$('fr-msg').innerText='Введи 8 цифр ID!';return}if(v===uid){$('fr-msg').innerText='Нельзя себе!';return}if(friends.indexOf(v)!==-1){$('fr-msg').innerText='Уже в друзьях!';return}$('fr-msg').innerText='Отправка...';syncReqs(function(a){var ex=false;for(var i=0;i<a.length;i++){var it=a.slice(i,i+1).shift();if(it&&it.from===uid&&it.to===v)ex=true}if(!ex)a.push({from:uid,to:v,name:ava+' '+nick,st:'wait'});return a},function(){$('fr-inp').value='';$('fr-msg').innerText='Заявка отправлена!'})}
-function answerReq(fid,ok){snd();if(ok&&friends.indexOf(fid)===-1){friends.push(fid);save();draw()}syncReqs(function(a){var n=[];for(var i=0;i<a.length;i++){var it=a.slice(i,i+1).shift();if(!it)continue;if(it.from===fid&&it.to===uid){if(ok)n.push({from:uid,to:fid,name:ava+' '+nick,st:'ok'})}else n.push(it)}return n},function(){renderFriends()})}
-function delFriend(fid){snd();var n=[];for(var i=0;i<friends.length;i++){var x=friends.slice(i,i+1).shift();if(x!==fid)n.push(x)}friends=n;save();draw();renderFriends()}
+function sendReq(){
+    snd();
+    var v=$('fr-inp').value.trim();
+    if(!is8Id(v)){$('fr-msg').innerText='Введи 8 цифр ID!';return}
+    if(v===uid){$('fr-msg').innerText='Нельзя себе!';return}
+    if(friends.indexOf(v)!==-1){$('fr-msg').innerText='Уже в друзьях!';return}
+    $('fr-msg').innerText='Отправка...';
+    syncReqs(function(a){
+        var ex=false;
+        for(var i=0;i<a.length;i++){
+            var it=a.slice(i,i+1).shift();
+            if(it&&it.from===uid&&it.to===v)ex=true;
+        }
+        if(!ex)a.push({from:uid,to:v,name:ava+' '+nick,st:'wait'});
+        return a;
+    },function(){
+        $('fr-inp').value='';
+        $('fr-msg').innerText='Заявка отправлена!';
+    });
+}
 
-function renderFriends(){$('fr-my-id').innerText='Твой ID: '+uid+' ['+getDevName()+']';var rB=$('req-list'),fB=$('fr-list');syncReqs(function(a){var cl=[];for(var i=0;i<a.length;i++){var it=a.slice(i,i+1).shift();if(!it)continue;if(it.to===uid&&it.st==='ok'){if(friends.indexOf(it.from)===-1){friends.push(it.from);save();draw()}}else cl.push(it)}return cl},function(a){var inc=[];for(var j=0;j<a.length;j++){var it=a.slice(j,j+1).shift();if(it&&it.to===uid&&it.st==='wait')inc.push(it)}$('req-b').innerText=inc.length?(' [+'+inc.length+']'):'';rB.innerHTML=inc.length?'':'<div style="font-size:11px;color:#ffb3c1">Заявок нет</div>';for(var k=0;k<inc.length;k++)(function(req){var r=document.createElement('div');r.className='row';var sp=document.createElement('span');sp.style.fontSize='12px';sp.innerHTML=req.name+' (#'+req.from+')';var w=document.createElement('span'),b1=document.createElement('button');b1.className='btn';b1.style.padding='3px 6px';b1.style.background='#2b9348';b1.innerText='Принять';b1.onclick=function(){answerReq(req.from,true)};var b2=document.createElement('button');b2.className='btn';b2.style.padding='3px 6px';b2.style.marginLeft='4px';b2.style.background='#6a040f';b2.innerText='X';b2.onclick=function(){answerReq(req.from,false)};w.appendChild(b1);w.appendChild(b2);r.appendChild(sp);r.appendChild(w);rB.appendChild(r)})(inc.slice(k,k+1).shift());syncWorld(function(c,m){fB.innerHTML=friends.length?'':'<div style="font-size:11px;color:#ffb3c1">Друзей пока нет</div>';for(var z=0;z<friends.length;z++)(function(fid){var f=m[fid],r=document.createElement('div');r.className='row';var sp=document.createElement('span');sp.style.fontSize='12px';var dv=(f&&f.dev)?(' ['+f.dev+']'):'';sp.innerHTML=f?(f.n+' (#'+fid+')'+dv+' — '+f.p):('ID:'+fid+' — 0');var db=document.createElement('button');db.className='btn';db.style.flex='0';db.style.padding='3px 7px';db.style.background='#6a040f';db.innerText='X';db.onclick=function(){delFriend(fid)};r.appendChild(sp);r.appendChild(db);fB.appendChild(r)})(friends.slice(z,z+1).shift())})})}
+function answerReq(fid,ok){
+    snd();
+    if(ok&&friends.indexOf(fid)===-1){friends.push(fid);save();draw()}
+    syncReqs(function(a){
+        var n=[];
+        for(var i=0;i<a.length;i++){
+            var it=a.slice(i,i+1).shift();
+            if(!it)continue;
+            if(it.from===fid&&it.to===uid){
+                if(ok)n.push({from:uid,to:fid,name:ava+' '+nick,st:'ok'});
+            }else n.push(it);
+        }
+        return n;
+    },function(){renderFriends()});
+}
 
-function renderDaily(){var g=$('days-grid');g.innerHTML='';var td=new Date().toISOString().slice(0,10),dn=lastDate===td;for(var i=0;i<7;i++){var c=document.createElement('div');c.className='card'+((i+1<day||(i+1===day&&dn))?' done':(i+1===day?' act':''));c.innerHTML='<b>День '+(i+1)+'</b><br>'+prizes.slice(i,i+1).shift();g.appendChild(c)}var cb=$('claim-btn');cb.disabled=dn;cb.innerText=dn?'Забрано! Приходи завтра':'Забрать День '+day}
-function claimDaily(){var td=new Date().toISOString().slice(0,10);if(lastDate===td)return;snd();if(day===1){score+=100;qProg+=100}else if(day===2){bMult=2;bSec=60}else if(day===3){score+=500;qProg+=500}else if(day===4)pwr+=2;else if(day===5){bMult=3;bSec=60}else if(day===6)auto+=1;else if(day===7){score+=5000;qProg+=5000}lastDate=td;day=day>=7?1:day+1;save();draw();renderDaily()}
-function renderTop(){var b=$('top-box');syncWorld(function(ls){b.innerHTML='<div style="font-size:11px;color:#4cc9f0;margin-bottom:5px;font-weight:bold">Топ 500 лучших (устройств: '+ls.length+')</div>';var now=Date.now();for(var j=0;j<ls.length;j++){var it=ls.slice(j,j+1).shift(),r=document.createElement('div');r.className=(it.id===uid)?'row me':'row';var st=(it.ts&&(now-it.ts)<60000)?'<span style="color:#80ed99">●</span>':'<span style="color:#adb5bd">○</span>';var dv=it.dev?('['+it.dev+']'):'';var isFr=(friends.indexOf(String(it.id))!==-1)?' <b style="color:#ffba08">[Друг]</b>':'';r.innerHTML='<span style="text-align:left;font-size:12px">'+st+' #'+(j+1)+' '+it.n+isFr+' <small style="color:#90e0ef">#'+it.id+' '+dv+'</small></span><b>'+it.p+'</b>';b.appendChild(r);if(it.id===uid)$('m-info').innerText='Место в Топ 500: #'+(j+1)+' из '+ls.length}})}
+function delFriend(fid){
+    snd();
+    var n=[];
+    for(var i=0;i<friends.length;i++){
+        var x=friends.slice(i,i+1).shift();
+        if(x!==fid)n.push(x);
+    }
+    friends=n;save();draw();renderFriends();
+}
+
+function renderFriends(){
+    $('fr-my-id').innerText='Твой ID: '+uid+' ['+getDevName()+']';
+    var rB=$('req-list'),fB=$('fr-list');
+    syncReqs(function(a){
+        var cl=[];
+        for(var i=0;i<a.length;i++){
+            var it=a.slice(i,i+1).shift();
+            if(!it)continue;
+            if(it.to===uid&&it.st==='ok'){
+                if(friends.indexOf(it.from)===-1){friends.push(it.from);save();draw()}
+            }else cl.push(it);
+        }
+        return cl;
+    },function(a){
+        var inc=[];
+        for(var j=0;j<a.length;j++){
+            var it=a.slice(j,j+1).shift();
+            if(it&&it.to===uid&&it.st==='wait')inc.push(it);
+        }
+        $('req-b').innerText=inc.length?(' [+'+inc.length+']'):'';
+        rB.innerHTML=inc.length?'':'<div style="font-size:11px;color:#ffb3c1">Заявок нет</div>';
+        for(var k=0;k<inc.length;k++){
+            (function(req){
+                var r=document.createElement('div');r.className='row';
+                var sp=document.createElement('span');sp.style.fontSize='12px';
+                sp.innerHTML=req.name+' (#'+req.from+')';
+                var w=document.createElement('span');
+                var b1=document.createElement('button');b1.className='btn';
+                b1.style.padding='3px 6px';b1.style.background='#2b9348';b1.innerText='Принять';
+                b1.onclick=function(){answerReq(req.from,true)};
+                var b2=document.createElement('button');b2.className='btn';
+                b2.style.padding='3px 6px';b2.style.marginLeft='4px';b2.style.background='#6a040f';b2.innerText='X';
+                b2.onclick=function(){answerReq(req.from,false)};
+                w.appendChild(b1);w.appendChild(b2);
+                r.appendChild(sp);r.appendChild(w);rB.appendChild(r);
+            })(inc.slice(k,k+1).shift());
+        }
+        syncWorld(function(c,m){
+            fB.innerHTML=friends.length?'':'<div style="font-size:11px;color:#ffb3c1">Друзей пока нет</div>';
+            for(var z=0;z<friends.length;z++){
+                (function(fid){
+                    var f=m[fid],r=document.createElement('div');r.className='row';
+                    var sp=document.createElement('span');sp.style.fontSize='12px';
+                    var dv=(f&&f.dev)?(' ['+f.dev+']'):'';
+                    sp.innerHTML=f?(f.n+' (#'+fid+')'+dv+' — '+f.p):('ID:'+fid+' — 0');
+                    var db=document.createElement('button');db.className='btn';
+                    db.style.flex='0';db.style.padding='3px 7px';db.style.background='#6a040f';db.innerText='X';
+                    db.onclick=function(){delFriend(fid)};
+                    r.appendChild(sp);r.appendChild(db);fB.appendChild(r);
+                })(friends.slice(z,z+1).shift());
+            }
+        });
+    });
+}
+
+function renderDaily(){
+    var g=$('days-grid');g.innerHTML='';
+    var td=new Date().toISOString().slice(0,10),dn=lastDate===td;
+    for(var i=0;i<7;i++){
+        var c=document.createElement('div');
+        c.className='card'+((i+1<day||(i+1===day&&dn))?' done':(i+1===day?' act':''));
+        c.innerHTML='<b>День '+(i+1)+'</b><br>'+prizes.slice(i,i+1).shift();
+        g.appendChild(c);
+    }
+    var cb=$('claim-btn');cb.disabled=dn;
+    cb.innerText=dn?'Забрано! Приходи завтра':'Забрать День '+day;
+}
+
+function claimDaily(){
+    var td=new Date().toISOString().slice(0,10);
+    if(lastDate===td)return;
+    snd();
+    if(day===1){score+=100;qProg+=100}
+    else if(day===2){bMult=2;bSec=60}
+    else if(day===3){score+=500;qProg+=500}
+    else if(day===4)pwr+=2;
+    else if(day===5){bMult=3;bSec=60}
+    else if(day===6)auto+=1;
+    else if(day===7){score+=5000;qProg+=5000}
+    lastDate=td;day=day>=7?1:day+1;save();draw();renderDaily();
+}
+
+function renderTop(){
+    var b=$('top-box');
+    syncWorld(function(ls){
+        b.innerHTML='<div style="font-size:11px;color:#4cc9f0;margin-bottom:5px;font-weight:bold">Топ 500 лучших (устройств: '+ls.length+')</div>';
+        var now=Date.now();
+        for(var j=0;j<ls.length;j++){
+            var it=ls.slice(j,j+1).shift(),r=document.createElement('div');
+            r.className=(it.id===uid)?'row me':'row';
+            var st=(it.ts&&(now-it.ts)<60000)?'<span style="color:#80ed99">●</span>':'<span style="color:#adb5bd">○</span>';
+            var dv=it.dev?('['+it.dev+']'):'';
+            var isFr=(friends.indexOf(String(it.id))!==-1)?' <b style="color:#ffba08">[Друг]</b>':'';
+            r.innerHTML='<span style="text-align:left;font-size:12px">'+st+' #'+(j+1)+' '+it.n+isFr+' <small style="color:#90e0ef">#'+it.id+' '+dv+'</small></span><b>'+it.p+'</b>';
+            b.appendChild(r);
+            if(it.id===uid)$('m-info').innerText='Место в Топ 500: #'+(j+1)+' из '+ls.length;
+        }
+    });
+}
 
 function loadMp3(inp){var f=inp.files.item(0);if(!f)return;if(bgm)bgm.pause();bgm=new Audio(URL.createObjectURL(f));bgm.loop=true;bgm.volume=0.6;$('mp3-lbl').innerText='Играет: '+f.name.slice(0,16);bgm.play()}
 function toggleBag(){snd();$('wardrobe-box').style.display='none';var b=$('bag-box'),o=b.style.display==='block';b.style.display=o?'none':'block';if(!o)renderBag()}
 function renderBag(){var g=$('pet-grid');g.innerHTML='';if(!bag.length){g.innerHTML='<div style="font-size:12px;color:#ffb3c1">Рюкзак пуст!</div>';return}for(var i=0;i<bag.length;i++)(function(id){var c=document.createElement('div');c.className='pet r-'+id+(eqPet===id?' eq':'');c.innerHTML='<div style="font-size:22px">'+pIco.slice(id,id+1).shift()+'</div><b>'+pNam.slice(id,id+1).shift()+'</b><br>'+pRar.slice(id,id+1).shift()+'<br><b style="color:#ffe066">x'+pMul.slice(id,id+1).shift()+'</b>';c.onclick=function(){snd();eqPet=(eqPet===id)?-1:id;save();draw();renderBag()};g.appendChild(c)})(+bag.charAt(i))}
 
 function tap(){if(nrg>=1){var g=pwr*mult();taps++;score+=g;qProg+=g;nrg-=1;snd();draw();save()}}
-var bEl=$('berry');bEl.addEventListener('touchend',function(e){e.preventDefault();tap()},{passive:false});document.addEventListener('touchstart',function(e){if(e.touches.length>1)e.preventDefault()},{passive:false});document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});
+var bEl=$('berry');bEl.addEventListener('touchend',function(e){e.preventDefault();tap()},{passive:false});
+document.addEventListener('touchstart',function(e){if(e.touches.length>1)e.preventDefault()},{passive:false});
+document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});
 function buyTap(){if(score>=cTap){score-=cTap;pwr++;cTap=Math.round(cTap*1.5);snd();draw();save()}}
 function buyAuto(){if(score>=cAuto){score-=cAuto;auto++;cAuto=Math.round(cAuto*1.6);snd();draw();save()}}
 function buyNrg(){if(score>=cNrg){score-=cNrg;maxNrg+=50;nrg=maxNrg;cNrg=Math.round(cNrg*1.8);snd();draw();save()}}
@@ -250,7 +508,7 @@ function buySkin(s,cost){eqEvSkin=-1;if(s==='gold'){if(hasG)skin=skin==='gold'?'
 function resetAll(){score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;eqEvSkin=-1;save();draw()}
 
 setInterval(function(){if(auto>0){score+=auto;qProg+=auto}if(nrg<maxNrg)nrg=Math.min(maxNrg,nrg+Math.max(2,Math.floor(maxNrg/40)));if(bSec>0){bSec--;if(bSec===0)bMult=1}draw();save()},1000);
-draw();syncWorld();$('drop-info').innerText='V20 ALL OK — Жми на клубнику!';
+draw();syncWorld();$('drop-info').innerText='V21 OK — Жми на клубнику!';
 </script>
 </body>
 </html>
