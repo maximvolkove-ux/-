@@ -201,9 +201,7 @@ function parseCode(s){try{var c=s.trim(),p=c.indexOf('code=');if(p!==-1)c=decode
 try{var sv=JSON.parse(localStorage.getItem('berry_v3'));if(sv)setObj(sv);if(location.search.indexOf('code=')!==-1&&parseCode(location.search))history.replaceState({},'',location.pathname);save()}catch(e){}
 function save(){try{if(score>maxScore)maxScore=score;localStorage.setItem('berry_v3',JSON.stringify(getObj()))}catch(e){}}
 function petMult(){return(eqPet>=0&&eqPet<=5)?+pMul.slice(eqPet,eqPet+1).shift():1}
-function skinMult(){if(eqEvSkin>=0&&eqEvSkin<20)return 25;return skin==='gold'?2:skin==='diamond'?5:skin==='emerald'?15:skin==='ruby'?50:1}
-function mult(){return skinMult()*bMult*getPr().m*petMult()}
-</script><script>
+function skinMult(){if(eqEvSkin>=0&&eqEvSkin<20)return 25;return skin==='gold'?2:skin==='diamond'?5:skin==='emerald'?15:skin==='ruby'?50:1}<script>
 function draw(){
     try{
         if(score>maxScore)maxScore=score;
@@ -249,19 +247,46 @@ function showQr(){snd();var c=makeCode();$('code-inp').value=c;var h=location.hr
 function copyCode(){snd();var i=$('code-inp');i.value=makeCode();i.select();try{document.execCommand('copy')}catch(e){}}
 function loadCode(){snd();if(parseCode($('code-inp').value)){draw();renderProf();$('prof-box').style.display='none';syncWorld()}}
 
-var cloudBlob='https://jsonblob.com';
+var fastSrv='https://ntfy.sh';
 var cloudCache={users:{},mails:{},reqs:[]};
+try{var cc=JSON.parse(localStorage.getItem('berry_cloud_cache'));if(cc&&cc.users)cloudCache=cc}catch(e){}
+function saveCache(){try{localStorage.setItem('berry_cloud_cache',JSON.stringify(cloudCache))}catch(e){}}
+
+function fastFetch(url,opts){
+    return new Promise(function(resolve,reject){
+        var done=false,t=setTimeout(function(){if(!done){done=true;reject()}},2500);
+        fetch(url,opts).then(function(r){clearTimeout(t);if(!done){done=true;resolve(r)}}).catch(function(){clearTimeout(t);if(!done){done=true;reject()}});
+    });
+}
 
 function apiSync(modFn,cb){
-    fetch(cloudBlob,{headers:{'Accept':'application/json'}}).then(function(r){return r.ok?r.json():cloudCache}).then(function(d){
-        if(!d||typeof d!=='object')d={users:{},mails:{},reqs:[]};
-        if(!d.users)d.users={};if(!d.mails)d.mails={};if(!Array.isArray(d.reqs))d.reqs=[];
-        if(modFn)modFn(d);
-        cloudCache=d;
-        fetch(cloudBlob,{method:'PUT',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(d)}).catch(function(){});
-        if(cb)cb(d);
+    fastFetch(fastSrv+'/json?poll=1').then(function(r){return r.text()}).then(function(txt){
+        var lines=txt.trim().split('\n');
+        for(var i=0;i<lines.length;i++){
+            try{
+                var msg=JSON.parse(lines[i]);
+                if(msg&&msg.message){
+                    var p=JSON.parse(msg.message);
+                    if(p.u&&p.u.id)cloudCache.users[p.u.id]=p.u;
+                    if(p.m&&p.m.k)cloudCache.mails[p.m.k]=p.m.v;
+                    if(p.r)cloudCache.reqs=p.r;
+                }
+            }catch(e){}
+        }
+        var packet={};
+        if(modFn)modFn(cloudCache,packet);
+        saveCache();
+        if(packet.u||packet.m||packet.r){
+            fastFetch(fastSrv,{method:'POST',body:JSON.stringify(packet)}).catch(function(){});
+        }
+        if(cb)cb(cloudCache);
     }).catch(function(){
-        if(modFn)modFn(cloudCache);
+        var packet={};
+        if(modFn)modFn(cloudCache,packet);
+        saveCache();
+        if(packet.u||packet.m||packet.r){
+            fastFetch(fastSrv,{method:'POST',body:JSON.stringify(packet)}).catch(function(){});
+        }
         if(cb)cb(cloudCache);
     });
 }
@@ -270,23 +295,25 @@ function mailKey(m){return m.toLowerCase().trim()}
 function mailBind(){
     snd();var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();
     if(m.indexOf('@')===-1||p.length<3){$('mail-msg').innerText='Введи правильный Email и пароль (от 3 символов)!';return}
-    uMail=m;save();$('mail-msg').innerText='Сохраняем аккаунт в облако...';
-    apiSync(function(d){
-        d.mails[mailKey(m)]={pass:p,data:getObj()};
+    uMail=m;save();$('mail-msg').innerText='Сохраняем...';
+    apiSync(function(d,pkt){
+        var val={pass:p,data:getObj()};
+        d.mails[mailKey(m)]=val;
+        pkt.m={k:mailKey(m),v:val};
     },function(){
-        $('mail-msg').innerText='Почта '+m+' привязана! Прогресс сохранён.';
+        $('mail-msg').innerText='Готово! Почта '+m+' привязана.';
     });
 }
 function mailLogin(){
     snd();var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();
-    if(m.indexOf('@')===-1||!p){$('mail-msg').innerText='Введи Email и пароль для входа!';return}
-    $('mail-msg').innerText='Поиск аккаунта...';
+    if(m.indexOf('@')===-1||!p){$('mail-msg').innerText='Введи Email и пароль!';return}
+    $('mail-msg').innerText='Входим...';
     apiSync(null,function(d){
         var res=d.mails[mailKey(m)];
-        if(!res||!res.data){$('mail-msg').innerText='Аккаунт с такой почтой не найден!';return}
+        if(!res||!res.data){$('mail-msg').innerText='Почта не найдена!';return}
         if(res.pass!==p){$('mail-msg').innerText='Неверный пароль!';return}
         setObj(res.data);uMail=m;save();draw();renderProf();syncWorld();
-        $('mail-msg').innerText='Успешный вход в аккаунт '+m+'!';
+        $('mail-msg').innerText='Успешный вход: '+m+'!';
     });
 }
 
@@ -299,8 +326,16 @@ function getDevName(){
 
 function syncWorld(cb){
     var me={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score),dev:getDevName(),ts:Date.now()};
-    apiSync(function(d){
+    cloudCache.users[uid]=me;
+    if(cb){
+        var fastList=[];
+        for(var k in cloudCache.users){if(cloudCache.users.hasOwnProperty(k)&&is8Id(String(k)))fastList.push(cloudCache.users[k])}
+        fastList.sort(function(a,b){return(+b.p||0)-(+a.p||0)});
+        cb(fastList.slice(0,500),cloudCache.users);
+    }
+    apiSync(function(d,pkt){
         d.users[uid]=me;
+        pkt.u=me;
     },function(d){
         if(!cb)return;
         var map=d.users,clean=[];
@@ -311,8 +346,8 @@ function syncWorld(cb){
 }
 
 function syncReqs(mod,cb){
-    apiSync(function(d){
-        if(mod)d.reqs=mod(d.reqs).slice(-300);
+    apiSync(function(d,pkt){
+        if(mod){d.reqs=mod(d.reqs).slice(-200);pkt.r=d.reqs}
     },function(d){
         if(cb)cb(d.reqs);
     });
@@ -373,8 +408,7 @@ function buySkin(s,cost){eqEvSkin=-1;if(s==='gold'){if(hasG)skin=skin==='gold'?'
 function resetAll(){score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;eqEvSkin=-1;save();draw()}
 
 setInterval(function(){if(auto>0){score+=auto;qProg+=auto}if(nrg<maxNrg)nrg=Math.min(maxNrg,nrg+Math.max(2,Math.floor(maxNrg/40)));if(bSec>0){bSec--;if(bSec===0)bMult=1}draw();save()},1000);
-setInterval(function(){syncWorld()},15000);
-draw();syncWorld();$('drop-info').innerText='V12 OK — Жми на клубнику!';
+draw();syncWorld();$('drop-info').innerText='V15 FAST — Жми на клубнику!';
 </script>
 </body>
 </html>
