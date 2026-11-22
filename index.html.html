@@ -216,7 +216,7 @@ function parseCode(s){try{var c=s.trim(),p=c.indexOf('code=');if(p!==-1)c=decode
 try{var sv=JSON.parse(localStorage.getItem('berry_v3'));if(sv)setObj(sv);if(location.search.indexOf('code=')!==-1&&parseCode(location.search))history.replaceState({},'',location.pathname);save()}catch(e){}
 function save(){try{if(score>maxScore)maxScore=score;localStorage.setItem('berry_v3',JSON.stringify(getObj()))}catch(e){}}
 function petMult(){return(eqPet>=0&&eqPet<=5)?+pMul.slice(eqPet,eqPet+1).shift():1}
-```html
+function skinMult(){if(eqEvSkin>=0&&eqEvSkin<20)return 25;return skin==='gold'?2:skin==='diamond'?5:skin==='emerald'?15:skin==='ruby'?50:skin==='obsidian'?25:skin==='sapphire'?50:skin==='platinum'?100:1}
 <script>
 function fmtNum(n){
     if(n>=1e30)return Math.round(n/1e28)/100+'No';
@@ -274,8 +274,18 @@ function draw(){
         $('b-ruby').disabled=!hasR&&score<1000000;$('b-ruby').innerText=hasR?(skin==='ruby'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0420\u0443\u0431\u0438\u043d':'\u0420\u0443\u0431\u0438\u043d (x50)'):'\u0420\u0443\u0431\u0438\u043d x50 (1M)';
         $('b-obs').disabled=!hasObs&&score<100000;$('b-obs').innerText=hasObs?(skin==='obsidian'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u041e\u0431\u0441\u0438\u0434\u0438\u0430\u043d':'\u041e\u0431\u0441\u0438\u0434\u0438\u0430\u043d (x25)'):'\u041e\u0431\u0441\u0438\u0434\u0438\u0430\u043d x25 (100K)';
         $('b-sap').disabled=!hasSap&&score<10000000;$('b-sap').innerText=hasSap?(skin==='sapphire'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0421\u0430\u043f\u0444\u0438\u0440':'\u0421\u0430\u043f\u0444\u0438\u0440 (x50)'):'\u0421\u0430\u043f\u0444\u0438\u0440 x50 (10M)';
-        $('b-pla').disabled=!hasPla&&score<1000000000;$('b-pla').innerText=hasPla?(skin==='platinum'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u041f\u043b\u0430\u0442\u0438\u043d\u0443':'\u041f\u043b\u0430\u0442\u0438\u043d\u0430 (x100)'):'\u041f\u043b\u0430\u0442\u0438\u043d\u0430 x100 (1B)'```html
-<script>
+        $('b-pla').disabled=!hasPla&&score<1000000000;$('b-pla').innerText=hasPla?(skin==='platinum'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u041f\u043b\u0430\u0442\u0438\u043d\u0443':'\u041f\u043b\u0430\u0442\u0438\u043d\u0430 (x100)'):'\u041f\u043b\u0430\u0442\u0438\u043d\u0430 x100 (1B)';
+    }catch(e){}
+}
+draw();
+
+function enterWorld2(){
+    if(rebirths<25||world===2)return;
+    snd();world=2;
+    score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;
+    skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;
+    $('drop-info').innerText='\u041d\u041e\u0412\u042b\u0419 \u041c\u0418\u0420 (X50) \u0410\u041a\u0422\u0418\u0412\u0415\u041d!';
+    save();<script>
 function goGame(rst){snd();if(rst)resetAll();$('menu').style.display='none';$('game').style.display='flex';draw()}
 function goMenu(){snd();$('bag-box').style.display='none';$('wardrobe-box').style.display='none';$('game').style.display='none';$('menu').style.display='flex';draw();syncWorld()}
 function toggleBox(id){snd();var el=$(id),op=el.style.display==='block';$('quest-box').style.display='none';$('prof-box').style.display='none';$('daily-box').style.display='none';$('top-box').style.display='none';if(!op){if(id==='quest-box')renderQuest();if(id==='prof-box')renderProf();if(id==='daily-box')renderDaily();if(id==='top-box')renderTop();el.style.display='block'}}
@@ -290,7 +300,7 @@ function saveProf(){snd();var v=$('nick-inp').value.trim();if(v)nick=v;save();dr
 function showQr(){snd();var c=makeCode();$('code-inp').value=c;var h=location.href,q=h.indexOf('?'),u=q!==-1?h.substring(0,q):h,p=u.indexOf('http')===0?u+'?code='+encodeURIComponent(c):c;$('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+encodeURIComponent(p);$('qr-area').style.display='block'}
 function copyCode(){snd();var i=$('code-inp');i.value=makeCode();i.select();try{document.execCommand('copy')}catch(e){}}
 function loadCode(){snd();if(parseCode($('code-inp').value)){draw();renderProf();$('prof-box').style.display='none';syncWorld()}}
-</script>;<script>
+</script><script>
 var blobUrl='https://jsonblob.com/api/jsonBlob/1345891204981202944';
 var cloudCache={users:{},mails:{},reqs:[]};
 try{var cc=JSON.parse(localStorage.getItem('berry_cloud_cache'));if(cc&&cc.users)cloudCache=cc}catch(e){}
@@ -357,3 +367,16 @@ function delFriend(fid){snd();var n=[];for(var i=0;i<friends.length;i++){var x=f
 
 function renderFriends(){
     $('fr-my-id').innerText='ID: '+uid+' ['+getDevName()+']';var rB=$('req-list'),fB=$('fr-list');
+    syncReqs(function(a){var cl=[];for(var i=0;i<a.length;i++){var it=a.slice(i,i+1).shift();if(!it)continue;if(it.to===uid&&it.st==='ok'){if(friends.indexOf(it.from)===-1){friends.push(it.from);save();draw()}}else cl.push(it)}return cl},function(a){
+function buyTap(){if(score>=cTap){score-=cTap;pwr++;cTap=Math.round(cTap*1.5);snd();draw();save()}}
+function buyAuto(){if(score>=cAuto){score-=cAuto;auto++;cAuto=Math.round(cAuto*1.6);snd();draw();save()}}
+function buyNrg(){if(score>=cNrg){score-=cNrg;maxNrg+=50;nrg=maxNrg;cNrg=Math.round(cNrg*1.8);snd();draw();save()}}
+function buyEgg(){if(score<500)return;score-=500;snd();var rnd=Math.random()*100,id=0;if(rnd<5)id=5;else if(rnd<15)id=4;else if(rnd<30)id=3;else if(rnd<50)id=2;else if(rnd<80)id=1;bag+=String(id);if(petMult()<+pMul.slice(id,id+1).shift())eqPet=id;$('drop-info').innerHTML='+ '+pIco.slice(id,id+1).shift()+' '+pNam.slice(id,id+1).shift()+' (x'+pMul.slice(id,id+1).shift()+')!';if($('bag-box').style.display==='block')renderBag();draw();save()}
+function buySkin(s,cost){eqEvSkin=-1;if(s==='gold'){if(hasG)skin=skin==='gold'?'none':'gold';else if(score>=cost){score-=cost;hasG=true;skin='gold'}}if(s==='diamond'){if(hasD)skin=skin==='diamond'?'none':'diamond';else if(score>=cost){score-=cost;hasD=true;skin='diamond'}}if(s==='emerald'){if(hasE)skin=skin==='emerald'?'none':'emerald';else if(score>=cost){score-=cost;hasE=true;skin='emerald'}}if(s==='ruby'){if(hasR)skin=skin==='ruby'?'none':'ruby';else if(score>=cost){score-=cost;hasR=true;skin='ruby'}}if(s==='obsidian'){if(hasObs)skin=skin==='obsidian'?'none':'obsidian';else if(score>=cost){score-=cost;hasObs=true;skin='obsidian'}}if(s==='sapphire'){if(hasSap)skin=skin==='sapphire'?'none':'sapphire';else if(score>=cost){score-=cost;hasSap=true;skin='sapphire'}}if(s==='platinum'){if(hasPla)skin=skin==='platinum'?'none':'platinum';else if(score>=cost){score-=cost;hasPla=true;skin='platinum'}}snd();draw();save()}
+function resetAll(){score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;hasObs=hasSap=hasPla=false;bMult=1;bSec=0;bag='';eqPet=-1;eqEvSkin=-1;save();draw()}
+
+setInterval(function(){if(auto>0){var ag=auto*rebMult()*worldMult();score+=ag;qProg+=ag}if(nrg<maxNrg)nrg=Math.min(maxNrg,nrg+Math.max(2,Math.floor(maxNrg/40)));if(bSec>0){bSec--;if(bSec===0)bMult=1}draw();save()},1000);
+draw();syncWorld();$('drop-info').innerText='\u0416\u043c\u0438 \u043d\u0430 \u043a\u043b\u0443\u0431\u043d\u0438\u043a\u0443!';
+</script>
+</body>
+</html>
