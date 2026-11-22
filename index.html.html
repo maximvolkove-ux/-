@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Berry Tap</title>
+<title>Тапай по клубнике</title>
 <style>
 *{touch-action:manipulation}
 body{margin:0;font-family:Arial,sans-serif;background:#3b0716;color:#fff;text-align:center;min-height:100vh;overflow-y:auto}
@@ -54,145 +54,101 @@ body.world2{background:radial-gradient(circle at top,#3c096c,#10002b 75%)}
 </head>
 <body>
 <div id="menu">
-    <button class="top-prof-btn" id="btn-prof-top" onclick="toggleBox('prof-box')">Profile (<span id="fr-cnt">0</span>)<span id="req-b" style="color:#ffe066"></span></button>
+    <button class="top-prof-btn" id="btn-prof-top" onclick="toggleBox('prof-box')">Профиль / Друзья (<span id="fr-cnt">0</span>)<span id="req-b" style="color:#ffe066"></span></button>
     <div id="m-ava">&#127827;</div>
-    <h2 id="m-title" style="margin:0;color:#ffccd5;font-size:20px">BERRY TAP</h2>
-    <div id="m-rank" class="badge">Rank: 1 (x1)</div>
-    <div id="m-reb" class="badge" style="background:#7209b7;border-color:#f72585">Rebirth: 0 / 25 (x1)</div>
-    <div id="m-info" style="color:#ffb3c1;font-size:13px">Loading...</div>
-    <button class="m-btn" id="btn-cont" onclick="goGame(false)">Continue</button>
-    <button class="m-btn" id="btn-new" onclick="goGame(true)" style="background:#6a040f">New Game</button>
-    <button class="m-btn" id="btn-qst" onclick="toggleBox('quest-box')" style="background:#9d4edd;border-color:#ffd60a">Quest (100K)</button>
-    <button class="m-btn" id="btn-dly" onclick="toggleBox('daily-box')" style="background:#2b9348">Daily</button>
-    <button class="m-btn" id="btn-top" onclick="toggleBox('top-box')" style="background:#b58300">Top 500</button>
-    <label class="mp3"><span id="mp3-lbl">MP3</span><input type="file" accept="audio/*" onchange="loadMp3(this)" style="width:100%;margin-top:4px;font-size:11px"></label>
+    <h2 style="margin:0;color:#ffccd5;font-size:20px">ТАПАЙ ПО КЛУБНИКЕ</h2>
+    <div id="m-rank" class="badge">Ранг: Новичок (x1)</div>
+    <div id="m-reb" class="badge" style="background:#7209b7;border-color:#f72585">Перерождений: 0 / 25 (x1)</div>
+    <div id="m-info" style="color:#ffb3c1;font-size:13px">Готово к игре!</div>
+    <button class="m-btn" onclick="goGame(false)">Продолжить игру</button>
+    <button class="m-btn" onclick="goGame(true)" style="background:#6a040f">Новая игра</button>
+    <button class="m-btn" onclick="toggleBox('quest-box')" style="background:#9d4edd;border-color:#ffd60a">Недельное испытание (100к)</button>
+    <button class="m-btn" onclick="toggleBox('daily-box')" style="background:#2b9348">Ежедневный приз</button>
+    <button class="m-btn" onclick="toggleBox('top-box')" style="background:#b58300">Топ 500 лучших</button>
+    <label class="mp3"><span id="mp3-lbl">Выбрать музыку (.mp3)</span><input type="file" accept="audio/*" onchange="loadMp3(this)" style="width:100%;margin-top:4px;font-size:11px"></label>
     <div id="quest-box" class="box">
-        <div id="q-hdr" style="font-size:13px;color:#ffd60a;font-weight:bold">QUEST</div>
-        <div id="q-dsc" style="font-size:12px;color:#ffccd5;margin-top:3px">100 000 -> x25</div>
+        <div style="font-size:13px;color:#ffd60a;font-weight:bold">НЕДЕЛЬНОЕ ИСПЫТАНИЕ</div>
+        <div style="font-size:12px;color:#ffccd5;margin-top:3px">Собери <b>100 000 клубник</b> и получи скин (<b>x25</b>)!</div>
         <div class="p-bg"><div id="q-fill" class="p-fl"></div></div>
         <div id="q-txt" style="font-size:12px;color:#ffe066;font-weight:bold;margin-bottom:6px">0 / 100 000</div>
-        <button class="btn" id="q-claim" onclick="claimQuest()" style="width:100%;background:#2b9348;margin-bottom:6px">Claim</button>
+        <button class="btn" id="q-claim" onclick="claimQuest()" style="width:100%;background:#2b9348;margin-bottom:6px">Забрать скин!</button>
         <div id="q-res" style="font-size:12px;color:#4cc9f0;font-weight:bold;margin-bottom:4px"></div>
-        <div style="font-size:11px;color:#ffb3c1"><span id="q-clbl">Skins:</span> <b id="q-col">0</b> / 20</div>
+        <div style="font-size:11px;color:#ffb3c1">Собрано скинов: <b id="q-col">0</b> / 20</div>
     </div>
     <div id="prof-box" class="box">
-        <div id="p-id" style="font-size:14px;color:#4cc9f0;margin-bottom:4px;font-weight:bold">ID: 00000000</div>
-        <div id="p-rank" style="font-size:12px;color:#ffe066;margin-bottom:6px;font-weight:bold">0</div>
-        <input type="text" id="nick-inp" class="inp" maxlength="15" placeholder="Nick...">
+        <div id="p-id" style="font-size:14px;color:#4cc9f0;margin-bottom:4px;font-weight:bold">Твой ID: 00000000</div>
+        <div id="p-rank" style="font-size:12px;color:#ffe066;margin-bottom:6px;font-weight:bold">Рекорд: 0</div>
+        <input type="text" id="nick-inp" class="inp" maxlength="15" placeholder="Введи ник...">
         <div id="ava-row"></div><div id="bg-row"></div>
-        <button class="btn" id="btn-savp" onclick="saveProf()" style="width:100%;background:#2b9348;margin:6px 0">Save</button>
-        <div class="sec" id="sec-fr">Friends (8-ID):</div>
-        <div id="fr-my-id" style="font-size:11px;color:#90e0ef;margin-bottom:4px">ID: 00000000</div>
-        <div style="display:flex;gap:4px;margin-bottom:4px"><input type="text" id="fr-inp" class="inp" maxlength="8" placeholder="8 ID..." style="margin:0;flex:1"><button class="btn" id="btn-addf" onclick="sendReq()" style="flex:0.6;background:#e85d04">Add</button></div>
+        <button class="btn" onclick="saveProf()" style="width:100%;background:#2b9348;margin:6px 0">Сохранить профиль</button>
+        <div class="sec">Друзья (8-значный ID):</div>
+        <div id="fr-my-id" style="font-size:11px;color:#90e0ef;margin-bottom:4px">Твой ID: 00000000</div>
+        <div style="display:flex;gap:4px;margin-bottom:4px"><input type="text" id="fr-inp" class="inp" maxlength="8" placeholder="8 цифр ID друга..." style="margin:0;flex:1"><button class="btn" onclick="sendReq()" style="flex:0.6;background:#e85d04">Добавить</button></div>
         <div id="fr-msg" style="font-size:11px;color:#ffe066;margin-bottom:4px"></div>
         <div id="req-list"></div><div id="fr-list"></div>
-        <div class="sec" id="sec-au">Yandex / Google / Email:</div>
+        <div class="sec">Вход через Яндекс / Google / Почту:</div>
         <div class="oauth-row">
-            <button class="btn-ya" id="btn-ya" onclick="socialLogin('yandex')">Yandex ID</button>
-            <button class="btn-go" id="btn-go" onclick="socialLogin('google')">Google</button>
+            <button class="btn-ya" onclick="socialLogin('yandex')">Яндекс ID</button>
+            <button class="btn-go" onclick="socialLogin('google')">Google Вход</button>
         </div>
         <input type="email" id="mail-inp" class="inp" placeholder="Email...">
-        <input type="password" id="pass-inp" class="inp" placeholder="Pass...">
-        <div style="display:flex;gap:4px;margin-bottom:4px"><button class="btn" id="btn-bnd" onclick="mailBind()" style="background:#0096c7">Bind</button><button class="btn" id="btn-lgn" onclick="mailLogin()" style="background:#e85d04">Login</button></div>
+        <input type="password" id="pass-inp" class="inp" placeholder="Пароль...">
+        <div style="display:flex;gap:4px;margin-bottom:4px"><button class="btn" onclick="mailBind()" style="background:#0096c7">Привязать</button><button class="btn" onclick="mailLogin()" style="background:#e85d04">Войти</button></div>
         <div id="mail-msg" style="font-size:11px;color:#4cc9f0;margin-bottom:6px"></div>
-        <div style="border-top:1px solid #ff758f;padding-top:6px"><button class="btn" onclick="showQr()" style="background:#7209b7">QR</button><button class="btn" id="btn-ccd" onclick="copyCode()" style="background:#3a0ca3">Code</button><div id="qr-area" style="display:none;background:#fff;padding:6px;border-radius:8px;margin:6px 0"><img id="qr-img" src="" style="width:130px;height:130px;display:block;margin:0 auto"></div><input type="text" id="code-inp" class="inp" placeholder="Code..." style="margin-top:6px"><button class="btn" id="btn-lcd" onclick="loadCode()" style="width:100%;background:#6a040f">Load</button></div>
+        <div style="border-top:1px solid #ff758f;padding-top:6px"><button class="btn" onclick="showQr()" style="background:#7209b7">QR</button><button class="btn" onclick="copyCode()" style="background:#3a0ca3">Код</button><div id="qr-area" style="display:none;background:#fff;padding:6px;border-radius:8px;margin:6px 0"><img id="qr-img" src="" style="width:130px;height:130px;display:block;margin:0 auto"></div><input type="text" id="code-inp" class="inp" placeholder="Код..." style="margin-top:6px"><button class="btn" onclick="loadCode()" style="width:100%;background:#6a040f">Загрузить код</button></div>
     </div>
-    <div id="daily-box" class="box"><div id="days-grid"></div><button class="btn" id="claim-btn" onclick="claimDaily()" style="width:100%;background:#2b9348;margin-top:6px">Claim</button></div>
+    <div id="daily-box" class="box"><div id="days-grid"></div><button class="btn" id="claim-btn" onclick="claimDaily()" style="width:100%;background:#2b9348;margin-top:6px">Забрать!</button></div>
     <div id="top-box" class="box"></div>
 </div>
 <div id="game">
     <div style="padding-top:8px;width:100%">
         <div style="display:flex;gap:5px;justify-content:center;padding:0 10px">
-            <button class="btn" id="btn-mnu" onclick="goMenu()" style="padding:7px">Menu</button>
-            <button class="btn" id="btn-bag" onclick="toggleBag()" style="padding:7px;background:#e85d04">Bag (<span id="bag-cnt">0</span>)</button>
-            <button class="btn" id="btn-skn" onclick="toggleWardrobe()" style="padding:7px;background:#7209b7;border-color:#ffd60a">Skins (<span id="sk-cnt">0</span>/20)</button>
+            <button class="btn" onclick="goMenu()" style="padding:7px">В меню</button>
+            <button class="btn" id="btn-bag" onclick="toggleBag()" style="padding:7px;background:#e85d04">Рюкзак (<span id="bag-cnt">0</span>)</button>
+            <button class="btn" id="btn-skn" onclick="toggleWardrobe()" style="padding:7px;background:#7209b7;border-color:#ffd60a">Скины (<span id="sk-cnt">0</span>/20)</button>
         </div>
-        <div id="g-user" style="font-size:13px;color:#ffe066;font-weight:bold;margin-top:3px">Player</div>
-        <div id="g-pet" style="font-size:12px;color:#90e0ef">Pet: None (x1)</div>
-        <div id="g-rank" class="badge">Rank</div>
+        <div id="g-user" style="font-size:13px;color:#ffe066;font-weight:bold;margin-top:3px">Игрок</div>
+        <div id="g-pet" style="font-size:12px;color:#90e0ef">Питомец: Нет (x1)</div>
+        <div id="g-rank" class="badge">Новичок (0 / 1000)</div>
         <div id="score">0</div>
-        <div style="font-size:13px"><span id="lbl-clk">Tap</span>: <b id="pwr">1</b> | <span id="lbl-sec">Sec</span>: <b id="auto">0</b> | <span id="lbl-nrg">Energy</span>: <b id="nrg">100</b>/<b id="max-nrg">100</b></div>
+        <div style="font-size:13px">Клик: <b id="pwr">1</b> | Сек: <b id="auto">0</b> | Энергия: <b id="nrg">100</b>/<b id="max-nrg">100</b></div>
         <div id="buff" style="color:#ffe066;font-size:12px;font-weight:bold;height:16px"></div>
     </div>
     <div id="bag-box"><div id="pet-grid"></div></div>
-    <div id="wardrobe-box"><div id="w-hdr" style="font-size:12px;color:#ffd60a;font-weight:bold;margin-bottom:4px">Skins (x25):</div><div id="sk-grid"></div></div>
-    <div id="berry" onclick="tap()">&#127827;</div>
-    <div id="drop-info" style="font-size:12px;color:#ffe066;font-weight:bold;height:16px">Tap!</div>
+    <div id="wardrobe-box"><div style="font-size:12px;color:#ffd60a;font-weight:bold;margin-bottom:4px">Скины (x25):</div><div id="sk-grid"></div></div>
+    <div id="berry">&#127827;</div>
+    <div id="drop-info" style="font-size:12px;color:#ffe066;font-weight:bold;height:16px">Жми на клубнику!</div>
     <div class="shop">
-        <button class="btn" id="b-world" onclick="enterWorld2()" style="flex:1 1 95%;background:linear-gradient(90deg,#3a0ca3,#4cc9f0);border-color:#fff;font-size:13px">World 2 (X50)</button>
-        <button class="btn" id="b-reb" onclick="doRebirth()" style="flex:1 1 95%;background:linear-gradient(90deg,#ff9e00,#ff0054);border-color:#ffd60a;color:#fff;font-size:13px">Rebirth [0/25]</button>
-        <button class="btn" id="b-tap" onclick="buyTap()"><span id="t-tap">Tap +1</span> (<span id="c-tap">15</span>)</button>
-        <button class="btn" id="b-auto" onclick="buyAuto()"><span id="t-aut">Bush +1</span> (<span id="c-auto">50</span>)</button>
-        <button class="btn" id="b-nrg" onclick="buyNrg()" style="background:#005f73"><span id="t-nrg">Energy +50</span> (<span id="c-nrg">200</span>)</button>
-        <button class="btn" id="b-egg" onclick="buyEgg()" style="flex:1 1 95%;background:#7209b7;border-color:#f72585">Egg (500)</button>
-        <button class="btn w1-skin" id="b-gold" onclick="buySkin('gold',1000)" style="background:#b58300">Gold (1000)</button>
-        <button class="btn w1-skin" id="b-diam" onclick="buySkin('diamond',10000)" style="background:#0077b6">Diamond (10K)</button>
-        <button class="btn w1-skin" id="b-emer" onclick="buySkin('emerald',50000)" style="background:#2b9348">Emerald (50K)</button>
-        <button class="btn w1-skin" id="b-ruby" onclick="buySkin('ruby',1000000)" style="flex:1 1 65%;background:#9b0000">Ruby x50 (1M)</button>
-        <button class="btn w2-skin" id="b-obs" onclick="buySkin('obsidian',100000)" style="display:none;background:#3c096c;border-color:#c77dff">Obsidian x25 (100K)</button>
-        <button class="btn w2-skin" id="b-sap" onclick="buySkin('sapphire',10000000)" style="display:none;background:#023e8a;border-color:#90e0ef">Sapphire x50 (10M)</button>
-        <button class="btn w2-skin" id="b-pla" onclick="buySkin('platinum',1000000000)" style="display:none;flex:1 1 65%;background:#495057;border-color:#ffd60a">Platinum x100 (1B)</button>
-        <button class="btn" id="b-rst" onclick="resetAll()" style="flex:1 1 25%;background:#2b0611">Reset</button>
+        <button class="btn" id="b-world" onclick="enterWorld2()" style="flex:1 1 95%;background:linear-gradient(90deg,#3a0ca3,#4cc9f0);border-color:#fff;font-size:13px">Новый мир (X50) — Нужно 25 перерождений</button>
+        <button class="btn" id="b-reb" onclick="doRebirth()" style="flex:1 1 95%;background:linear-gradient(90deg,#ff9e00,#ff0054);border-color:#ffd60a;color:#fff;font-size:13px">Перерождение [0/25] -> X2 (100)</button>
+        <button class="btn" id="b-tap" onclick="buyTap()">Сила +1 (<span id="c-tap">15</span>)</button>
+        <button class="btn" id="b-auto" onclick="buyAuto()">Куст +1 (<span id="c-auto">50</span>)</button>
+        <button class="btn" id="b-nrg" onclick="buyNrg()" style="background:#005f73">Энергия +50 (<span id="c-nrg">200</span>)</button>
+        <button class="btn" id="b-egg" onclick="buyEgg()" style="flex:1 1 95%;background:#7209b7;border-color:#f72585">Купить Яйцо питомца (500)</button>
+        <button class="btn w1-skin" id="b-gold" onclick="buySkin('gold',1000)" style="background:#b58300">Золото (1000)</button>
+        <button class="btn w1-skin" id="b-diam" onclick="buySkin('diamond',10000)" style="background:#0077b6">Алмаз (10K)</button>
+        <button class="btn w1-skin" id="b-emer" onclick="buySkin('emerald',50000)" style="background:#2b9348">Изумруд (50K)</button>
+        <button class="btn w1-skin" id="b-ruby" onclick="buySkin('ruby',1000000)" style="flex:1 1 65%;background:#9b0000">Рубин x50 (1M)</button>
+        <button class="btn w2-skin" id="b-obs" onclick="buySkin('obsidian',100000)" style="display:none;background:#3c096c;border-color:#c77dff">Обсидиан x25 (100K)</button>
+        <button class="btn w2-skin" id="b-sap" onclick="buySkin('sapphire',10000000)" style="display:none;background:#023e8a;border-color:#90e0ef">Сапфир x50 (10M)</button>
+        <button class="btn w2-skin" id="b-pla" onclick="buySkin('platinum',1000000000)" style="display:none;flex:1 1 65%;background:#495057;border-color:#ffd60a">Платина x100 (1B)</button>
+        <button class="btn" onclick="resetAll()" style="flex:1 1 25%;background:#2b0611">Сброс</button>
     </div>
 </div>
 <script>
-var RU={
-    title:'\u0422\u0410\u041f\u0410\u0419 \u041f\u041e \u041a\u041b\u0423\u0411\u041d\u0418\u041a\u0415',
-    prof:'\u041f\u0440\u043e\u0444\u0438\u043b\u044c / \u0414\u0440\u0443\u0437\u044c\u044f',
-    cont:'\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c \u0438\u0433\u0440\u0443',
-    newg:'\u041d\u043e\u0432\u0430\u044f \u0438\u0433\u0440\u0430',
-    qst:'\u041d\u0435\u0434\u0435\u043b\u044c\u043d\u043e\u0435 \u0438\u0441\u043f\u044b\u0442\u0430\u043d\u0438\u0435 (100\u043a)',
-    dly:'\u0415\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u043f\u0440\u0438\u0437',
-    top:'\u0422\u043e\u043f 500 \u043b\u0443\u0447\u0448\u0438\u0445',
-    mp3:'\u0412\u044b\u0431\u0440\u0430\u0442\u044c \u043c\u0443\u0437\u044b\u043a\u0443 (.mp3)',
-    plr:'\u0418\u0433\u0440\u043e\u043a',
-    mnu:'\u0412 \u043c\u0435\u043d\u044e',
-    bag:'\u0420\u044e\u043a\u0437\u0430\u043a',
-    skn:'\u0421\u043a\u0438\u043d\u044b',
-    clk:'\u041a\u043b\u0438\u043a',
-    sec:'\u0421\u0435\u043a',
-    nrg:'\u042d\u043d\u0435\u0440\u0433\u0438\u044f',
-    tap1:'\u0421\u0438\u043b\u0430 +1',
-    aut1:'\u041a\u0443\u0441\u0442 +1',
-    nrg1:'\u042d\u043d\u0435\u0440\u0433\u0438\u044f +50',
-    egg:'\u041a\u0443\u043f\u0438\u0442\u044c \u042f\u0439\u0446\u043e \u043f\u0438\u0442\u043e\u043c\u0446\u0430 (500)',
-    rst:'\u0421\u0431\u0440\u043e\u0441',
-    ya:'\u042f\u043d\u0434\u0435\u043a\u0441 ID',
-    go:'Google \u0412\u0445\u043e\u0434',
-    bnd:'\u041f\u0440\u0438\u0432\u044f\u0437\u0430\u0442\u044c',
-    lgn:'\u0412\u043e\u0439\u0442\u0438',
-    sav:'\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043f\u0440\u043e\u0444\u0438\u043b\u044c',
-    add:'\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c',
-    clm:'\u0417\u0430\u0431\u0440\u0430\u0442\u044c!',
-    ccd:'\u041a\u043e\u0434',
-    lcd:'\u0417\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u043a\u043e\u0434',
-    frh:'\u0414\u0440\u0443\u0437\u044c\u044f (8-\u0437\u043d\u0430\u0447\u043d\u044b\u0439 ID):',
-    auh:'\u0412\u0445\u043e\u0434 \u0447\u0435\u0440\u0435\u0437 \u042f\u043d\u0434\u0435\u043a\u0441 / Google / \u041f\u043e\u0447\u0442\u0443:'
-};
-
 function $(id){return document.getElementById(id)||{style:{}}}
-document.title=RU.title;
-$('m-title').innerText=RU.title;$('btn-cont').innerText=RU.cont;$('btn-new').innerText=RU.newg;
-$('btn-qst').innerText=RU.qst;$('btn-dly').innerText=RU.dly;$('btn-top').innerText=RU.top;
-$('mp3-lbl').innerText=RU.mp3;$('btn-mnu').innerText=RU.mnu;$('lbl-clk').innerText=RU.clk;
-$('lbl-sec').innerText=RU.sec;$('lbl-nrg').innerText=RU.nrg;$('t-tap').innerText=RU.tap1;
-$('t-aut').innerText=RU.aut1;$('t-nrg').innerText=RU.nrg1;$('b-egg').innerText=RU.egg;
-$('b-rst').innerText=RU.rst;$('btn-ya').innerText=RU.ya;$('btn-go').innerText=RU.go;
-$('btn-bnd').innerText=RU.bnd;$('btn-lgn').innerText=RU.lgn;$('btn-savp').innerText=RU.sav;
-$('btn-addf').innerText=RU.add;$('claim-btn').innerText=RU.clm;$('btn-ccd').innerText=RU.ccd;
-$('btn-lcd').innerText=RU.lcd;$('sec-fr').innerText=RU.frh;$('sec-au').innerText=RU.auh;
 
 var score=0,maxScore=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0,rebirths=0,world=1;
 var skin='none',hasG=false,hasD=false,hasE=false,hasR=false,hasObs=false,hasSap=false,hasPla=false;
-var day=1,lastDate='',bMult=1,bSec=0,nick=RU.plr,ava='&#127827;',bg='',bgm=null,bag='',eqPet=-1,friends=[],qProg=0,mySkins=[],eqEvSkin=-1,uMail='';
+var day=1,lastDate='',bMult=1,bSec=0,nick='Игрок',ava='&#127827;',bg='',bgm=null,bag='',eqPet=-1,friends=[],qProg=0,mySkins=[],eqEvSkin=-1,uMail='';
 
-var evNames=['\u041f\u0440\u043e\u0442\u0438\u0432\u043e\u0433\u0430\u0437','\u0421\u043a\u0435\u043b\u0435\u0442','\u0422\u044b\u043a\u0432\u0430','\u0420\u0430\u0434\u0443\u0433\u0430','\u041a\u043e\u0442','\u0427\u0451\u0440\u043d\u0430\u044f','\u0420\u043e\u0431\u043e\u0442','\u0425\u043e\u043a\u043a\u0435\u0438\u0441\u0442','\u0411\u043e\u043a\u0441\u0451\u0440','\u041b\u044b\u0441\u044b\u0439 \u043a\u043e\u0442','\u041a\u0438\u0431\u0435\u0440','\u041f\u0440\u0438\u0437\u0440\u0430\u043a','\u0414\u0440\u0430\u043a\u043e\u043d','\u041d\u0438\u043d\u0434\u0437\u044f','\u041a\u043e\u0441\u043c\u043e\u0441','\u041f\u0438\u0440\u0430\u0442','\u041a\u043e\u0440\u043e\u043b\u044c','\u0412\u0430\u043c\u043f\u0438\u0440','\u041d\u041b\u041e','\u041e\u0433\u043e\u043d\u044c'];
+var evNames='Противогаз|Скелет|Тыква|Радуга|Кот|Чёрная|Робот|Хоккеист|Боксёр|Лысый кот|Кибер|Призрак|Дракон|Ниндзя|Космос|Пират|Король|Вампир|НЛО|Огонь'.split('|');
 var evIcons='&#127827;&#128567;|&#128128;|&#127875;|&#127752;&#127827;|&#128049;|&#128420;&#127827;|&#129302;|&#127954;&#127827;|&#129354;&#127827;|&#128008;&#9829;|&#128374;&#127827;|&#128123;|&#128009;|&#129399;|&#128640;&#127827;|&#127988;&#8205;&#9760;&#65039;|&#128081;&#127827;|&#129499;|&#128125;|&#128293;&#127827;'.split('|');
-var prizes=['+100','x2 (60\u0441)','+500','+2 \u0441\u0438\u043b\u0430','x3 (60\u0441)','+1 \u043a\u0443\u0441\u0442','+5000'];
+var prizes='+100|x2 (60с)|+500|+2 сила|x3 (60с)|+1 куст|+5000'.split('|');
 var avas='&#127827;|&#128526;|&#128081;|&#128049;|&#129302;|&#128293;'.split('|');
-var bgIds='|bg-night|bg-forest|bg-royal'.split('|'),bgNms=['\u042f\u0433\u043e\u0434\u0430','\u041d\u043e\u0447\u044c','\u041b\u0435\u0441','\u041d\u0435\u043e\u043d'];
-var pRar=['\u041e\u0431\u044b\u0447\u043d\u044b\u0439','\u0420\u0435\u0434\u043a\u0438\u0439','\u0421\u0432\u0435\u0440\u0445\u0440\u0435\u0434\u043a\u0438\u0439','\u042d\u043f\u0438\u043a','\u041c\u0438\u0444\u0438\u043a','\u041b\u0435\u0433\u0435\u043d\u0434\u0430'];
-var pNam=['\u0426\u044b\u043f\u043b\u0451\u043d\u043e\u043a','\u0421\u043e\u0431\u0430\u043a\u0430','\u041f\u0430\u043d\u0434\u0430','\u0422\u0438\u0433\u0440','\u041a\u0430\u0440\u0430\u0441\u044c','\u041a\u043e\u0442'];
+var bgIds='|bg-night|bg-forest|bg-royal'.split('|'),bgNms='Ягода|Ночь|Лес|Неон'.split('|');
+var pRar='Обычный|Редкий|Сверхредкий|Эпик|Мифик|Легенда'.split('|');
+var pNam='Цыплёнок|Собака|Панда|Тигр|Карась|Кот'.split('|');
 var pIco='&#128037;|&#128054;|&#128060;|&#128047;|&#128031;|&#128049;'.split('|');
 var pMul='1.2|1.5|3|5|10|20'.split('|');
 
@@ -204,10 +160,25 @@ var rebSteps='1|2.5|5'.split('|');
 function getRebCost(){if(rebirths<rebBase.length)return +rebBase.slice(rebirths,rebirths+1).shift();var idx=rebirths-rebBase.length,pow=Math.floor(idx/3)+6;return(+rebSteps.slice(idx%3,(idx%3)+1).shift())*Math.pow(10,pow)}
 function rebMult(){return Math.pow(2,rebirths)}
 function worldMult(){return world===2?50:1}
-function getPr(){var s=Math.max(Math.floor(score),Math.floor(maxScore));if(s>=1000000)return{n:'\u0411\u043e\u0433',m:10,nx:'MAX',cur:s};if(s>=250000)return{n:'\u041b\u0435\u0433\u0435\u043d\u0434\u0430',m:5,nx:1000000,cur:s};if(s>=50000)return{n:'\u041f\u0440\u043e',m:3,nx:250000,cur:s};if(s>=10000)return{n:'\u041f\u043e\u043b\u0443-\u043f\u0440\u043e',m:2,nx:50000,cur:s};if(s>=1000)return{n:'\u041b\u044e\u0431\u0438\u0442\u0435\u043b\u044c',m:1.5,nx:10000,cur:s};return{n:'\u041d\u043e\u0432\u0438\u0447\u043e\u043a',m:1,nx:1000,cur:s}}
+function getPr(){var s=Math.max(Math.floor(score),Math.floor(maxScore));if(s>=1000000)return{n:'Бог',m:10,nx:'MAX',cur:s};if(s>=250000)return{n:'Легенда',m:5,nx:1000000,cur:s};if(s>=50000)return{n:'Про',m:3,nx:250000,cur:s};if(s>=10000)return{n:'Полу-про',m:2,nx:50000,cur:s};if(s>=1000)return{n:'Любитель',m:1.5,nx:10000,cur:s};return{n:'Новичок',m:1,nx:1000,cur:s}}
 
-var wav='';try{var r=11025,l=900,b=new ArrayBuffer(44+l),v=new DataView(b);function w(o,s){for(var i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))}w(0,'RIFF');v.setUint32(4,36+l,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,r,true);v.setUint32(28,r,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,'data');v.setUint32(40,l,true);for(var i=0;i<l;i++){var t=i/r,f=(t<0.015?(Math.random()*2-1)*Math.exp(-t*250)*110:0)+(t<0.05?Math.sin(1100*t)*Math.exp(-t*100)*90:0);v.setUint8(44+i,Math.max(0,Math.min(255,128+f)))}var bin='',u=new Uint8Array(b);for(var j=0;j<u.length;j++)bin+=String.fromCharCode(u[j]);wav='data:audio/wav;base64,'+btoa(bin)}catch(e){}
-function snd(){try{if(wav){var a=new Audio(wav);a.playbackRate=0.9+Math.random()*0.2;a.play()}}catch(e){}}
+var actx=null;
+function snd(){
+    try{
+        var C=window.AudioContext||window.webkitAudioContext;
+        if(!C)return;
+        if(!actx)actx=new C();
+        if(actx.state==='suspended')actx.resume();
+        var o=actx.createOscillator(),g=actx.createGain();
+        o.type='triangle';
+        o.frequency.setValueAtTime(520+Math.random()*140,actx.currentTime);
+        o.frequency.exponentialRampToValueAtTime(140,actx.currentTime+0.06);
+        g.gain.setValueAtTime(0.25,actx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01,actx.currentTime+0.06);
+        o.connect(g);g.connect(actx.destination);
+        o.start();o.stop(actx.currentTime+0.06);
+    }catch(e){}
+}
 
 function getObj(){if(score>maxScore)maxScore=score;return{uid:uid,score:Math.floor(score),maxScore:Math.floor(maxScore),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,rebirths:rebirths,world:world,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,hasObs:hasObs,hasSap:hasSap,hasPla:hasPla,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet,friends:friends,qProg:Math.floor(qProg),mySkins:mySkins,eqEvSkin:eqEvSkin,uMail:uMail}}
 function setObj(d){if(!d)return;if(is8Id(String(d.uid)))uid=String(d.uid);score=+d.score||0;maxScore=Math.max(score,+d.maxScore||0);pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;rebirths=Math.min(25,+d.rebirths||0);world=(d.world===2&&rebirths>=25)?2:1;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;hasObs=!!d.hasObs;hasSap=!!d.hasSap;hasPla=!!d.hasPla;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick&&d.nick.indexOf('?')===-1)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet;if(Array.isArray(d.friends))friends=d.friends;qProg=+d.qProg||0;if(Array.isArray(d.mySkins))mySkins=d.mySkins;if(typeof d.eqEvSkin==='number')eqEvSkin=d.eqEvSkin;if(d.uMail)uMail=d.uMail}
@@ -217,91 +188,26 @@ try{var sv=JSON.parse(localStorage.getItem('berry_v3'));if(sv)setObj(sv);if(loca
 function save(){try{if(score>maxScore)maxScore=score;localStorage.setItem('berry_v3',JSON.stringify(getObj()))}catch(e){}}
 function petMult(){return(eqPet>=0&&eqPet<=5)?+pMul.slice(eqPet,eqPet+1).shift():1}
 function skinMult(){if(eqEvSkin>=0&&eqEvSkin<20)return 25;return skin==='gold'?2:skin==='diamond'?5:skin==='emerald'?15:skin==='ruby'?50:skin==='obsidian'?25:skin==='sapphire'?50:skin==='platinum'?100:1}
+function mult(){return skinMult()*bMult*getPr().m*petMult()*rebMult()*worldMult()}
+</script>
 <script>
-function fmtNum(n){
-    if(n>=1e30)return Math.round(n/1e28)/100+'No';
-    if(n>=1e27)return Math.round(n/1e25)/100+'Oc';
-    if(n>=1e24)return Math.round(n/1e22)/100+'Sp';
-    if(n>=1e21)return Math.round(n/1e19)/100+'Sx';
-    if(n>=1e18)return Math.round(n/1e16)/100+'Qi';
-    if(n>=1e15)return Math.round(n/1e13)/100+'Qa';
-    if(n>=1e12)return Math.round(n/1e10)/100+'T';
-    if(n>=1e9)return Math.round(n/1e7)/100+'B';
-    if(n>=1e6)return Math.round(n/1e4)/100+'M';
-    if(n>=1e4)return Math.round(n/10)/100+'K';
-    return Math.floor(n);
-}
-
-function draw(){
-    try{
-        if(score>maxScore)maxScore=score;
-        var pr=getPr(),rm=rebMult(),rc=getRebCost(),wm=worldMult();
-        document.body.className=(world===2?'world2':bg);
-        $('btn-prof-top').innerHTML=RU.prof+' (<span id="fr-cnt">'+friends.length+'</span>)<span id="req-b" style="color:#ffe066"></span>';
-        $('btn-bag').innerHTML=RU.bag+' (<span id="bag-cnt">'+bag.length+'</span>)';
-        $('btn-skn').innerHTML=RU.skn+' (<span id="sk-cnt">'+mySkins.length+'</span>/20)';
-        $('m-ava').innerHTML=ava;$('g-user').innerHTML=ava+' '+nick+(world===2?' [\u041c\u0418\u0420 2: X50]':'');
-        $('m-rank').innerText='\u0420\u0430\u043d\u0433: '+pr.n+' (x'+pr.m+')';
-        $('m-reb').innerText='\u041f\u0435\u0440\u0435\u0440\u043e\u0436\u0434\u0435\u043d\u0438\u0439: '+rebirths+' / 25 (x'+fmtNum(rm)+')'+(world===2?' | \u041c\u0418\u0420 2':'');
-        $('g-rank').innerText=(world===2?'\u041c\u0418\u0420 2 (X50) | ':'')+pr.n+' | \u041f\u0435\u0440\u0435\u0440\u043e\u0436\u0434: '+rebirths+'/25';
-        $('g-pet').innerHTML=(eqPet>=0&&eqPet<=5)?('\u041f\u0438\u0442\u043e\u043c\u0435\u0446: '+pIco.slice(eqPet,eqPet+1).shift()+' '+pNam.slice(eqPet,eqPet+1).shift()+' (x'+petMult()+')'):'\u041f\u0438\u0442\u043e\u043c\u0435\u0446: \u041d\u0435\u0442 (x1)';
-        $('score').innerText=fmtNum(score);$('m-info').innerText=nick+' (ID: '+uid+') | \u0421\u0447\u0451\u0442: '+fmtNum(score);
-        $('pwr').innerText=fmtNum(Math.round(pwr*mult()*10)/10);$('auto').innerText=fmtNum(auto*rm*wm);$('nrg').innerText=Math.floor(nrg);$('max-nrg').innerText=maxNrg;
-        $('c-tap').innerText=fmtNum(cTap);$('c-auto').innerText=fmtNum(cAuto);$('c-nrg').innerText=fmtNum(cNrg);
-        $('buff').innerText=bSec>0?('\u0411\u041e\u041d\u0423\u0421 x'+bMult+': '+bSec+'\u0441'):'';
-
-        var bW=$('b-world');
-        if(rebirths<25){bW.disabled=true;bW.innerText='\u041d\u043e\u0432\u044b\u0439 \u043c\u0438\u0440 (X50) — \u041d\u0443\u0436\u043d\u043e 25 \u043f\u0435\u0440\u0435\u0440\u043e\u0436\u0434. ['+rebirths+'/25]'}
-        else if(world===1){bW.disabled=false;bW.innerText='\u0412\u043e\u0439\u0442\u0438 \u0432 \u041d\u043e\u0432\u044b\u0439 \u043c\u0438\u0440 (X50) [\u0421\u0431\u0440\u043e\u0441 \u0432\u0441\u0435\u0433\u043e]'}
-        else{bW.disabled=true;bW.innerText='\u0412\u044b \u0432 \u041d\u043e\u0432\u043e\u043c \u043c\u0438\u0440\u0435 (X50) — \u0411\u043e\u043d\u0443\u0441 \u0430\u043a\u0442\u0438\u0432\u0435\u043d!'}
-
-        var bReb=$('b-reb');
-        if(rebirths>=25){bReb.disabled=true;bReb.innerText='\u041c\u0410\u041a\u0421. \u041f\u0415\u0420\u0415\u0420\u041e\u0416\u0414\u0415\u041d\u0418\u0415 25/25 (x'+fmtNum(rm)+')'}
-        else{bReb.disabled=score<rc;bReb.innerText='\u041f\u0435\u0440\u0435\u0440\u043e\u0436\u0434\u0435\u043d\u0438\u0435 ['+rebirths+'/25] -> X2 ('+fmtNum(rc)+')'}
-
-        $('b-tap').disabled=score<cTap;$('b-auto').disabled=score<cAuto;$('b-nrg').disabled=score<cNrg;$('b-egg').disabled=score<500;
-        var bEl=$('berry');
-        if(eqEvSkin>=0&&eqEvSkin<20){bEl.className=eqEvSkin===5?'ev-black':(eqEvSkin===3?'ev-rainbow':'ev-skin');bEl.innerHTML='<div style="font-size:58px;line-height:1">'+evIcons.slice(eqEvSkin,eqEvSkin+1).shift()+'</div><div style="font-size:11px;font-weight:bold;color:#fff;margin-top:3px">'+evNames.slice(eqEvSkin,eqEvSkin+1).shift()+'</div>'}
-        else{bEl.className=skin==='none'?'':skin;bEl.innerHTML='&#127827;'}
-
-        var w1s=document.getElementsByClassName('w1-skin'),w2s=document.getElementsByClassName('w2-skin');
-        for(var i=0;i<w1s.length;i++)w1s[i].style.display=(world===1)?'inline-block':'none';
-        for(var j=0;j<w2s.length;j++)w2s[j].style.display=(world===2)?'inline-block':'none';
-
-        $('b-gold').disabled=!hasG&&score<1000;$('b-gold').innerText=hasG?(skin==='gold'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0417\u043e\u043b\u043e\u0442\u043e':'\u0417\u043e\u043b\u043e\u0442\u043e (x2)'):'\u0417\u043e\u043b\u043e\u0442\u043e (1000)';
-        $('b-diam').disabled=!hasD&&score<10000;$('b-diam').innerText=hasD?(skin==='diamond'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0410\u043b\u043c\u0430\u0437':'\u0410\u043b\u043c\u0430\u0437 (x5)'):'\u0410\u043b\u043c\u0430\u0437 (10K)';
-        $('b-emer').disabled=!hasE&&score<50000;$('b-emer').innerText=hasE?(skin==='emerald'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0418\u0437\u0443\u043c\u0440\u0443\u0434':'\u0418\u0437\u0443\u043c\u0440\u0443\u0434 (x15)'):'\u0418\u0437\u0443\u043c\u0440\u0443\u0434 (50K)';
-        $('b-ruby').disabled=!hasR&&score<1000000;$('b-ruby').innerText=hasR?(skin==='ruby'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0420\u0443\u0431\u0438\u043d':'\u0420\u0443\u0431\u0438\u043d (x50)'):'\u0420\u0443\u0431\u0438\u043d x50 (1M)';
-        $('b-obs').disabled=!hasObs&&score<100000;$('b-obs').innerText=hasObs?(skin==='obsidian'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u041e\u0431\u0441\u0438\u0434\u0438\u0430\u043d':'\u041e\u0431\u0441\u0438\u0434\u0438\u0430\u043d (x25)'):'\u041e\u0431\u0441\u0438\u0434\u0438\u0430\u043d x25 (100K)';
-        $('b-sap').disabled=!hasSap&&score<10000000;$('b-sap').innerText=hasSap?(skin==='sapphire'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0421\u0430\u043f\u0444\u0438\u0440':'\u0421\u0430\u043f\u0444\u0438\u0440 (x50)'):'\u0421\u0430\u043f\u0444\u0438\u0440 x50 (10M)';
-        $('b-pla').disabled=!hasPla&&score<1000000000;$('b-pla').innerText=hasPla?(skin==='platinum'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u041f\u043b\u0430\u0442\u0438\u043d\u0443':'\u041f\u043b\u0430\u0442\u0438\u043d\u0430 (x100)'):'\u041f\u043b\u0430\u0442\u0438\u043d\u0430 x100 (1B)';
-    }catch(e){}
-}
-draw();
-
-function enterWorld2(){
-    if(rebirths<25||world===2)return;
-    snd();world=2;
-    score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;
-    skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;
-$('drop-info').innerText='\u041d\u041e\u0412\u042b\u0419 \u041c\u0418\u0420 (X50) \u0410\u041a\u0422\u0418\u0412\u0415\u041d!';
-    save();<script>
 function goGame(rst){snd();if(rst)resetAll();$('menu').style.display='none';$('game').style.display='flex';draw()}
 function goMenu(){snd();$('bag-box').style.display='none';$('wardrobe-box').style.display='none';$('game').style.display='none';$('menu').style.display='flex';draw();syncWorld()}
 function toggleBox(id){snd();var el=$(id),op=el.style.display==='block';$('quest-box').style.display='none';$('prof-box').style.display='none';$('daily-box').style.display='none';$('top-box').style.display='none';if(!op){if(id==='quest-box')renderQuest();if(id==='prof-box')renderProf();if(id==='daily-box')renderDaily();if(id==='top-box')renderTop();el.style.display='block'}}
 
-function renderQuest(){var cur=Math.min(100000,Math.floor(qProg)),pct=Math.min(100,Math.floor((cur/100000)*100));$('q-fill').style.width=pct+'%';$('q-txt').innerText=cur+' / 100 000 ('+pct+'%)';$('q-col').innerText=mySkins.length;var btn=$('q-claim');if(mySkins.length>=20){btn.disabled=true;btn.innerText='20/20'}else{btn.disabled=cur<100000;btn.innerText=cur>=100000?'\u0417\u0430\u0431\u0440\u0430\u0442\u044c (x25)!':'100 000'}}
-function claimQuest(){if(qProg<100000||mySkins.length>=20)return;snd();var pool=[];for(var i=0;i<20;i++){if(mySkins.indexOf(i)===-1)pool.push(i)}var idx=Math.floor(Math.random()*pool.length),winId=pool.slice(idx,idx+1).shift();mySkins.push(winId);eqEvSkin=winId;qProg=0;$('q-res').innerHTML='+ '+evIcons.slice(winId,winId+1).shift()+' '+evNames.slice(winId,winId+1).shift();save();draw();renderQuest()}
+function renderQuest(){var cur=Math.min(100000,Math.floor(qProg)),pct=Math.min(100,Math.floor((cur/100000)*100));$('q-fill').style.width=pct+'%';$('q-txt').innerText=cur+' / 100 000 ('+pct+'%)';$('q-col').innerText=mySkins.length;var btn=$('q-claim');if(mySkins.length>=20){btn.disabled=true;btn.innerText='Все 20 скинов собраны!'}else{btn.disabled=cur<100000;btn.innerText=cur>=100000?'Забрать скин (x25)!':'Собери 100 000 клубник'}}
+function claimQuest(){if(qProg<100000||mySkins.length>=20)return;snd();var pool=[];for(var i=0;i<20;i++){if(mySkins.indexOf(i)===-1)pool.push(i)}var idx=Math.floor(Math.random()*pool.length),winId=pool.slice(idx,idx+1).shift();mySkins.push(winId);eqEvSkin=winId;qProg=0;$('q-res').innerHTML='Выпал: '+evIcons.slice(winId,winId+1).shift()+' '+evNames.slice(winId,winId+1).shift();save();draw();renderQuest()}
 function toggleWardrobe(){snd();$('bag-box').style.display='none';var w=$('wardrobe-box'),op=w.style.display==='block';w.style.display=op?'none':'block';if(!op)renderWardrobe()}
-function renderWardrobe(){var g=$('sk-grid');g.innerHTML='';if(!mySkins.length){g.innerHTML='<div style="font-size:12px;color:#ffb3c1">0 / 20</div>';return}for(var i=0;i<mySkins.length;i++)(function(id){var c=document.createElement('div');c.className='pet'+(eqEvSkin===id?' eq':'');c.innerHTML='<div style="font-size:20px">'+evIcons.slice(id,id+1).shift()+'</div><b>'+evNames.slice(id,id+1).shift()+'</b><br><b style="color:#ffe066">x25</b>';c.onclick=function(){snd();eqEvSkin=(eqEvSkin===id)?-1:id;save();draw();renderWardrobe()};g.appendChild(c)})(mySkins.slice(i,i+1).shift())}
+function renderWardrobe(){var g=$('sk-grid');g.innerHTML='';if(!mySkins.length){g.innerHTML='<div style="font-size:12px;color:#ffb3c1">Пока нет скинов!</div>';return}for(var i=0;i<mySkins.length;i++)(function(id){var c=document.createElement('div');c.className='pet'+(eqEvSkin===id?' eq':'');c.innerHTML='<div style="font-size:20px">'+evIcons.slice(id,id+1).shift()+'</div><b>'+evNames.slice(id,id+1).shift()+'</b><br><b style="color:#ffe066">x25</b>';c.onclick=function(){snd();eqEvSkin=(eqEvSkin===id)?-1:id;save();draw();renderWardrobe()};g.appendChild(c)})(mySkins.slice(i,i+1).shift())}
 
-function renderProf(){var pr=getPr();$('p-id').innerText='ID: '+uid;$('p-rank').innerText='\u0420\u0430\u043d\u0433: '+pr.n+' | R: '+rebirths+'/25';$('nick-inp').value=nick;$('mail-inp').value=uMail;$('qr-area').style.display='none';var ar=$('ava-row');ar.innerHTML='';for(var i=0;i<avas.length;i++)(function(a){var b=document.createElement('button');b.className='opt'+(ava===a?' sel':'');b.innerHTML=a;b.onclick=function(){snd();ava=a;renderProf();draw()};ar.appendChild(b)})(avas.slice(i,i+1).shift());var br=$('bg-row');br.innerHTML='';for(var j=0;j<bgIds.length;j++)(function(id,nm){var b=document.createElement('button');b.className='opt'+(bg===id?' sel':'');b.style.fontSize='12px';b.innerText=nm;b.onclick=function(){snd();bg=id;renderProf();draw()};br.appendChild(b)})(bgIds.slice(j,j+1).shift(),bgNms.slice(j,j+1).shift());renderFriends()}
+function renderProf(){var pr=getPr();$('p-id').innerText='Твой ID: '+uid;$('p-rank').innerText='Ранг: '+pr.n+' | Перерождений: '+rebirths+'/25';$('nick-inp').value=nick;$('mail-inp').value=uMail;$('qr-area').style.display='none';var ar=$('ava-row');ar.innerHTML='';for(var i=0;i<avas.length;i++)(function(a){var b=document.createElement('button');b.className='opt'+(ava===a?' sel':'');b.innerHTML=a;b.onclick=function(){snd();ava=a;renderProf();draw()};ar.appendChild(b)})(avas.slice(i,i+1).shift());var br=$('bg-row');br.innerHTML='';for(var j=0;j<bgIds.length;j++)(function(id,nm){var b=document.createElement('button');b.className='opt'+(bg===id?' sel':'');b.style.fontSize='12px';b.innerText=nm;b.onclick=function(){snd();bg=id;renderProf();draw()};br.appendChild(b)})(bgIds.slice(j,j+1).shift(),bgNms.slice(j,j+1).shift());renderFriends()}
 function saveProf(){snd();var v=$('nick-inp').value.trim();if(v)nick=v;save();draw();$('prof-box').style.display='none';syncWorld()}
-function showQr(){snd();var c=makeCode();$('code-inp').value=c;var h=location.href,q=h.indexOf('?'),u=q!==-1?h.substring(0,q):h,p=u.indexOf('http')===0?u+'?code='+encodeURIComponent(c):c;$('qr-img').src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data='+encodeURIComponent(p);$('qr-area').style.display='block'}
+function showQr(){snd();var c=makeCode();$('code-inp').value=c;var h=location.href,q=h.indexOf('?'),u=q!==-1?h.substring(0,q):h,p=u.indexOf('http')===0?u+'?code='+encodeURIComponent(c):c;$('qr-img').src='https://qrserver.com'}
 function copyCode(){snd();var i=$('code-inp');i.value=makeCode();i.select();try{document.execCommand('copy')}catch(e){}}
 function loadCode(){snd();if(parseCode($('code-inp').value)){draw();renderProf();$('prof-box').style.display='none';syncWorld()}}
-</script><script>
-var blobUrl='https://jsonblob.com/api/jsonBlob/1345891204981202944';
+</script>
+<script>
+var blobUrl='https://jsonblob.com';
 var cloudCache={users:{},mails:{},reqs:[]};
 try{var cc=JSON.parse(localStorage.getItem('berry_cloud_cache'));if(cc&&cc.users)cloudCache=cc}catch(e){}
 function saveCache(){try{localStorage.setItem('berry_cloud_cache',JSON.stringify(cloudCache))}catch(e){}}
@@ -323,33 +229,33 @@ function cloudCall(modFn,cb){
 function safeMail(m){return m.toLowerCase().trim()}
 function socialLogin(prov){
     snd();
-    var pName=(prov==='yandex')?'\u042f\u043d\u0434\u0435\u043a\u0441':'Google';
+    var pName=(prov==='yandex')?'Яндекс':'Google';
     var dom=(prov==='yandex')?'@yandex.ru':'@gmail.com';
-    var em=prompt(pName+' ('+dom+'):',$('mail-inp').value.trim()||('player'+uid.slice(0,4)+dom));
+    var em=prompt('Вход через '+pName+' ('+dom+'):',$('mail-inp').value.trim()||('player'+uid.slice(0,4)+dom));
     if(!em)return;
     em=em.trim();if(em.indexOf('@')===-1)em+=dom;
-    var pw=prompt('Pass ('+em+'):','');
-    if(!pw||pw.length<3){$('mail-msg').innerText='Min 3!';return}
-    $('mail-inp').value=em;$('pass-inp').value=pw;$('mail-msg').innerText='...';
+    var pw=prompt('Пароль для '+em+':','');
+    if(!pw||pw.length<3){$('mail-msg').innerText='Пароль от 3 символов!';return}
+    $('mail-inp').value=em;$('pass-inp').value=pw;$('mail-msg').innerText='Входим...';
     cloudCall(function(d){
         var ex=d.mails[safeMail(em)];
         if(ex&&ex.data){
-            if(ex.pass===pw){setObj(ex.data);uMail=em;try{localStorage.setItem('berry_auto_auth',JSON.stringify({m:em,p:pw}))}catch(e){}save();draw();$('mail-msg').innerText='OK ('+pName+')!'}
-            else $('mail-msg').innerText='Error pass!';
+            if(ex.pass===pw){setObj(ex.data);uMail=em;try{localStorage.setItem('berry_auto_auth',JSON.stringify({m:em,p:pw}))}catch(e){}save();draw();$('mail-msg').innerText='Вход выполнен ('+pName+')!'}
+            else $('mail-msg').innerText='Неверный пароль!';
             return false;
         }else{
             uMail=em;try{localStorage.setItem('berry_auto_auth',JSON.stringify({m:em,p:pw}))}catch(e){}save();
             d.mails[safeMail(em)]={pass:pw,prov:prov,data:getObj()};
-            $('mail-msg').innerText='Saved ('+pName+')!';
+            $('mail-msg').innerText='Привязано ('+pName+')!';
             return true;
         }
     },function(){renderProf();syncWorld()});
 }
 
-function mailBind(){snd();var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();if(m.indexOf('@')===-1||p.length<3){$('mail-msg').innerText='Email + Pass!';return}uMail=m;try{localStorage.setItem('berry_auto_auth',JSON.stringify({m:m,p:p}))}catch(e){}save();$('mail-msg').innerText='...';cloudCall(function(d){d.mails[safeMail(m)]={pass:p,data:getObj()};return true},function(){$('mail-msg').innerText='OK!'})}
-function mailLogin(silent){if(!silent)snd();var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();if(m.indexOf('@')===-1||!p)return;cloudCall(null,function(d){var res=d.mails[safeMail(m)];if(!res||!res.data||res.pass!==p){if(!silent)$('mail-msg').innerText='Error!';return}setObj(res.data);uMail=m;try{localStorage.setItem('berry_auto_auth',JSON.stringify({m:m,p:p}))}catch(e){}save();draw();if(!silent){renderProf();$('mail-msg').innerText='OK!'}syncWorld()})}
+function mailBind(){snd();var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();if(m.indexOf('@')===-1||p.length<3){$('mail-msg').innerText='Введи Email и пароль!';return}uMail=m;try{localStorage.setItem('berry_auto_auth',JSON.stringify({m:m,p:p}))}catch(e){}save();$('mail-msg').innerText='Сохраняем...';cloudCall(function(d){d.mails[safeMail(m)]={pass:p,data:getObj()};return true},function(){$('mail-msg').innerText='Сохранено!'})}
+function mailLogin(silent){if(!silent)snd();var m=$('mail-inp').value.trim(),p=$('pass-inp').value.trim();if(m.indexOf('@')===-1||!p)return;cloudCall(null,function(d){var res=d.mails[safeMail(m)];if(!res||!res.data||res.pass!==p){if(!silent)$('mail-msg').innerText='Ошибка входа!';return}setObj(res.data);uMail=m;try{localStorage.setItem('berry_auto_auth',JSON.stringify({m:m,p:p}))}catch(e){}save();draw();if(!silent){renderProf();$('mail-msg').innerText='Успешный вход!'}syncWorld()})}
 
-function getDevName(){var ua=navigator.userAgent||'';if(ua.indexOf('iPhone')!==-1||ua.indexOf('iPad')!==-1)return 'iOS';if(ua.indexOf('Android')!==-1)return 'Android';return 'PC'}
+function getDevName(){var ua=navigator.userAgent||'';if(ua.indexOf('iPhone')!==-1||ua.indexOf('iPad')!==-1)return 'iOS';if(ua.indexOf('Android')!==-1)return 'Android';return 'ПК'}
 function syncWorld(cb){
     var wTag=(world===2)?'W2|':'';
     var me={id:uid,n:ava+' '+nick+' ['+wTag+'R'+rebirths+']',p:Math.floor(score),dev:getDevName(),ts:Date.now()};
@@ -361,22 +267,57 @@ function syncReqs(mod,cb){cloudCall(function(d){if(mod){d.reqs=mod(d.reqs).slice
 try{var aa=JSON.parse(localStorage.getItem('berry_auto_auth'));if(aa&&aa.m&&aa.p){$('mail-inp').value=aa.m;$('pass-inp').value=aa.p;mailLogin(true)}}catch(e){}
 </script>
 <script>
-function sendReq(){snd();var v=$('fr-inp').value.trim();if(!is8Id(v)||v===uid||friends.indexOf(v)!==-1)return;$('fr-msg').innerText='...';syncReqs(function(a){a.push({from:uid,to:v,name:ava+' '+nick,st:'wait'});return a},function(){$('fr-inp').value='';$('fr-msg').innerText='OK!'})}
+function sendReq(){snd();var v=$('fr-inp').value.trim();if(!is8Id(v)||v===uid||friends.indexOf(v)!==-1)return;$('fr-msg').innerText='Отправка...';syncReqs(function(a){a.push({from:uid,to:v,name:ava+' '+nick,st:'wait'});return a},function(){$('fr-inp').value='';$('fr-msg').innerText='Заявка отправлена!'})}
 function answerReq(fid,ok){snd();if(ok&&friends.indexOf(fid)===-1){friends.push(fid);save();draw()}syncReqs(function(a){var n=[];for(var i=0;i<a.length;i++){var it=a.slice(i,i+1).shift();if(!it)continue;if(it.from===fid&&it.to===uid){if(ok)n.push({from:uid,to:fid,name:ava+' '+nick,st:'ok'})}else n.push(it)}return n},function(){renderFriends()})}
 function delFriend(fid){snd();var n=[];for(var i=0;i<friends.length;i++){var x=friends.slice(i,i+1).shift();if(x!==fid)n.push(x)}friends=n;save();draw();renderFriends()}
 
 function renderFriends(){
-    $('fr-my-id').innerText='ID: '+uid+' ['+getDevName()+']';var rB=$('req-list'),fB=$('fr-list');
+    $('fr-my-id').innerText='Твой ID: '+uid+' ['+getDevName()+']';var rB=$('req-list'),fB=$('fr-list');
     syncReqs(function(a){var cl=[];for(var i=0;i<a.length;i++){var it=a.slice(i,i+1).shift();if(!it)continue;if(it.to===uid&&it.st==='ok'){if(friends.indexOf(it.from)===-1){friends.push(it.from);save();draw()}}else cl.push(it)}return cl},function(a){
+        var inc=[];for(var j=0;j<a.length;j++){var it=a.slice(j,j+1).shift();if(it&&it.to===uid&&it.st==='wait')inc.push(it)}
+        $('req-b').innerText=inc.length?(' [+'+inc.length+']'):'';rB.innerHTML='';
+        for(var k=0;k<inc.length;k++)(function(req){var r=document.createElement('div');r.className='row';r.innerHTML='<span style="font-size:12px">'+req.name+' (#'+req.from+')</span>';var w=document.createElement('span'),b1=document.createElement('button');b1.className='btn';b1.style.padding='3px 6px';b1.style.background='#2b9348';b1.innerText='Да';b1.onclick=function(){answerReq(req.from,true)};var b2=document.createElement('button');b2.className='btn';b2.style.padding='3px 6px';b2.style.marginLeft='4px';b2.style.background='#6a040f';b2.innerText='X';b2.onclick=function(){answerReq(req.from,false)};w.appendChild(b1);w.appendChild(b2);r.appendChild(w);rB.appendChild(r)})(inc.slice(k,k+1).shift());
+        syncWorld(function(c,m){fB.innerHTML='';for(var z=0;z<friends.length;z++)(function(fid){var f=m[fid],r=document.createElement('div');r.className='row';r.innerHTML='<span style="font-size:12px">'+(f?(f.n+' (#'+fid+') ['+(f.dev||'')+'] — '+fmtNum(f.p)):('ID:'+fid))+'</span>';var db=document.createElement('button');db.className='btn';db.style.flex='0';db.style.padding='3px 7px';db.style.background='#6a040f';db.innerText='X';db.onclick=function(){delFriend(fid)};r.appendChild(db);fB.appendChild(r)})(friends.slice(z,z+1).shift())});
+    });
+}
+
+function renderDaily(){var g=$('days-grid');g.innerHTML='';var td=new Date().toISOString().slice(0,10),dn=lastDate===td;for(var i=0;i<7;i++){var c=document.createElement('div');c.className='card'+((i+1<day||(i+1===day&&dn))?' done':(i+1===day?' act':''));c.innerHTML='<b>День '+(i+1)+'</b><br>'+prizes.slice(i,i+1).shift();g.appendChild(c)}$('claim-btn').disabled=dn}
+function claimDaily(){var td=new Date().toISOString().slice(0,10);if(lastDate===td)return;snd();if(day===1){score+=100;qProg+=100}else if(day===2){bMult=2;bSec=60}else if(day===3){score+=500;qProg+=500}else if(day===4)pwr+=2;else if(day===5){bMult=3;bSec=60}else if(day===6)auto+=1;else if(day===7){score+=5000;qProg+=5000}lastDate=td;day=day>=7?1:day+1;save();draw();renderDaily()}
+
+function renderTop(){
+    var b=$('top-box');b.innerHTML='<div style="font-size:11px;color:#4cc9f0;margin-bottom:5px">Обновляем Топ 500...</div>';
+    syncWorld(function(ls){
+        b.innerHTML='<div style="font-size:11px;color:#4cc9f0;margin-bottom:5px;font-weight:bold">Топ 500 лучших ('+ls.length+')</div>';
+        var now=Date.now();
+        for(var j=0;j<ls.length;j++){
+            var it=ls.slice(j,j+1).shift(),r=document.createElement('div');r.className=(it.id===uid)?'row me':'row';
+            var st=(it.ts&&(now-it.ts)<60000)?'<span style="color:#80ed99">●</span>':'<span style="color:#adb5bd">○</span>';
+            r.innerHTML='<span style="text-align:left;font-size:12px">'+st+' #'+(j+1)+' '+it.n+' <small style="color:#90e0ef">#'+it.id+' ['+(it.dev||'')+']</small></span><b>'+fmtNum(it.p)+'</b>';
+            b.appendChild(r);
+        }
+    });
+}
+
+function loadMp3(inp){var f=inp.files.item(0);if(!f)return;if(bgm)bgm.pause();bgm=new Audio(URL.createObjectURL(f));bgm.loop=true;bgm.volume=0.6;$('mp3-lbl').innerText=f.name.slice(0,16);bgm.play()}
+function toggleBag(){snd();$('wardrobe-box').style.display='none';var b=$('bag-box'),o=b.style.display==='block';b.style.display=o?'none':'block';if(!o)renderBag()}
+function renderBag(){var g=$('pet-grid');g.innerHTML='';for(var i=0;i<bag.length;i++)(function(id){var c=document.createElement('div');c.className='pet r-'+id+(eqPet===id?' eq':'');c.innerHTML='<div style="font-size:22px">'+pIco.slice(id,id+1).shift()+'</div><b>'+pNam.slice(id,id+1).shift()+'</b><br>'+pRar.slice(id,id+1).shift()+'<br><b style="color:#ffe066">x'+pMul.slice(id,id+1).shift()+'</b>';c.onclick=function(){snd();eqPet=(eqPet===id)?-1:id;save();draw();renderBag()};g.appendChild(c)})(+bag.charAt(i))}
+
+function tap(){if(nrg>=1){var g=pwr*mult();taps++;score+=g;qProg+=g;nrg-=1;snd();draw();save()}}
+var bEl=$('berry');
+bEl.onclick=function(){tap()};
+bEl.addEventListener('touchend',function(e){e.preventDefault();tap()},{passive:false});
+document.addEventListener('touchstart',function(e){if(e.touches.length>1)e.preventDefault()},{passive:false});
+document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});
+
 function buyTap(){if(score>=cTap){score-=cTap;pwr++;cTap=Math.round(cTap*1.5);snd();draw();save()}}
 function buyAuto(){if(score>=cAuto){score-=cAuto;auto++;cAuto=Math.round(cAuto*1.6);snd();draw();save()}}
 function buyNrg(){if(score>=cNrg){score-=cNrg;maxNrg+=50;nrg=maxNrg;cNrg=Math.round(cNrg*1.8);snd();draw();save()}}
-function buyEgg(){if(score<500)return;score-=500;snd();var rnd=Math.random()*100,id=0;if(rnd<5)id=5;else if(rnd<15)id=4;else if(rnd<30)id=3;else if(rnd<50)id=2;else if(rnd<80)id=1;bag+=String(id);if(petMult()<+pMul.slice(id,id+1).shift())eqPet=id;$('drop-info').innerHTML='+ '+pIco.slice(id,id+1).shift()+' '+pNam.slice(id,id+1).shift()+' (x'+pMul.slice(id,id+1).shift()+')!';if($('bag-box').style.display==='block')renderBag();draw();save()}
+function buyEgg(){if(score<500)return;score-=500;snd();var rnd=Math.random()*100,id=0;if(rnd<5)id=5;else if(rnd<15)id=4;else if(rnd<30)id=3;else if(rnd<50)id=2;else if(rnd<80)id=1;bag+=String(id);if(petMult()<+pMul.slice(id,id+1).shift())eqPet=id;$('drop-info').innerHTML='Выпал: '+pIco.slice(id,id+1).shift()+' '+pNam.slice(id,id+1).shift()+' (x'+pMul.slice(id,id+1).shift()+')!';if($('bag-box').style.display==='block')renderBag();draw();save()}
 function buySkin(s,cost){eqEvSkin=-1;if(s==='gold'){if(hasG)skin=skin==='gold'?'none':'gold';else if(score>=cost){score-=cost;hasG=true;skin='gold'}}if(s==='diamond'){if(hasD)skin=skin==='diamond'?'none':'diamond';else if(score>=cost){score-=cost;hasD=true;skin='diamond'}}if(s==='emerald'){if(hasE)skin=skin==='emerald'?'none':'emerald';else if(score>=cost){score-=cost;hasE=true;skin='emerald'}}if(s==='ruby'){if(hasR)skin=skin==='ruby'?'none':'ruby';else if(score>=cost){score-=cost;hasR=true;skin='ruby'}}if(s==='obsidian'){if(hasObs)skin=skin==='obsidian'?'none':'obsidian';else if(score>=cost){score-=cost;hasObs=true;skin='obsidian'}}if(s==='sapphire'){if(hasSap)skin=skin==='sapphire'?'none':'sapphire';else if(score>=cost){score-=cost;hasSap=true;skin='sapphire'}}if(s==='platinum'){if(hasPla)skin=skin==='platinum'?'none':'platinum';else if(score>=cost){score-=cost;hasPla=true;skin='platinum'}}snd();draw();save()}
 function resetAll(){score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;hasObs=hasSap=hasPla=false;bMult=1;bSec=0;bag='';eqPet=-1;eqEvSkin=-1;save();draw()}
 
 setInterval(function(){if(auto>0){var ag=auto*rebMult()*worldMult();score+=ag;qProg+=ag}if(nrg<maxNrg)nrg=Math.min(maxNrg,nrg+Math.max(2,Math.floor(maxNrg/40)));if(bSec>0){bSec--;if(bSec===0)bMult=1}draw();save()},1000);
-draw();syncWorld();$('drop-info').innerText='\u0416\u043c\u0438 \u043d\u0430 \u043a\u043b\u0443\u0431\u043d\u0438\u043a\u0443!';
+draw();syncWorld();$('drop-info').innerText='Жми на клубнику!';
 </script>
 </body>
 </html>
