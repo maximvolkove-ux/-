@@ -15,7 +15,7 @@ body.world2{background:radial-gradient(circle at top,#3c096c,#10002b 75%)}
 #m-ava{font-size:44px}
 .m-btn{width:255px;max-width:92%;padding:10px;font-size:14px;font-weight:bold;color:#fff;background:#a4133c;border:2px solid #ff758f;border-radius:12px;cursor:pointer}
 .mp3{width:255px;max-width:92%;padding:7px;background:#7209b7;border:2px solid #f72585;border-radius:12px;box-sizing:border-box;font-size:12px;font-weight:bold;display:block}
-.box{width:92%;max-width:400px;max-height:280px;overflow-y:auto;background:#2b0611;border:1px solid #ff758f;border-radius:10px;display:none;padding:10px;box-sizing:border-box}
+.box{width:92%;max-width:400px;max-height:310px;overflow-y:auto;background:#2b0611;border:1px solid #ff758f;border-radius:10px;display:none;padding:10px;box-sizing:border-box}
 .row{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-bottom:1px solid #590d22;font-size:13px}
 .row.me{background:#a4133c;color:#ffe066;font-weight:bold}
 .inp{width:88%;padding:7px;border-radius:8px;border:1px solid #ff758f;background:#3b0716;color:#fff;font-size:13px;text-align:center;margin-bottom:6px}
@@ -47,6 +47,9 @@ body.world2{background:radial-gradient(circle at top,#3c096c,#10002b 75%)}
 .sec{font-size:12px;color:#ffe066;font-weight:bold;margin:8px 0 4px;border-bottom:1px solid #590d22;padding-bottom:2px}
 .p-bg{width:100%;height:14px;background:#3b0716;border:1px solid #ff758f;border-radius:8px;overflow:hidden;margin:6px 0}
 .p-fl{height:100%;background:linear-gradient(90deg,#ff4d6d,#ffd60a);width:0%}
+.oauth-row{display:flex;gap:6px;margin:6px 0}
+.btn-ya{flex:1;padding:8px 4px;background:#fc3f1d;color:#fff;border:1px solid #ffccd5;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer}
+.btn-go{flex:1;padding:8px 4px;background:#1a73e8;color:#fff;border:1px solid #90e0ef;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer}
 </style>
 </head>
 <body>
@@ -55,7 +58,7 @@ body.world2{background:radial-gradient(circle at top,#3c096c,#10002b 75%)}
     <div id="m-ava">&#127827;</div>
     <h2 style="margin:0;color:#ffccd5;font-size:20px">ТАПАЙ ПО КЛУБНИКЕ</h2>
     <div id="m-rank" class="badge">Престиж: Новичок (x1)</div>
-    <div id="m-reb" class="badge" style="background:#7209b7;border-color:#f72585">Перерождений: 0 / 50 (x1)</div>
+    <div id="m-reb" class="badge" style="background:#7209b7;border-color:#f72585">Перерождений: 0 / 25 (x1)</div>
     <div id="m-info" style="color:#ffb3c1;font-size:13px">Готово к игре!</div>
     <button class="m-btn" onclick="goGame(false)">Продолжить игру</button>
     <button class="m-btn" onclick="goGame(true)" style="background:#6a040f">Новая игра</button>
@@ -83,9 +86,14 @@ body.world2{background:radial-gradient(circle at top,#3c096c,#10002b 75%)}
         <div style="display:flex;gap:4px;margin-bottom:4px"><input type="text" id="fr-inp" class="inp" maxlength="8" placeholder="8 цифр ID друга..." style="margin:0;flex:1"><button class="btn" onclick="sendReq()" style="flex:0.6;background:#e85d04">Добавить</button></div>
         <div id="fr-msg" style="font-size:11px;color:#ffe066;margin-bottom:4px"></div>
         <div id="req-list"></div><div id="fr-list"></div>
-        <div class="sec">Вход по Почте:</div>
-        <input type="email" id="mail-inp" class="inp" placeholder="Email..."><input type="password" id="pass-inp" class="inp" placeholder="Пароль...">
-        <div style="display:flex;gap:4px;margin-bottom:4px"><button class="btn" onclick="mailBind()" style="background:#0096c7">Привязать</button><button class="btn" onclick="mailLogin()" style="background:#e85d04">Войти</button></div>
+        <div class="sec">Вход через Яндекс / Google / Почту:</div>
+        <div class="oauth-row">
+            <button class="btn-ya" onclick="socialLogin('yandex')">Яндекс ID</button>
+            <button class="btn-go" onclick="socialLogin('google')">Google Вход</button>
+        </div>
+        <input type="email" id="mail-inp" class="inp" placeholder="Email (@yandex.ru / @gmail.com)...">
+        <input type="password" id="pass-inp" class="inp" placeholder="Пароль...">
+        <div style="display:flex;gap:4px;margin-bottom:4px"><button class="btn" onclick="mailBind()" style="background:#0096c7">Привязать / Сохранить</button><button class="btn" onclick="mailLogin()" style="background:#e85d04">Войти</button></div>
         <div id="mail-msg" style="font-size:11px;color:#4cc9f0;margin-bottom:6px"></div>
         <div style="border-top:1px solid #ff758f;padding-top:6px"><button class="btn" onclick="showQr()" style="background:#7209b7">QR</button><button class="btn" onclick="copyCode()" style="background:#3a0ca3">Код</button><div id="qr-area" style="display:none;background:#fff;padding:6px;border-radius:8px;margin:6px 0"><img id="qr-img" src="" style="width:130px;height:130px;display:block;margin:0 auto"></div><input type="text" id="code-inp" class="inp" placeholder="Код..." style="margin-top:6px"><button class="btn" onclick="loadCode()" style="width:100%;background:#6a040f">Загрузить код</button></div>
     </div>
@@ -111,8 +119,8 @@ body.world2{background:radial-gradient(circle at top,#3c096c,#10002b 75%)}
     <div id="berry" onclick="tap()">&#127827;</div>
     <div id="drop-info" style="font-size:12px;color:#ffe066;font-weight:bold;height:16px">Жми на клубнику!</div>
     <div class="shop">
-        <button class="btn" id="b-world" onclick="enterWorld2()" style="flex:1 1 95%;background:linear-gradient(90deg,#3a0ca3,#4cc9f0);border-color:#fff;font-size:13px">Новый мир (X50) — Нужно 50 перерождений</button>
-        <button class="btn" id="b-reb" onclick="doRebirth()" style="flex:1 1 95%;background:linear-gradient(90deg,#ff9e00,#ff0054);border-color:#ffd60a;color:#fff;font-size:13px">Перерождение [0/50] -> X2 (100)</button>
+        <button class="btn" id="b-world" onclick="enterWorld2()" style="flex:1 1 95%;background:linear-gradient(90deg,#3a0ca3,#4cc9f0);border-color:#fff;font-size:13px">Новый мир (X50) — Нужно 25 перерождений</button>
+        <button class="btn" id="b-reb" onclick="doRebirth()" style="flex:1 1 95%;background:linear-gradient(90deg,#ff9e00,#ff0054);border-color:#ffd60a;color:#fff;font-size:13px">Перерождение [0/25] -> X2 (100)</button>
         <button class="btn" id="b-tap" onclick="buyTap()">Сила +1 (<span id="c-tap">15</span>)</button>
         <button class="btn" id="b-auto" onclick="buyAuto()">Куст +1 (<span id="c-auto">50</span>)</button>
         <button class="btn" id="b-nrg" onclick="buyNrg()" style="background:#005f73">Энергия +50 (<span id="c-nrg">200</span>)</button>
@@ -148,13 +156,13 @@ function is8Id(s){return typeof s==='string'&&s.length===8&&!isNaN(+s)&&+s>=1000
 var uid=gen8Id();
 function $(id){return document.getElementById(id)||{style:{}}}
 
-var rebBase=[100,500,1000,10000,25000,50000,100000,250000,500000];
-var rebSteps=[1,2.5,5];
+var rebBase='100|500|1000|10000|25000|50000|100000|250000|500000'.split('|');
+var rebSteps='1|2.5|5'.split('|');
 function getRebCost(){
-    if(rebirths<rebBase.length)return rebBase[rebirths];
+    if(rebirths<rebBase.length)return +rebBase.slice(rebirths,rebirths+1).shift();
     var idx=rebirths-rebBase.length;
     var pow=Math.floor(idx/3)+6;
-    return rebSteps[idx%3]*Math.pow(10,pow);
+    return (+rebSteps.slice(idx%3,(idx%3)+1).shift())*Math.pow(10,pow);
 }
 function rebMult(){return Math.pow(2,rebirths)}
 function worldMult(){return world===2?50:1}
@@ -183,7 +191,7 @@ try{
 function snd(){try{if(wav){var a=new Audio(wav);a.playbackRate=0.9+Math.random()*0.2;a.play()}}catch(e){}}
 
 function getObj(){if(score>maxScore)maxScore=score;return{uid:uid,score:Math.floor(score),maxScore:Math.floor(maxScore),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,rebirths:rebirths,world:world,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,hasObs:hasObs,hasSap:hasSap,hasPla:hasPla,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet,friends:friends,qProg:Math.floor(qProg),mySkins:mySkins,eqEvSkin:eqEvSkin,uMail:uMail}}
-function setObj(d){if(!d)return;if(is8Id(String(d.uid)))uid=String(d.uid);score=+d.score||0;maxScore=Math.max(score,+d.maxScore||0);pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;rebirths=Math.min(50,+d.rebirths||0);world=(d.world===2&&rebirths>=50)?2:1;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;hasObs=!!d.hasObs;hasSap=!!d.hasSap;hasPla=!!d.hasPla;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet;if(Array.isArray(d.friends))friends=d.friends;qProg=+d.qProg||0;if(Array.isArray(d.mySkins))mySkins=d.mySkins;if(typeof d.eqEvSkin==='number')eqEvSkin=d.eqEvSkin;if(d.uMail)uMail=d.uMail}
+function setObj(d){if(!d)return;if(is8Id(String(d.uid)))uid=String(d.uid);score=+d.score||0;maxScore=Math.max(score,+d.maxScore||0);pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;rebirths=Math.min(25,+d.rebirths||0);world=(d.world===2&&rebirths>=25)?2:1;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;hasObs=!!d.hasObs;hasSap=!!d.hasSap;hasPla=!!d.hasPla;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet;if(Array.isArray(d.friends))friends=d.friends;qProg=+d.qProg||0;if(Array.isArray(d.mySkins))mySkins=d.mySkins;if(typeof d.eqEvSkin==='number')eqEvSkin=d.eqEvSkin;if(d.uMail)uMail=d.uMail}
 function makeCode(){return btoa(unescape(encodeURIComponent(JSON.stringify(getObj()))))}
 function parseCode(s){try{var c=s.trim(),p=c.indexOf('code=');if(p!==-1)c=decodeURIComponent(c.substring(p+5));var a=c.indexOf('&');if(a!==-1)c=c.substring(0,a);setObj(JSON.parse(decodeURIComponent(escape(atob(c)))));save();return true}catch(e){return false}}
 
@@ -195,120 +203,7 @@ function mult(){return skinMult()*bMult*getPr().m*petMult()*rebMult()*worldMult(
 $('m-info').innerText=nick+' (ID: '+uid+') | Счёт: '+Math.floor(score);
 </script>
 <script>
-function fmtNum(n){
-    if(n>=1e33)return Math.round(n/1e31)/100+'Dc';
-    if(n>=1e30)return Math.round(n/1e28)/100+'No';
-    if(n>=1e27)return Math.round(n/1e25)/100+'Oc';
-    if(n>=1e24)return Math.round(n/1e22)/100+'Sp';
-    if(n>=1e21)return Math.round(n/1e19)/100+'Sx';
-    if(n>=1e18)return Math.round(n/1e16)/100+'Qi';
-    if(n>=1e15)return Math.round(n/1e13)/100+'Qa';
-    if(n>=1e12)return Math.round(n/1e10)/100+'T';
-    if(n>=1e9)return Math.round(n/1e7)/100+'B';
-    if(n>=1e6)return Math.round(n/1e4)/100+'M';
-    if(n>=1e4)return Math.round(n/10)/100+'K';
-    return Math.floor(n);
-}
-
-function draw(){
-    try{
-        if(score>maxScore)maxScore=score;
-        var pr=getPr(),rm=rebMult(),rc=getRebCost(),wm=worldMult();
-        document.body.className=(world===2?'world2':bg);
-        $('m-ava').innerHTML=ava;$('g-user').innerHTML=ava+' '+nick+(world===2?' [МИР 2: X50]':'');
-        $('m-rank').innerText='Престиж: '+pr.n+' (x'+pr.m+')';
-        $('m-reb').innerText='Перерождений: '+rebirths+' / 50 (x'+fmtNum(rm)+')'+(world===2?' | МИР 2 (X50)':'');
-        $('g-rank').innerText=(world===2?'МИР 2 (X50) | ':'')+pr.n+' | Перерожд: '+rebirths+'/50';
-        $('bag-cnt').innerText=bag.length;$('fr-cnt').innerText=friends.length;$('sk-cnt').innerText=mySkins.length;
-        $('g-pet').innerHTML=(eqPet>=0&&eqPet<=5)?('Питомец: '+pIco.slice(eqPet,eqPet+1).shift()+' '+pNam.slice(eqPet,eqPet+1).shift()+' (x'+petMult()+')'):'Питомец: Нет (x1)';
-        $('score').innerText=fmtNum(score);$('m-info').innerText=nick+' (ID: '+uid+') | Счёт: '+fmtNum(score);
-        $('pwr').innerText=fmtNum(Math.round(pwr*mult()*10)/10);$('auto').innerText=fmtNum(auto*rm*wm);$('nrg').innerText=Math.floor(nrg);$('max-nrg').innerText=maxNrg;
-        $('c-tap').innerText=fmtNum(cTap);$('c-auto').innerText=fmtNum(cAuto);$('c-nrg').innerText=fmtNum(cNrg);
-        $('buff').innerText=bSec>0?('БОНУС x'+bMult+': '+bSec+'с'):'';
-
-        var bW=$('b-world');
-        if(rebirths<50){
-            bW.disabled=true;
-            bW.innerText='Новый мир (X50) — Нужно 50 перерождений ['+rebirths+'/50]';
-        }else if(world===1){
-            bW.disabled=false;
-            bW.innerText='Войти в Новый мир (X50) [Сброс тапов, кустов и клубник]';
-        }else{
-            bW.disabled=true;
-            bW.innerText='Вы в Новом мире (X50) — Бонус X50 активен!';
-        }
-
-        var bReb=$('b-reb');
-        if(rebirths>=50){
-            bReb.disabled=true;
-            bReb.innerText='МАКС. ПЕРЕРОЖДЕНИЕ 50 / 50 (x'+fmtNum(rm)+')';
-        }else{
-            bReb.disabled=score<rc;
-            bReb.innerText='Перерождение ['+rebirths+'/50] -> X2 ('+fmtNum(rc)+')';
-        }
-
-        $('b-tap').disabled=score<cTap;$('b-auto').disabled=score<cAuto;$('b-nrg').disabled=score<cNrg;$('b-egg').disabled=score<500;
-        var bEl=$('berry');
-        if(eqEvSkin>=0&&eqEvSkin<20){
-            bEl.className=eqEvSkin===5?'ev-black':(eqEvSkin===3?'ev-rainbow':'ev-skin');
-            bEl.innerHTML='<div style="font-size:58px;line-height:1">'+evIcons.slice(eqEvSkin,eqEvSkin+1).shift()+'</div><div style="font-size:11px;font-weight:bold;color:#fff;margin-top:3px;padding:0 6px">'+evNames.slice(eqEvSkin,eqEvSkin+1).shift()+'</div>';
-        }else{bEl.className=skin==='none'?'':skin;bEl.innerHTML='&#127827;'}
-
-        var w1s=document.getElementsByClassName('w1-skin'),w2s=document.getElementsByClassName('w2-skin');
-        for(var i=0;i<w1s.length;i++)w1s[i].style.display=(world===1)?'inline-block':'none';
-        for(var j=0;j<w2s.length;j++)w2s[j].style.display=(world===2)?'inline-block':'none';
-
-        $('b-gold').disabled=!hasG&&score<1000;$('b-gold').innerText=hasG?(skin==='gold'&&eqEvSkin===-1?'Снять Золото':'Золото (x2)'):'Золото (1000)';
-        $('b-diam').disabled=!hasD&&score<10000;$('b-diam').innerText=hasD?(skin==='diamond'&&eqEvSkin===-1?'Снять Алмаз':'Алмаз (x5)'):'Алмаз (10K)';
-        $('b-emer').disabled=!hasE&&score<50000;$('b-emer').innerText=hasE?(skin==='emerald'&&eqEvSkin===-1?'Снять Изумруд':'Изумруд (x15)'):'Изумруд (50K)';
-        $('b-ruby').disabled=!hasR&&score<1000000;$('b-ruby').innerText=hasR?(skin==='ruby'&&eqEvSkin===-1?'Снять Рубин':'Рубин (x50)'):'Рубин x50 (1M)';
-
-        $('b-obs').disabled=!hasObs&&score<100000;$('b-obs').innerText=hasObs?(skin==='obsidian'&&eqEvSkin===-1?'Снять Обсидиан':'Обсидиан (x25)'):'Обсидиан x25 (100K)';
-        $('b-sap').disabled=!hasSap&&score<10000000;$('b-sap').innerText=hasSap?(skin==='sapphire'&&eqEvSkin===-1?'Снять Сапфир':'Сапфир (x50)'):'Сапфир x50 (10M)';
-        $('b-pla').disabled=!hasPla&&score<1000000000;$('b-pla').innerText=hasPla?(skin==='platinum'&&eqEvSkin===-1?'Снять Платину':'Платина (x100)'):'Платина x100 (1B)';
-    }catch(e){}
-}
-draw();
-
-function enterWorld2(){
-    if(rebirths<50||world===2)return;
-    snd();
-    world=2;
-    score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;
-    skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;
-    $('drop-info').innerText='ПЕРЕХОД В НОВЫЙ МИР! Всё сброшено, множитель X50 активен!';
-    save();draw();syncWorld();
-}
-
-function doRebirth(){
-    if(rebirths>=50)return;
-    var rc=getRebCost();
-    if(score<rc)return;
-    snd();
-    rebirths++;
-    score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;
-    skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;
-    $('drop-info').innerText=(rebirths===50)?'50 ПЕРЕРОЖДЕНИЕ! ОТКРЫТ НОВЫЙ МИР (X50)!':'ПЕРЕРОЖДЕНИЕ #'+rebirths+'! Множитель теперь x'+fmtNum(rebMult())+'!';
-    save();draw();syncWorld();
-}
-
-function goGame(rst){snd();if(rst)resetAll();$('menu').style.display='none';$('game').style.display='flex';draw()}
-function goMenu(){snd();$('bag-box').style.display='none';$('wardrobe-box').style.display='none';$('game').style.display='none';$('menu').style.display='flex';draw();syncWorld()}
-function toggleBox(id){snd();var el=$(id),op=el.style.display==='block';$('quest-box').style.display='none';$('prof-box').style.display='none';$('daily-box').style.display='none';$('top-box').style.display='none';if(!op){if(id==='quest-box')renderQuest();if(id==='prof-box')renderProf();if(id==='daily-box')renderDaily();if(id==='top-box')renderTop();el.style.display='block'}}
-
-function renderQuest(){var cur=Math.min(100000,Math.floor(qProg)),pct=Math.min(100,Math.floor((cur/100000)*100));$('q-fill').style.width=pct+'%';$('q-txt').innerText=cur+' / 100 000 ('+pct+'%)';$('q-col').innerText=mySkins.length;var btn=$('q-claim');if(mySkins.length>=20){btn.disabled=true;btn.innerText='Все 20 скинов собраны!'}else{btn.disabled=cur<100000;btn.innerText=cur>=100000?'Забрать скин (x25)!':'Собери 100 000 клубник'}}
-function claimQuest(){if(qProg<100000||mySkins.length>=20)return;snd();var pool=[];for(var i=0;i<20;i++){if(mySkins.indexOf(i)===-1)pool.push(i)}var idx=Math.floor(Math.random()*pool.length),winId=pool.slice(idx,idx+1).shift();mySkins.push(winId);eqEvSkin=winId;qProg=0;$('q-res').innerHTML='Выпал: '+evIcons.slice(winId,winId+1).shift()+' '+evNames.slice(winId,winId+1).shift()+' (x25)!';save();draw();renderQuest()}
-function toggleWardrobe(){snd();$('bag-box').style.display='none';var w=$('wardrobe-box'),op=w.style.display==='block';w.style.display=op?'none':'block';if(!op)renderWardrobe()}
-function renderWardrobe(){var g=$('sk-grid');g.innerHTML='';if(!mySkins.length){g.innerHTML='<div style="font-size:12px;color:#ffb3c1">Пока нет скинов!</div>';return}for(var i=0;i<mySkins.length;i++)(function(id){var c=document.createElement('div');c.className='pet'+(eqEvSkin===id?' eq':'');c.innerHTML='<div style="font-size:20px">'+evIcons.slice(id,id+1).shift()+'</div><b>'+evNames.slice(id,id+1).shift()+'</b><br><b style="color:#ffe066">x25</b>';c.onclick=function(){snd();eqEvSkin=(eqEvSkin===id)?-1:id;save();draw();renderWardrobe()};g.appendChild(c)})(mySkins.slice(i,i+1).shift())}
-
-function renderProf(){var pr=getPr();$('p-id').innerText='Твой ID: '+uid;$('p-rank').innerText='Ранг: '+pr.n+' | Перерождений: '+rebirths+'/50';$('nick-inp').value=nick;$('mail-inp').value=uMail;$('qr-area').style.display='none';var ar=$('ava-row');ar.innerHTML='';for(var i=0;i<avas.length;i++)(function(a){var b=document.createElement('button');b.className='opt'+(ava===a?' sel':'');b.innerHTML=a;b.onclick=function(){snd();ava=a;renderProf();draw()};ar.appendChild(b)})(avas.slice(i,i+1).shift());var br=$('bg-row');br.innerHTML='';for(var j=0;j<bgIds.length;j++)(function(id,nm){var b=document.createElement('button');b.className='opt'+(bg===id?' sel':'');b.style.fontSize='12px';b.innerText=nm;b.onclick=function(){snd();bg=id;renderProf();draw()};br.appendChild(b)})(bgIds.slice(j,j+1).shift(),bgNms.slice(j,j+1).shift());renderFriends()}
-function saveProf(){snd();var v=$('nick-inp').value.trim();if(v)nick=v;save();draw();$('prof-box').style.display='none';syncWorld()}
-function showQr(){snd();var c=makeCode();$('code-inp').value=c;var h=location.href,q=h.indexOf('?'),u=q!==-1?h.substring(0,q):h,p=u.indexOf('http')===0?u+'?code='+encodeURIComponent(c):c;$('qr-img').src='https://qrserver.com'}
-function copyCode(){snd();var i=$('code-inp');i.value=makeCode();i.select();try{document.execCommand('copy')}catch(e){}}
-function loadCode(){snd();if(parseCode($('code-inp').value)){draw();renderProf();$('prof-box').style.display='none';syncWorld()}}
-</script>
-<script>
-var fbBase='https://firebaseio.com';
+var blobUrl='https://jsonblob.com';
 var cloudCache={users:{},mails:{},reqs:[]};
 try{
     var cc=JSON.parse(localStorage.getItem('berry_cloud_cache'));
@@ -319,23 +214,85 @@ function saveCache(){
     try{localStorage.setItem('berry_cloud_cache',JSON.stringify(cloudCache))}catch(e){}
 }
 
-function fbReq(path,method,bodyObj){
-    var opts={method:method||'GET'};
-    if(bodyObj!==undefined){
-        opts.headers={'Content-Type':'application/json'};
-        opts.body=JSON.stringify(bodyObj);
-    }
-    return fetch(fbBase+path+'.json',opts).then(function(r){return r.ok?r.json():null}).catch(function(){return null});
+function cloudCall(modFn,cb){
+    fetch(blobUrl,{method:'GET',headers:{'Accept':'application/json'}}).then(function(r){
+        return r.ok?r.json():null;
+    }).then(function(srv){
+        if(srv&&typeof srv==='object'){
+            if(srv.users){
+                for(var k in srv.users){
+                    if(srv.users.hasOwnProperty(k)&&is8Id(String(k)))cloudCache.users[k]=srv.users[k];
+                }
+            }
+            if(srv.mails){
+                for(var m in srv.mails){
+                    if(srv.mails.hasOwnProperty(m))cloudCache.mails[m]=srv.mails[m];
+                }
+            }
+            if(Array.isArray(srv.reqs))cloudCache.reqs=srv.reqs;
+        }
+        var changed=false;
+        if(modFn)changed=modFn(cloudCache);
+        saveCache();
+        if(changed){
+            fetch(blobUrl,{
+                method:'PUT',
+                headers:{'Content-Type':'application/json','Accept':'application/json'},
+                body:JSON.stringify(cloudCache)
+            }).catch(function(){});
+        }
+        if(cb)cb(cloudCache);
+    }).catch(function(){
+        if(modFn)modFn(cloudCache);
+        saveCache();
+        if(cb)cb(cloudCache);
+    });
 }
 
-function safeMail(m){
-    var s=m.toLowerCase().trim(),out='';
-    for(var i=0;i<s.length;i++){
-        var c=s.charAt(i);
-        if((c>='a'&&c<='z')||(c>='0'&&c<='9'))out+=c;
-        else out+='_'+s.charCodeAt(i)+'_';
+function safeMail(m){return m.toLowerCase().trim()}
+
+function socialLogin(prov){
+    snd();
+    var pName=(prov==='yandex')?'Яндекс':'Google';
+    var dom=(prov==='yandex')?'@yandex.ru':'@gmail.com';
+    var cur=$('mail-inp').value.trim();
+    var em=prompt('Вход через '+pName+'. Введи свою почту ('+dom+'):',cur||('player'+uid.slice(0,4)+dom));
+    if(!em)return;
+    em=em.trim();
+    if(em.indexOf('@')===-1)em+=dom;
+    var pw=prompt('Введи пароль от аккаунта '+em+' (или придумай новый для регистрации):','');
+    if(!pw||pw.length<3){
+        $('mail-msg').innerText='Пароль должен быть от 3 символов!';
+        return;
     }
-    return out;
+    $('mail-inp').value=em;
+    $('pass-inp').value=pw;
+    $('mail-msg').innerText='Подключаемся через '+pName+'...';
+    cloudCall(function(d){
+        var ex=d.mails[safeMail(em)];
+        if(ex&&ex.data){
+            if(ex.pass===pw){
+                setObj(ex.data);
+                uMail=em;
+                try{localStorage.setItem('berry_auto_auth',JSON.stringify({m:em,p:pw}))}catch(e){}
+                save();draw();
+                $('mail-msg').innerText='Успешный вход через '+pName+' ('+em+')!';
+            }else{
+                $('mail-msg').innerText='Неверный пароль для '+em+'!';
+            }
+            return false;
+        }else{
+            uMail=em;
+            try{localStorage.setItem('berry_auto_auth',JSON.stringify({m:em,p:pw}))}catch(e){}
+            save();
+            d.mails[safeMail(em)]={pass:pw,prov:prov,data:getObj()};
+            $('mail-msg').innerText='Аккаунт '+pName+' ('+em+') создан и привязан!';
+            return true;
+        }
+    },function(){
+        renderProf();
+        syncWorld();
+    });
 }
 
 function mailBind(){
@@ -349,11 +306,11 @@ function mailBind(){
     try{localStorage.setItem('berry_auto_auth',JSON.stringify({m:m,p:p}))}catch(e){}
     save();
     $('mail-msg').innerText='Сохраняем на общий сервер...';
-    var payload={pass:p,data:getObj()};
-    cloudCache.mails[safeMail(m)]=payload;
-    saveCache();
-    fbReq('/mails/'+safeMail(m),'PUT',payload).then(function(res){
-        $('mail-msg').innerText=res?'Почта привязана! В следующий раз вход будет автоматическим.':'Сохранено локально (проверь интернет).';
+    cloudCall(function(d){
+        d.mails[safeMail(m)]={pass:p,data:getObj()};
+        return true;
+    },function(){
+        $('mail-msg').innerText='Сохранено! В следующий раз вход будет автоматическим.';
     });
 }
 
@@ -364,10 +321,11 @@ function mailLogin(silent){
         if(!silent)$('mail-msg').innerText='Введи Email и пароль!';
         return;
     }
-    if(!silent)$('mail-msg').innerText='Входим на общий сервер...';
-    fbReq('/mails/'+safeMail(m),'GET').then(function(res){
+    if(!silent)$('mail-msg').innerText='Входим...';
+    cloudCall(null,function(d){
+        var res=d.mails[safeMail(m)];
         if(!res||!res.data){
-            if(!silent)$('mail-msg').innerText='Аккаунт с такой почтой не найден!';
+            if(!silent)$('mail-msg').innerText='Почта не найдена!';
             return;
         }
         if(res.pass!==p){
@@ -402,37 +360,29 @@ function syncWorld(cb){
         fl.sort(function(a,b){return(+b.p||0)-(+a.p||0)});
         cb(fl.slice(0,500),cloudCache.users);
     }
-    fbReq('/users/'+uid,'PUT',me).then(function(){
+    cloudCall(function(d){
+        d.users[uid]=me;
+        return true;
+    },function(d){
         if(!cb)return;
-        fbReq('/users','GET').then(function(all){
-            if(!all||typeof all!=='object')return;
-            var clean=[];
-            for(var k in all){
-                if(all.hasOwnProperty(k)&&is8Id(String(k))&&all[k]){
-                    cloudCache.users[k]=all[k];
-                    clean.push(all[k]);
-                }
-            }
-            saveCache();
-            clean.sort(function(a,b){return(+b.p||0)-(+a.p||0)});
-            cb(clean.slice(0,500),cloudCache.users);
-        });
+        var clean=[];
+        for(var k in d.users){
+            if(d.users.hasOwnProperty(k)&&is8Id(String(k)))clean.push(d.users[k]);
+        }
+        clean.sort(function(a,b){return(+b.p||0)-(+a.p||0)});
+        cb(clean.slice(0,500),d.users);
     });
 }
 
 function syncReqs(mod,cb){
-    fbReq('/reqs','GET').then(function(d){
-        var arr=Array.isArray(d)?d:cloudCache.reqs;
+    cloudCall(function(d){
         if(mod){
-            arr=mod(arr).slice(-200);
-            cloudCache.reqs=arr;
-            saveCache();
-            fbReq('/reqs','PUT',arr);
-        }else{
-            cloudCache.reqs=arr;
-            saveCache();
+            d.reqs=mod(d.reqs).slice(-200);
+            return true;
         }
-        if(cb)cb(arr);
+        return false;
+    },function(d){
+        if(cb)cb(d.reqs);
     });
 }
 
@@ -537,17 +487,8 @@ function renderFriends(){
                     var f=m[fid],r=document.createElement('div');r.className='row';
                     var sp=document.createElement('span');sp.style.fontSize='12px';
                     var dv=(f&&f.dev)?(' ['+f.dev+']'):'';
-                    sp.innerHTML=f?(f.n+' (#'+fid+')'+dv+' — '+fmtNum(f.p)):('ID:'+fid+' — 0');
-                    var db=document.createElement('button');db.className='btn';
-                    db.style.flex='0';db.style.padding='3px 7px';db.style.background='#6a040f';db.innerText='X';
-                    db.onclick=function(){delFriend(fid)};
-                    r.appendChild(sp);r.appendChild(db);fB.appendChild(r);
-                })(friends.slice(z,z+1).shift());
-            }
-        });
-    });
-}
-</script>
+                    sp.innerHTML=f?(f.n+' (#'+fid+')'+dv+' — '+fmtNum(f.
+```html
 <script>
 function renderDaily(){
     var g=$('days-grid');g.innerHTML='';
@@ -578,8 +519,9 @@ function claimDaily(){
 
 function renderTop(){
     var b=$('top-box');
+    b.innerHTML='<div style="font-size:11px;color:#4cc9f0;margin-bottom:5px;font-weight:bold">Обновляем мировой Топ 500...</div>';
     syncWorld(function(ls){
-        b.innerHTML='<div style="font-size:11px;color:#4cc9f0;margin-bottom:5px;font-weight:bold">Топ 500 лучших (устройств: '+ls.length+')</div>';
+        b.innerHTML='<div style="font-size:11px;color:#4cc9f0;margin-bottom:5px;font-weight:bold">Топ 500 лучших (устройств в мире: '+ls.length+')</div>';
         var now=Date.now();
         for(var j=0;j<ls.length;j++){
             var it=ls.slice(j,j+1).shift(),r=document.createElement('div');
@@ -602,6 +544,7 @@ function tap(){if(nrg>=1){var g=pwr*mult();taps++;score+=g;qProg+=g;nrg-=1;snd()
 var bEl=$('berry');bEl.addEventListener('touchend',function(e){e.preventDefault();tap()},{passive:false});
 document.addEventListener('touchstart',function(e){if(e.touches.length>1)e.preventDefault()},{passive:false});
 document.addEventListener('gesturestart',function(e){e.preventDefault()},{passive:false});
+
 function buyTap(){if(score>=cTap){score-=cTap;pwr++;cTap=Math.round(cTap*1.5);snd();draw();save()}}
 function buyAuto(){if(score>=cAuto){score-=cAuto;auto++;cAuto=Math.round(cAuto*1.6);snd();draw();save()}}
 function buyNrg(){if(score>=cNrg){score-=cNrg;maxNrg+=50;nrg=maxNrg;cNrg=Math.round(cNrg*1.8);snd();draw();save()}}
@@ -622,7 +565,7 @@ function buySkin(s,cost){
 function resetAll(){score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;hasObs=hasSap=hasPla=false;bMult=1;bSec=0;bag='';eqPet=-1;eqEvSkin=-1;save();draw()}
 
 setInterval(function(){if(auto>0){var ag=auto*rebMult()*worldMult();score+=ag;qProg+=ag}if(nrg<maxNrg)nrg=Math.min(maxNrg,nrg+Math.max(2,Math.floor(maxNrg/40)));if(bSec>0){bSec--;if(bSec===0)bMult=1}draw();save()},1000);
-draw();syncWorld();$('drop-info').innerText='V26 WORLD 2 RESET — Жми на клубнику!';
+draw();syncWorld();$('drop-info').innerText='V28 CLOUD + YA/GOOGLE — Жми на клубнику!';
 </script>
 </body>
 </html>
