@@ -51,6 +51,7 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
     <div id="m-ava">&#127827;</div>
     <h2 style="margin:0;color:#ffccd5;font-size:20px">ТАПАЙ ПО КЛУБНИКЕ</h2>
     <div id="m-rank" class="badge">Престиж: Новичок (x1)</div>
+    <div id="m-reb" class="badge" style="background:#7209b7;border-color:#f72585">Перерождений: 0 / 100 (x1)</div>
     <div id="m-info" style="color:#ffb3c1;font-size:13px">Готово к игре!</div>
     <button class="m-btn" onclick="goGame(false)">Продолжить игру</button>
     <button class="m-btn" onclick="goGame(true)" style="background:#6a040f">Новая игра</button>
@@ -102,6 +103,7 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
     <div id="berry" onclick="tap()">&#127827;</div>
     <div id="drop-info" style="font-size:12px;color:#ffe066;font-weight:bold;height:16px">Жми на клубнику!</div>
     <div class="shop">
+        <button class="btn" id="b-reb" onclick="doRebirth()" style="flex:1 1 95%;background:linear-gradient(90deg,#ff9e00,#ff0054);border-color:#ffd60a;color:#fff;font-size:13px">Перерождение [0/100] -> X2 (100)</button>
         <button class="btn" id="b-tap" onclick="buyTap()">Сила +1 (<span id="c-tap">15</span>)</button>
         <button class="btn" id="b-auto" onclick="buyAuto()">Куст +1 (<span id="c-auto">50</span>)</button>
         <button class="btn" id="b-nrg" onclick="buyNrg()" style="background:#005f73">Энергия +50 (<span id="c-nrg">200</span>)</button>
@@ -114,7 +116,7 @@ body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal
     </div>
 </div>
 <script>
-var score=0,maxScore=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0;
+var score=0,maxScore=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0,rebirths=0;
 var skin='none',hasG=false,hasD=false,hasE=false,hasR=false,day=1,lastDate='',bMult=1,bSec=0;
 var nick='Игрок',ava='&#127827;',bg='',bgm=null,bag='',eqPet=-1,friends=[],qProg=0,mySkins=[],eqEvSkin=-1,uMail='';
 
@@ -132,6 +134,14 @@ function gen8Id(){return String(Math.floor(10000000+Math.random()*90000000))}
 function is8Id(s){return typeof s==='string'&&s.length===8&&!isNaN(+s)&&+s>=10000000}
 var uid=gen8Id();
 function $(id){return document.getElementById(id)||{style:{}}}
+
+function getRebCost(){
+    if(rebirths===0)return 100;
+    if(rebirths===1)return 500;
+    if(rebirths===2)return 1000;
+    return (rebirths-1)*1000;
+}
+function rebMult(){return Math.pow(2,rebirths)}
 
 function getPr(){
     var s=Math.max(Math.floor(score),Math.floor(maxScore));
@@ -156,8 +166,8 @@ try{
 }catch(e){}
 function snd(){try{if(wav){var a=new Audio(wav);a.playbackRate=0.9+Math.random()*0.2;a.play()}}catch(e){}}
 
-function getObj(){if(score>maxScore)maxScore=score;return{uid:uid,score:Math.floor(score),maxScore:Math.floor(maxScore),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet,friends:friends,qProg:Math.floor(qProg),mySkins:mySkins,eqEvSkin:eqEvSkin,uMail:uMail}}
-function setObj(d){if(!d)return;if(is8Id(String(d.uid)))uid=String(d.uid);score=+d.score||0;maxScore=Math.max(score,+d.maxScore||0);pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet;if(Array.isArray(d.friends))friends=d.friends;qProg=+d.qProg||0;if(Array.isArray(d.mySkins))mySkins=d.mySkins;if(typeof d.eqEvSkin==='number')eqEvSkin=d.eqEvSkin;if(d.uMail)uMail=d.uMail}
+function getObj(){if(score>maxScore)maxScore=score;return{uid:uid,score:Math.floor(score),maxScore:Math.floor(maxScore),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,rebirths:rebirths,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet,friends:friends,qProg:Math.floor(qProg),mySkins:mySkins,eqEvSkin:eqEvSkin,uMail:uMail}}
+function setObj(d){if(!d)return;if(is8Id(String(d.uid)))uid=String(d.uid);score=+d.score||0;maxScore=Math.max(score,+d.maxScore||0);pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;rebirths=+d.rebirths||0;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet;if(Array.isArray(d.friends))friends=d.friends;qProg=+d.qProg||0;if(Array.isArray(d.mySkins))mySkins=d.mySkins;if(typeof d.eqEvSkin==='number')eqEvSkin=d.eqEvSkin;if(d.uMail)uMail=d.uMail}
 function makeCode(){return btoa(unescape(encodeURIComponent(JSON.stringify(getObj()))))}
 function parseCode(s){try{var c=s.trim(),p=c.indexOf('code=');if(p!==-1)c=decodeURIComponent(c.substring(p+5));var a=c.indexOf('&');if(a!==-1)c=c.substring(0,a);setObj(JSON.parse(decodeURIComponent(escape(atob(c)))));save();return true}catch(e){return false}}
 
@@ -165,21 +175,40 @@ try{var sv=JSON.parse(localStorage.getItem('berry_v3'));if(sv)setObj(sv);if(loca
 function save(){try{if(score>maxScore)maxScore=score;localStorage.setItem('berry_v3',JSON.stringify(getObj()))}catch(e){}}
 function petMult(){return(eqPet>=0&&eqPet<=5)?+pMul.slice(eqPet,eqPet+1).shift():1}
 function skinMult(){if(eqEvSkin>=0&&eqEvSkin<20)return 25;return skin==='gold'?2:skin==='diamond'?5:skin==='emerald'?15:skin==='ruby'?50:1}
-function mult(){return skinMult()*bMult*getPr().m*petMult()}
+function mult(){return skinMult()*bMult*getPr().m*petMult()*rebMult()}
 $('m-info').innerText=nick+' (ID: '+uid+') | Счёт: '+Math.floor(score);
 </script>
 <script>
+function fmtNum(n){
+    if(n>=1e15)return Math.round(n/1e13)/100+'Qa';
+    if(n>=1e12)return Math.round(n/1e10)/100+'T';
+    if(n>=1e9)return Math.round(n/1e7)/100+'B';
+    if(n>=1e6)return Math.round(n/1e4)/100+'M';
+    return Math.floor(n);
+}
+
 function draw(){
     try{
         if(score>maxScore)maxScore=score;
-        var pr=getPr();document.body.className=bg;$('m-ava').innerHTML=ava;$('g-user').innerHTML=ava+' '+nick;
-        $('m-rank').innerText='Престиж: '+pr.n+' (x'+pr.m+')';$('g-rank').innerText=pr.n+' (x'+pr.m+') | Рекорд: '+pr.cur+' / '+pr.nx;
+        var pr=getPr(),rm=rebMult(),rc=getRebCost();
+        document.body.className=bg;$('m-ava').innerHTML=ava;$('g-user').innerHTML=ava+' '+nick;
+        $('m-rank').innerText='Престиж: '+pr.n+' (x'+pr.m+')';
+        $('m-reb').innerText='Перерождений: '+rebirths+' / 100 (x'+fmtNum(rm)+')';
+        $('g-rank').innerText=pr.n+' (x'+pr.m+') | Перерожд: '+rebirths+'/100 (x'+fmtNum(rm)+')';
         $('bag-cnt').innerText=bag.length;$('fr-cnt').innerText=friends.length;$('sk-cnt').innerText=mySkins.length;
         $('g-pet').innerHTML=(eqPet>=0&&eqPet<=5)?('Питомец: '+pIco.slice(eqPet,eqPet+1).shift()+' '+pNam.slice(eqPet,eqPet+1).shift()+' (x'+petMult()+')'):'Питомец: Нет (x1)';
-        $('score').innerText=Math.floor(score);$('m-info').innerText=nick+' (ID: '+uid+') | Счёт: '+Math.floor(score);
-        $('pwr').innerText=Math.round(pwr*mult()*10)/10;$('auto').innerText=auto;$('nrg').innerText=Math.floor(nrg);$('max-nrg').innerText=maxNrg;
+        $('score').innerText=fmtNum(score);$('m-info').innerText=nick+' (ID: '+uid+') | Счёт: '+fmtNum(score);
+        $('pwr').innerText=fmtNum(Math.round(pwr*mult()*10)/10);$('auto').innerText=fmtNum(auto*rm);$('nrg').innerText=Math.floor(nrg);$('max-nrg').innerText=maxNrg;
         $('c-tap').innerText=cTap;$('c-auto').innerText=cAuto;$('c-nrg').innerText=cNrg;
         $('buff').innerText=bSec>0?('БОНУС x'+bMult+': '+bSec+'с'):'';
+        var bReb=$('b-reb');
+        if(rebirths>=100){
+            bReb.disabled=true;
+            bReb.innerText='МАКС. ПЕРЕРОЖДЕНИЕ 100 / 100 (x'+fmtNum(rm)+')';
+        }else{
+            bReb.disabled=score<rc;
+            bReb.innerText='Перерождение ['+rebirths+'/100] -> X2 ('+rc+' клубник)';
+        }
         $('b-tap').disabled=score<cTap;$('b-auto').disabled=score<cAuto;$('b-nrg').disabled=score<cNrg;$('b-egg').disabled=score<500;
         var bEl=$('berry');
         if(eqEvSkin>=0&&eqEvSkin<20){
@@ -194,6 +223,18 @@ function draw(){
 }
 draw();
 
+function doRebirth(){
+    if(rebirths>=100)return;
+    var rc=getRebCost();
+    if(score<rc)return;
+    snd();
+    rebirths++;
+    score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;
+    skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;
+    $('drop-info').innerText='ПЕРЕРОЖДЕНИЕ #'+rebirths+'! Множитель теперь x'+fmtNum(rebMult())+'!';
+    save();draw();syncWorld();
+}
+
 function goGame(rst){snd();if(rst)resetAll();$('menu').style.display='none';$('game').style.display='flex';draw()}
 function goMenu(){snd();$('bag-box').style.display='none';$('wardrobe-box').style.display='none';$('game').style.display='none';$('menu').style.display='flex';draw();syncWorld()}
 function toggleBox(id){snd();var el=$(id),op=el.style.display==='block';$('quest-box').style.display='none';$('prof-box').style.display='none';$('daily-box').style.display='none';$('top-box').style.display='none';if(!op){if(id==='quest-box')renderQuest();if(id==='prof-box')renderProf();if(id==='daily-box')renderDaily();if(id==='top-box')renderTop();el.style.display='block'}}
@@ -203,7 +244,7 @@ function claimQuest(){if(qProg<100000||mySkins.length>=20)return;snd();var pool=
 function toggleWardrobe(){snd();$('bag-box').style.display='none';var w=$('wardrobe-box'),op=w.style.display==='block';w.style.display=op?'none':'block';if(!op)renderWardrobe()}
 function renderWardrobe(){var g=$('sk-grid');g.innerHTML='';if(!mySkins.length){g.innerHTML='<div style="font-size:12px;color:#ffb3c1">Пока нет скинов!</div>';return}for(var i=0;i<mySkins.length;i++)(function(id){var c=document.createElement('div');c.className='pet'+(eqEvSkin===id?' eq':'');c.innerHTML='<div style="font-size:20px">'+evIcons.slice(id,id+1).shift()+'</div><b>'+evNames.slice(id,id+1).shift()+'</b><br><b style="color:#ffe066">x25</b>';c.onclick=function(){snd();eqEvSkin=(eqEvSkin===id)?-1:id;save();draw();renderWardrobe()};g.appendChild(c)})(mySkins.slice(i,i+1).shift())}
 
-function renderProf(){var pr=getPr();$('p-id').innerText='Твой ID: '+uid;$('p-rank').innerText='Ранг: '+pr.n+' (x'+pr.m+') | Рекорд: '+pr.cur;$('nick-inp').value=nick;$('mail-inp').value=uMail;$('qr-area').style.display='none';var ar=$('ava-row');ar.innerHTML='';for(var i=0;i<avas.length;i++)(function(a){var b=document.createElement('button');b.className='opt'+(ava===a?' sel':'');b.innerHTML=a;b.onclick=function(){snd();ava=a;renderProf();draw()};ar.appendChild(b)})(avas.slice(i,i+1).shift());var br=$('bg-row');br.innerHTML='';for(var j=0;j<bgIds.length;j++)(function(id,nm){var b=document.createElement('button');b.className='opt'+(bg===id?' sel':'');b.style.fontSize='12px';b.innerText=nm;b.onclick=function(){snd();bg=id;renderProf();draw()};br.appendChild(b)})(bgIds.slice(j,j+1).shift(),bgNms.slice(j,j+1).shift());renderFriends()}
+function renderProf(){var pr=getPr();$('p-id').innerText='Твой ID: '+uid;$('p-rank').innerText='Ранг: '+pr.n+' | Перерождений: '+rebirths+'/100';$('nick-inp').value=nick;$('mail-inp').value=uMail;$('qr-area').style.display='none';var ar=$('ava-row');ar.innerHTML='';for(var i=0;i<avas.length;i++)(function(a){var b=document.createElement('button');b.className='opt'+(ava===a?' sel':'');b.innerHTML=a;b.onclick=function(){snd();ava=a;renderProf();draw()};ar.appendChild(b)})(avas.slice(i,i+1).shift());var br=$('bg-row');br.innerHTML='';for(var j=0;j<bgIds.length;j++)(function(id,nm){var b=document.createElement('button');b.className='opt'+(bg===id?' sel':'');b.style.fontSize='12px';b.innerText=nm;b.onclick=function(){snd();bg=id;renderProf();draw()};br.appendChild(b)})(bgIds.slice(j,j+1).shift(),bgNms.slice(j,j+1).shift());renderFriends()}
 function saveProf(){snd();var v=$('nick-inp').value.trim();if(v)nick=v;save();draw();$('prof-box').style.display='none';syncWorld()}
 function showQr(){snd();var c=makeCode();$('code-inp').value=c;var h=location.href,q=h.indexOf('?'),u=q!==-1?h.substring(0,q):h,p=u.indexOf('http')===0?u+'?code='+encodeURIComponent(c):c;$('qr-img').src='https://qrserver.com'}
 function copyCode(){snd();var i=$('code-inp');i.value=makeCode();i.select();try{document.execCommand('copy')}catch(e){}}
@@ -292,7 +333,7 @@ function getDevName(){
 }
 
 function syncWorld(cb){
-    var me={id:uid,n:ava+' '+nick+' ['+getPr().n+']',p:Math.floor(score),dev:getDevName(),ts:Date.now()};
+    var me={id:uid,n:ava+' '+nick+' [R'+rebirths+']',p:Math.floor(score),dev:getDevName(),ts:Date.now()};
     cloudCache.users[uid]=me;
     saveCache();
     if(cb){
@@ -438,7 +479,7 @@ function renderFriends(){
                     var f=m[fid],r=document.createElement('div');r.className='row';
                     var sp=document.createElement('span');sp.style.fontSize='12px';
                     var dv=(f&&f.dev)?(' ['+f.dev+']'):'';
-                    sp.innerHTML=f?(f.n+' (#'+fid+')'+dv+' — '+f.p):('ID:'+fid+' — 0');
+                    sp.innerHTML=f?(f.n+' (#'+fid+')'+dv+' — '+fmtNum(f.p)):('ID:'+fid+' — 0');
                     var db=document.createElement('button');db.className='btn';
                     db.style.flex='0';db.style.padding='3px 7px';db.style.background='#6a040f';db.innerText='X';
                     db.onclick=function(){delFriend(fid)};
@@ -487,7 +528,7 @@ function renderTop(){
             var st=(it.ts&&(now-it.ts)<60000)?'<span style="color:#80ed99">●</span>':'<span style="color:#adb5bd">○</span>';
             var dv=it.dev?('['+it.dev+']'):'';
             var isFr=(friends.indexOf(String(it.id))!==-1)?' <b style="color:#ffba08">[Друг]</b>':'';
-            r.innerHTML='<span style="text-align:left;font-size:12px">'+st+' #'+(j+1)+' '+it.n+isFr+' <small style="color:#90e0ef">#'+it.id+' '+dv+'</small></span><b>'+it.p+'</b>';
+            r.innerHTML='<span style="text-align:left;font-size:12px">'+st+' #'+(j+1)+' '+it.n+isFr+' <small style="color:#90e0ef">#'+it.id+' '+dv+'</small></span><b>'+fmtNum(it.p)+'</b>';
             b.appendChild(r);
             if(it.id===uid)$('m-info').innerText='Место в Топ 500: #'+(j+1)+' из '+ls.length;
         }
@@ -509,8 +550,8 @@ function buyEgg(){if(score<500)return;score-=500;snd();var rnd=Math.random()*100
 function buySkin(s,cost){eqEvSkin=-1;if(s==='gold'){if(hasG)skin=skin==='gold'?'none':'gold';else if(score>=cost){score-=cost;hasG=true;skin='gold'}}if(s==='diamond'){if(hasD)skin=skin==='diamond'?'none':'diamond';else if(score>=cost){score-=cost;hasD=true;skin='diamond'}}if(s==='emerald'){if(hasE)skin=skin==='emerald'?'none':'emerald';else if(score>=cost){score-=cost;hasE=true;skin='emerald'}}if(s==='ruby'){if(hasR)skin=skin==='ruby'?'none':'ruby';else if(score>=cost){score-=cost;hasR=true;skin='ruby'}}snd();draw();save()}
 function resetAll(){score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;eqEvSkin=-1;save();draw()}
 
-setInterval(function(){if(auto>0){score+=auto;qProg+=auto}if(nrg<maxNrg)nrg=Math.min(maxNrg,nrg+Math.max(2,Math.floor(maxNrg/40)));if(bSec>0){bSec--;if(bSec===0)bMult=1}draw();save()},1000);
-draw();syncWorld();$('drop-info').innerText='V22 ALL OK — Жми на клубнику!';
+setInterval(function(){if(auto>0){var ag=auto*rebMult();score+=ag;qProg+=ag}if(nrg<maxNrg)nrg=Math.min(maxNrg,nrg+Math.max(2,Math.floor(maxNrg/40)));if(bSec>0){bSec--;if(bSec===0)bMult=1}draw();save()},1000);
+draw();syncWorld();$('drop-info').innerText='V23 REBIRTH — Жми на клубнику!';
 </script>
 </body>
 </html>
