@@ -198,7 +198,7 @@ function getObj(){if(score>maxScore)maxScore=score;return{uid:uid,score:Math.flo
 function setObj(d){if(!d)return;if(is8Id(String(d.uid)))uid=String(d.uid);score=+d.score||0;maxScore=Math.max(score,+d.maxScore||0);pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;rebirths=Math.min(25,+d.rebirths||0);world=(d.world===2&&rebirths>=25)?2:1;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;hasObs=!!d.hasObs;hasSap=!!d.hasSap;hasPla=!!d.hasPla;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick&&d.nick.indexOf('?')===-1)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet;if(Array.isArray(d.friends))friends=d.friends;qProg=+d.qProg||0;if(Array.isArray(d.mySkins))mySkins=d.mySkins;if(typeof d.eqEvSkin==='number')eqEvSkin=d.eqEvSkin;if(d.uMail)uMail=d.uMail}
 function makeCode(){return btoa(unescape(encodeURIComponent(JSON.stringify(getObj()))))}
 function parseCode(s){try{var c=s.trim(),p=c.indexOf('code=');if(p!==-1)c=decodeURIComponent(c.substring(p+5));var a=c.indexOf('&');if(a!==-1)c=c.substring(0,a);setObj(JSON.parse(decodeURIComponent(escape(atob(c)))));save();return true}catch(e){return false}}
-try{var sv=JSON.parse(localStorage.getItem('berry_v3'));if(sv)setObj(sv);if(location.search.indexOf('code=')!==-1&&parseCode(location.search))history.replaceState({},'',location.pathname);save()}catch(e){}
+try{var sv=JSON.parse(localStorage.getItem('berry_v3')||localStorage.getItem('berry_v2')||localStorage.getItem('berry_v1'));if(sv)setObj(sv);if(location.search.indexOf('code=')!==-1&&parseCode(location.search))history.replaceState({},'',location.pathname);save()}catch(e){}
 function save(){try{if(score>maxScore)maxScore=score;localStorage.setItem('berry_v3',JSON.stringify(getObj()))}catch(e){}}
 
 function fmtNum(n){
@@ -259,5 +259,4 @@ function draw(){
     }catch(e){}
 }
 
-function enterWorld2(){if(rebirths<25||world===2)return;snd();world=2;score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;el('drop-info').innerText='\u041d\u041e\u0412\u042b\u0419 \u041c\u0418\u0420 (X50) \u0410\u041a\u0422\u0418\u0412\u0415\u041d!';save();draw();syncWorld()}
-function doRebirth(){if(rebirths>=25)return;var rc=getRebCost();if(score<rc)return;snd();rebirths++;score=0;pwr=1;auto=0;nrg=100;maxNrg=1
+function enterWorld2(){if(rebirths<25||world===2)return;snd();world=2;score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;el('drop-info').innerText='\u041d\u041e\u0412\u042b\u0419 \u041c\u0418\u0420 (X50) \u0410\u041a\
