@@ -2,12 +2,13 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>&#1058;&#1072;&#1087;&#1072;&#1081; &#1087;&#1086; &#1082;&#1083;&#1091;&#1073;&#1085;&#1080;&#1082;&#1077;</title>
 <style>
 *{touch-action:manipulation;box-sizing:border-box}
 body{margin:0;font-family:Arial,sans-serif;background:#3b0716;color:#fff;text-align:center;min-height:100vh}
-body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}body.bg-royal{background:#240046}
+body.bg-night{background:#0f172a}body.bg-forest{background:#06281e}
+body.bg-royal{background:#240046}
 body.world2{background:radial-gradient(circle at top,#3c096c,#10002b 75%)}
 #menu{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:7px;padding:54px 12px 12px}
 #game{display:none;flex-direction:column;align-items:center;justify-content:space-between;min-height:100vh}
@@ -42,7 +43,8 @@ body.world2{background:radial-gradient(circle at top,#3c096c,#10002b 75%)}
 #bag-box,#wardrobe-box{width:92%;max-width:420px;max-height:185px;overflow-y:auto;background:#1a030a;border:2px solid #ffba08;border-radius:12px;display:none;padding:8px;margin:4px auto}
 .pet{display:inline-block;width:28%;margin:2px;background:#2b0611;border:2px solid #888;border-radius:8px;padding:5px;font-size:11px;cursor:pointer}
 .pet.eq{box-shadow:0 0 10px #fff;border-color:#ffd60a;background:#3d2c00}
-.r-0{border-color:#adb5bd}.r-1{border-color:#38b000}.r-2{border-color:#00b4d8}.r-3{border-color:#9d4edd}.r-4{border-color:#ff0054}.r-5{border-color:#ffd60a;background:#3d2c00}
+.r-0{border-color:#adb5bd}.r-1{border-color:#38b000}.r-2{border-color:#00b4d8}
+.r-3{border-color:#9d4edd}.r-4{border-color:#ff0054}.r-5{border-color:#ffd60a;background:#3d2c00}
 .sec{font-size:12px;color:#ffe066;font-weight:bold;margin:8px 0 4px;border-bottom:1px solid #590d22;padding-bottom:2px}
 .p-bg{width:100%;height:14px;background:#3b0716;border:1px solid #ff758f;border-radius:8px;overflow:hidden;margin:6px 0}
 .p-fl{height:100%;background:linear-gradient(90deg,#ff4d6d,#ffd60a);width:0%}
@@ -53,209 +55,319 @@ body.world2{background:radial-gradient(circle at top,#3c096c,#10002b 75%)}
 </head>
 <body>
 <div id="menu">
-    <button class="top-prof-btn" onclick="toggleBox('prof-box')">&#1055;&#1088;&#1086;&#1092;&#1080;&#1083;&#1100; / &#1044;&#1088;&#1091;&#1079;&#1100;&#1103; (<span id="fr-cnt">0</span>)<span id="req-b" style="color:#ffe066"></span></button>
-    <div id="m-ava" style="font-size:44px">&#127827;</div>
-    <h2 style="margin:0;color:#ffccd5;font-size:20px">&#1058;&#1040;&#1055;&#1040;&#1049; &#1055;&#1054; &#1050;&#1051;&#1059;&#1041;&#1053;&#1048;&#1050;&#1045;</h2>
-    <div id="m-rank" class="badge">&#1056;&#1072;&#1085;&#1075;: &#1053;&#1086;&#1074;&#1080;&#1095;&#1086;&#1082; (x1)</div>
-    <div id="m-reb" class="badge" style="background:#7209b7;border-color:#f72585">&#1055;&#1077;&#1088;&#1077;&#1088;&#1086;&#1078;&#1076;&#1077;&#1085;&#1080;&#1081;: 0 / 25 (x1)</div>
-    <div id="m-info" style="color:#ffb3c1;font-size:13px">&#1043;&#1086;&#1090;&#1086;&#1074;&#1086; &#1082; &#1080;&#1075;&#1088;&#1077;!</div>
-    <button class="m-btn" onclick="goGame(false)">&#1055;&#1088;&#1086;&#1076;&#1086;&#1083;&#1078;&#1080;&#1090;&#1100; &#1080;&#1075;&#1088;&#1091;</button>
-    <button class="m-btn" onclick="goGame(true)" style="background:#6a040f">&#1053;&#1086;&#1074;&#1072;&#1103; &#1080;&#1075;&#1088;&#1072;</button>
-    <button class="m-btn" onclick="toggleBox('quest-box')" style="background:#9d4edd;border-color:#ffd60a">&#1053;&#1077;&#1076;&#1077;&#1083;&#1100;&#1085;&#1086;&#1077; &#1080;&#1089;&#1087;&#1099;&#1090;&#1072;&#1085;&#1080;&#1077; (100&#1082;)</button>
-    <button class="m-btn" onclick="toggleBox('daily-box')" style="background:#2b9348">&#1045;&#1078;&#1077;&#1076;&#1085;&#1077;&#1074;&#1085;&#1099;&#1081; &#1087;&#1088;&#1080;&#1079;</button>
-    <button class="m-btn" onclick="toggleBox('top-box')" style="background:#b58300">&#1058;&#1086;&#1087; 500 &#1083;&#1091;&#1095;&#1096;&#1080;&#1093;</button>
-    <label class="mp3"><span id="mp3-lbl">&#1042;&#1099;&#1073;&#1088;&#1072;&#1090;&#1100; &#1084;&#1091;&#1079;&#1099;&#1082;&#1091; (.mp3)</span><input type="file" accept="audio/*" onchange="loadMp3(this)" style="width:100%;margin-top:4px;font-size:11px"></label>
-    <div id="quest-box" class="box">
-        <div style="font-size:13px;color:#ffd60a;font-weight:bold">&#1053;&#1045;&#1044;&#1045;&#1051;&#1068;&#1053;&#1054;&#1045; &#1048;&#1057;&#1055;&#1067;&#1058;&#1040;&#1053;&#1048;&#1045;</div>
-        <div style="font-size:12px;color:#ffccd5;margin-top:3px">&#1057;&#1086;&#1073;&#1077;&#1088;&#1080; <b>100 000 &#1082;&#1083;&#1091;&#1073;&#1085;&#1080;&#1082;</b> &#1080; &#1087;&#1086;&#1083;&#1091;&#1095;&#1080; &#1089;&#1082;&#1080;&#1085; (<b>x25</b>)!</div>
-        <div class="p-bg"><div id="q-fill" class="p-fl"></div></div>
-        <div id="q-txt" style="font-size:12px;color:#ffe066;font-weight:bold;margin-bottom:6px">0 / 100 000</div>
-        <button class="btn" id="q-claim" onclick="claimQuest()" style="width:100%;background:#2b9348;margin-bottom:6px">&#1047;&#1072;&#1073;&#1088;&#1072;&#1090;&#1100; &#1089;&#1082;&#1080;&#1085;!</button>
-        <div id="q-res" style="font-size:12px;color:#4cc9f0;font-weight:bold;margin-bottom:4px"></div>
-        <div style="font-size:11px;color:#ffb3c1">&#1057;&#1086;&#1073;&#1088;&#1072;&#1085;&#1086; &#1089;&#1082;&#1080;&#1085;&#1086;&#1074;: <b id="q-col">0</b> / 20</div>
+  <button class="top-prof-btn" onclick="toggleBox('prof-box')">&#1055;&#1088;&#1086;&#1092;&#1080;&#1083;&#1100; / &#1044;&#1088;&#1091;&#1079;&#1100;&#1103; (<span id="fr-cnt">0</span>)<span id="req-b" style="color:#ffe066"></span></button>
+  <div id="m-ava" style="font-size:44px">&#127827;</div>
+  <h2 style="margin:0;color:#ffccd5;font-size:20px">&#1058;&#1040;&#1055;&#1040;&#1049; &#1055;&#1054; &#1050;&#1051;&#1059;&#1041;&#1053;&#1048;&#1050;&#1045;</h2>
+  <div id="m-rank" class="badge">&#1056;&#1072;&#1085;&#1075;: &#1053;&#1086;&#1074;&#1080;&#1095;&#1086;&#1082; (x1)</div>
+  <div id="m-reb" class="badge" style="background:#7209b7;border-color:#f72585">&#1055;&#1077;&#1088;&#1077;&#1088;&#1086;&#1078;&#1076;&#1077;&#1085;&#1080;&#1081;: 0 / 25 (x1)</div>
+  <div id="m-info" style="color:#ffb3c1;font-size:13px">&#1043;&#1086;&#1090;&#1086;&#1074;&#1086; &#1082; &#1080;&#1075;&#1088;&#1077;!</div>
+  <button class="m-btn" onclick="goGame(false)">&#1055;&#1088;&#1086;&#1076;&#1086;&#1083;&#1078;&#1080;&#1090;&#1100; &#1080;&#1075;&#1088;&#1091;</button>
+  <button class="m-btn" onclick="goGame(true)" style="background:#6a040f">&#1053;&#1086;&#1074;&#1072;&#1103; &#1080;&#1075;&#1088;&#1072;</button>
+  <button class="m-btn" onclick="toggleBox('quest-box')" style="background:#9d4edd;border-color:#ffd60a">&#1053;&#1077;&#1076;&#1077;&#1083;&#1100;&#1085;&#1086;&#1077; &#1080;&#1089;&#1087;&#1099;&#1090;&#1072;&#1085;&#1080;&#1077; (100&#1082;)</button>
+  <button class="m-btn" onclick="toggleBox('daily-box')" style="background:#2b9348">&#1045;&#1078;&#1077;&#1076;&#1085;&#1077;&#1074;&#1085;&#1099;&#1081; &#1087;&#1088;&#1080;&#1079;</button>
+  <button class="m-btn" onclick="toggleBox('top-box')" style="background:#b58300">&#1058;&#1086;&#1087; 500 &#1083;&#1091;&#1095;&#1096;&#1080;&#1093;</button>
+  <label class="mp3"><span id="mp3-lbl">&#1042;&#1099;&#1073;&#1088;&#1072;&#1090;&#1100; &#1084;&#1091;&#1079;&#1099;&#1082;&#1091; (.mp3)</span><input type="file" accept="audio/*" onchange="loadMp3(this)" style="width:100%;margin-top:4px;font-size:11px"></label>
+  <div id="quest-box" class="box">
+    <div style="font-size:13px;color:#ffd60a;font-weight:bold">&#1053;&#1045;&#1044;&#1045;&#1051;&#1068;&#1053;&#1054;&#1045; &#1048;&#1057;&#1055;&#1067;&#1058;&#1040;&#1053;&#1048;&#1045;</div>
+    <div style="font-size:12px;color:#ffccd5;margin-top:3px">&#1057;&#1086;&#1073;&#1077;&#1088;&#1080; <b>100 000 &#1082;&#1083;&#1091;&#1073;&#1085;&#1080;&#1082;</b> &#1080; &#1087;&#1086;&#1083;&#1091;&#1095;&#1080; &#1089;&#1082;&#1080;&#1085; (<b>x25</b>)!</div>
+    <div class="p-bg"><div id="q-fill" class="p-fl"></div></div>
+    <div id="q-txt" style="font-size:12px;color:#ffe066;font-weight:bold;margin-bottom:6px">0 / 100 000</div>
+    <button class="btn" id="q-claim" onclick="claimQuest()" style="width:100%;background:#2b9348;margin-bottom:6px">&#1047;&#1072;&#1073;&#1088;&#1072;&#1090;&#1100; &#1089;&#1082;&#1080;&#1085;!</button>
+    <div id="q-res" style="font-size:12px;color:#4cc9f0;font-weight:bold;margin-bottom:4px"></div>
+    <div style="font-size:11px;color:#ffb3c1">&#1057;&#1086;&#1073;&#1088;&#1072;&#1085;&#1086; &#1089;&#1082;&#1080;&#1085;&#1086;&#1074;: <b id="q-col">0</b> / 20</div>
+  </div>
+  <div id="prof-box" class="box">
+    <div id="p-id" style="font-size:14px;color:#4cc9f0;margin-bottom:4px;font-weight:bold">ID: 00000000</div>
+    <div id="p-rank" style="font-size:12px;color:#ffe066;margin-bottom:6px;font-weight:bold">0</div>
+    <input type="text" id="nick-inp" class="inp" maxlength="15" placeholder="&#1042;&#1074;&#1077;&#1076;&#1080; &#1085;&#1080;&#1082;...">
+    <div id="ava-row"></div><div id="bg-row"></div>
+    <button class="btn" onclick="saveProf()" style="width:100%;background:#2b9348;margin:6px 0">&#1057;&#1086;&#1093;&#1088;&#1072;&#1085;&#1080;&#1090;&#1100; &#1087;&#1088;&#1086;&#1092;&#1080;&#1083;&#1100;</button>
+    <div class="sec">&#1044;&#1088;&#1091;&#1079;&#1100;&#1103; (8-&#1079;&#1085;&#1072;&#1095;&#1085;&#1099;&#1081; ID):</div>
+    <div id="fr-my-id" style="font-size:11px;color:#90e0ef;margin-bottom:4px">ID: 00000000</div>
+    <div style="display:flex;gap:4px;margin-bottom:4px"><input type="text" id="fr-inp" class="inp" maxlength="8" placeholder="8 &#1094;&#1080;&#1092;&#1088; ID..." style="margin:0;flex:1"><button class="btn" onclick="sendReq()" style="flex:0.6;background:#e85d04">&#1044;&#1086;&#1073;&#1072;&#1074;&#1080;&#1090;&#1100;</button></div>
+    <div id="fr-msg" style="font-size:11px;color:#ffe066;margin-bottom:4px"></div>
+    <div id="req-list"></div><div id="fr-list"></div>
+    <div class="sec">&#1042;&#1093;&#1086;&#1076; &#1095;&#1077;&#1088;&#1077;&#1079; &#1071;&#1085;&#1076;&#1077;&#1082;&#1089; / Google / &#1055;&#1086;&#1095;&#1090;&#1091;:</div>
+    <div class="oauth-row">
+      <button class="btn-ya" onclick="socialLogin('yandex')">&#1071;&#1085;&#1076;&#1077;&#1082;&#1089; ID</button>
+      <button class="btn-go" onclick="socialLogin('google')">Google &#1042;&#1093;&#1086;&#1076;</button>
     </div>
-    <div id="prof-box" class="box">
-        <div id="p-id" style="font-size:14px;color:#4cc9f0;margin-bottom:4px;font-weight:bold">ID: 00000000</div>
-        <div id="p-rank" style="font-size:12px;color:#ffe066;margin-bottom:6px;font-weight:bold">0</div>
-        <input type="text" id="nick-inp" class="inp" maxlength="15" placeholder="&#1042;&#1074;&#1077;&#1076;&#1080; &#1085;&#1080;&#1082;...">
-        <div id="ava-row"></div><div id="bg-row"></div>
-        <button class="btn" onclick="saveProf()" style="width:100%;background:#2b9348;margin:6px 0">&#1057;&#1086;&#1093;&#1088;&#1072;&#1085;&#1080;&#1090;&#1100; &#1087;&#1088;&#1086;&#1092;&#1080;&#1083;&#1100;</button>
-        <div class="sec">&#1044;&#1088;&#1091;&#1079;&#1100;&#1103; (8-&#1079;&#1085;&#1072;&#1095;&#1085;&#1099;&#1081; ID):</div>
-        <div id="fr-my-id" style="font-size:11px;color:#90e0ef;margin-bottom:4px">ID: 00000000</div>
-        <div style="display:flex;gap:4px;margin-bottom:4px"><input type="text" id="fr-inp" class="inp" maxlength="8" placeholder="8 &#1094;&#1080;&#1092;&#1088; ID..." style="margin:0;flex:1"><button class="btn" onclick="sendReq()" style="flex:0.6;background:#e85d04">&#1044;&#1086;&#1073;&#1072;&#1074;&#1080;&#1090;&#1100;</button></div>
-        <div id="fr-msg" style="font-size:11px;color:#ffe066;margin-bottom:4px"></div>
-        <div id="req-list"></div><div id="fr-list"></div>
-        <div class="sec">&#1042;&#1093;&#1086;&#1076; &#1095;&#1077;&#1088;&#1077;&#1079; &#1071;&#1085;&#1076;&#1077;&#1082;&#1089; / Google / &#1055;&#1086;&#1095;&#1090;&#1091;:</div>
-        <div class="oauth-row">
-            <button class="btn-ya" onclick="socialLogin('yandex')">&#1071;&#1085;&#1076;&#1077;&#1082;&#1089; ID</button>
-            <button class="btn-go" onclick="socialLogin('google')">Google &#1042;&#1093;&#1086;&#1076;</button>
-        </div>
-        <input type="email" id="mail-inp" class="inp" placeholder="Email...">
-        <input type="password" id="pass-inp" class="inp" placeholder="&#1055;&#1072;&#1088;&#1086;&#1083;&#1100;...">
-        <div style="display:flex;gap:4px;margin-bottom:4px"><button class="btn" onclick="mailBind()" style="background:#0096c7">&#1055;&#1088;&#1080;&#1074;&#1103;&#1079;&#1072;&#1090;&#1100;</button><button class="btn" onclick="mailLogin()" style="background:#e85d04">&#1042;&#1086;&#1081;&#1090;&#1080;</button></div>
-        <div id="mail-msg" style="font-size:11px;color:#4cc9f0;margin-bottom:6px"></div>
-        <div style="border-top:1px solid #ff758f;padding-top:6px"><button class="btn" onclick="showQr()" style="background:#7209b7">QR</button><button class="btn" onclick="copyCode()" style="background:#3a0ca3">&#1050;&#1086;&#1076;</button><div id="qr-area" style="display:none;background:#fff;padding:6px;border-radius:8px;margin:6px 0"><img id="qr-img" src="" style="width:130px;height:130px;display:block;margin:0 auto"></div><input type="text" id="code-inp" class="inp" placeholder="&#1050;&#1086;&#1076;..." style="margin-top:6px"><button class="btn" onclick="loadCode()" style="width:100%;background:#6a040f">&#1047;&#1072;&#1075;&#1088;&#1091;&#1079;&#1080;&#1090;&#1100; &#1082;&#1086;&#1076;</button></div>
-    </div>
-    <div id="daily-box" class="box"><div id="days-grid"></div><button class="btn" id="claim-btn" onclick="claimDaily()" style="width:100%;background:#2b9348;margin-top:6px">&#1047;&#1072;&#1073;&#1088;&#1072;&#1090;&#1100;!</button></div>
-    <div id="top-box" class="box"></div>
+    <input type="email" id="mail-inp" class="inp" placeholder="Email...">
+    <input type="password" id="pass-inp" class="inp" placeholder="&#1055;&#1072;&#1088;&#1086;&#1083;&#1100;...">
+    <div style="display:flex;gap:4px;margin-bottom:4px"><button class="btn" onclick="mailBind()" style="background:#0096c7">&#1055;&#1088;&#1080;&#1074;&#1103;&#1079;&#1072;&#1090;&#1100;</button><button class="btn" onclick="mailLogin()" style="background:#e85d04">&#1042;&#1086;&#1081;&#1090;&#1080;</button></div>
+    <div id="mail-msg" style="font-size:11px;color:#4cc9f0;margin-bottom:6px"></div>
+    <div style="border-top:1px solid #ff758f;padding-top:6px"><button class="btn" onclick="showQr()" style="background:#7209b7">QR</button><button class="btn" onclick="copyCode()" style="background:#3a0ca3">&#1050;&#1086;&#1076;</button><div id="qr-area" style="display:none;background:#fff;padding:6px;border-radius:8px;margin:6px 0"><img id="qr-img" src="" style="width:130px;height:130px;display:block;margin:0 auto"></div><input type="text" id="code-inp" class="inp" placeholder="&#1050;&#1086;&#1076;..." style="margin-top:6px"><button class="btn" onclick="loadCode()" style="width:100%;background:#6a040f">&#1047;&#1072;&#1075;&#1088;&#1091;&#1079;&#1080;&#1090;&#1100; &#1082;&#1086;&#1076;</button></div>
+  </div>
+  <div id="daily-box" class="box"><div id="days-grid"></div><button class="btn" id="claim-btn" onclick="claimDaily()" style="width:100%;background:#2b9348;margin-top:6px">&#1047;&#1072;&#1073;&#1088;&#1072;&#1090;&#1100;!</button></div>
+  <div id="top-box" class="box"></div>
 </div>
 
 <div id="game">
-    <div style="padding-top:8px;width:100%">
-        <div style="display:flex;gap:5px;justify-content:center;padding:0 10px">
-            <button class="btn" onclick="goMenu()" style="padding:7px">&#1042; &#1084;&#1077;&#1085;&#1102;</button>
-            <button class="btn" id="btn-bag" onclick="toggleBag()" style="padding:7px;background:#e85d04">&#1056;&#1102;&#1082;&#1079;&#1072;&#1082; (<span id="bag-cnt">0</span>)</button>
-            <button class="btn" id="btn-skn" onclick="toggleWardrobe()" style="padding:7px;background:#7209b7;border-color:#ffd60a">&#1057;&#1082;&#1080;&#1085;&#1099; (<span id="sk-cnt">0</span>/20)</button>
-        </div>
-        <div id="g-user" style="font-size:13px;color:#ffe066;font-weight:bold;margin-top:3px">&#1048;&#1075;&#1088;&#1086;&#1082;</div>
-        <div id="g-pet" style="font-size:12px;color:#90e0ef">&#1055;&#1080;&#1090;&#1086;&#1084;&#1077;&#1094;: &#1053;&#1077;&#1090; (x1)</div>
-        <div id="g-rank" class="badge">&#1053;&#1086;&#1074;&#1080;&#1095;&#1086;&#1082;</div>
-        <div id="score">0</div>
-        <div style="font-size:13px">&#1050;&#1083;&#1080;&#1082;: <b id="pwr">1</b> | &#1057;&#1077;&#1082;: <b id="auto">0</b> | &#1069;&#1085;&#1077;&#1088;&#1075;&#1080;&#1103;: <b id="nrg">100</b>/<b id="max-nrg">100</b></div>
-        <div id="buff" style="color:#ffe066;font-size:12px;font-weight:bold;height:16px"></div>
+  <div style="padding-top:8px;width:100%">
+    <div style="display:flex;gap:5px;justify-content:center;padding:0 10px">
+      <button class="btn" onclick="goMenu()" style="padding:7px">&#1042; &#1084;&#1077;&#1085;&#1102;</button>
+      <button class="btn" id="btn-bag" onclick="toggleBag()" style="padding:7px;background:#e85d04">&#1056;&#1102;&#1082;&#1079;&#1072;&#1082; (<span id="bag-cnt">0</span>)</button>
+      <button class="btn" id="btn-skn" onclick="toggleWardrobe()" style="padding:7px;background:#7209b7;border-color:#ffd60a">&#1057;&#1082;&#1080;&#1085;&#1099; (<span id="sk-cnt">0</span>/20)</button>
     </div>
-    <div id="bag-box"><div id="pet-grid"></div></div>
-    <div id="wardrobe-box"><div style="font-size:12px;color:#ffd60a;font-weight:bold;margin-bottom:4px">&#1057;&#1082;&#1080;&#1085;&#1099; (x25):</div><div id="sk-grid"></div></div>
-    <button type="button" id="berry" onpointerdown="tap(event)" ontouchstart="tap(event)" onclick="tap(event)">&#127827;</button>
-    <div id="drop-info" style="font-size:12px;color:#ffe066;font-weight:bold;height:16px">&#1046;&#1084;&#1080; &#1085;&#1072; &#1082;&#1083;&#1091;&#1073;&#1085;&#1080;&#1082;&#1091;!</div>
-    <div class="shop">
-        <button class="btn" id="b-world" onclick="enterWorld2()" style="flex:1 1 95%;background:linear-gradient(90deg,#3a0ca3,#4cc9f0);border-color:#fff;font-size:13px">&#1053;&#1086;&#1074;&#1099;&#1081; &#1084;&#1080;&#1088; (X50)</button>
-        <button class="btn" id="b-reb" onclick="doRebirth()" style="flex:1 1 95%;background:linear-gradient(90deg,#ff9e00,#ff0054);border-color:#ffd60a;color:#fff;font-size:13px">&#1055;&#1077;&#1088;&#1077;&#1088;&#1086;&#1078;&#1076;&#1077;&#1085;&#1080;&#1077; [0/25]</button>
-        <button class="btn" id="b-tap" onclick="buyTap()">&#1057;&#1080;&#1083;&#1072; +1 (<span id="c-tap">15</span>)</button>
-        <button class="btn" id="b-auto" onclick="buyAuto()">&#1050;&#1091;&#1089;&#1090; +1 (<span id="c-auto">50</span>)</button>
-        <button class="btn" id="b-nrg" onclick="buyNrg()" style="background:#005f73">&#1069;&#1085;&#1077;&#1088;&#1075;&#1080;&#1103; +50 (<span id="c-nrg">200</span>)</button>
-        <button class="btn" id="b-egg" onclick="buyEgg()" style="flex:1 1 95%;background:#7209b7;border-color:#f72585">&#1050;&#1091;&#1087;&#1080;&#1090;&#1100; &#1071;&#1081;&#1094;&#1086; &#1087;&#1080;&#1090;&#1086;&#1084;&#1094;&#1072; (500)</button>
-        <button class="btn w1-skin" id="b-gold" onclick="buySkin('gold',1000)" style="background:#b58300">&#1047;&#1086;&#1083;&#1086;&#1090;&#1086; (1000)</button>
-        <button class="btn w1-skin" id="b-diam" onclick="buySkin('diamond',10000)" style="background:#0077b6">&#1040;&#1083;&#1084;&#1072;&#1079; (10K)</button>
-        <button class="btn w1-skin" id="b-emer" onclick="buySkin('emerald',50000)" style="background:#2b9348">&#1048;&#1079;&#1091;&#1084;&#1088;&#1091;&#1076; (50K)</button>
-        <button class="btn w1-skin" id="b-ruby" onclick="buySkin('ruby',1000000)" style="flex:1 1 65%;background:#9b0000">&#1056;&#1091;&#1073;&#1080;&#1085; x50 (1M)</button>
-        <button class="btn w2-skin" id="b-obs" onclick="buySkin('obsidian',100000)" style="display:none;background:#3c096c;border-color:#c77dff">&#1054;&#1073;&#1089;&#1080;&#1076;&#1080;&#1072;&#1085; x25 (100K)</button>
-        <button class="btn w2-skin" id="b-sap" onclick="buySkin('sapphire',10000000)" style="display:none;background:#023e8a;border-color:#90e0ef">&#1057;&#1072;&#1087;&#1092;&#1080;&#1088; x50 (10M)</button>
-        <button class="btn w2-skin" id="b-pla" onclick="buySkin('platinum',1000000000)" style="display:none;flex:1 1 65%;background:#495057;border-color:#ffd60a">&#1055;&#1083;&#1072;&#1090;&#1080;&#1085;&#1072; x100 (1B)</button>
-        <button class="btn" onclick="resetAll()" style="flex:1 1 25%;background:#2b0611">&#1057;&#1073;&#1088;&#1086;&#1089;</button>
-    </div>
+    <div id="g-user" style="font-size:13px;color:#ffe066;font-weight:bold;margin-top:3px">&#1048;&#1075;&#1088;&#1086;&#1082;</div>
+    <div id="g-pet" style="font-size:12px;color:#90e0ef">&#1055;&#1080;&#1090;&#1086;&#1084;&#1077;&#1094;: &#1053;&#1077;&#1090; (x1)</div>
+    <div id="g-rank" class="badge">&#1053;&#1086;&#1074;&#1080;&#1095;&#1086;&#1082;</div>
+    <div id="score">0</div>
+    <div style="font-size:13px">&#1050;&#1083;&#1080;&#1082;: <b id="pwr">1</b> | &#1057;&#1077;&#1082;: <b id="auto">0</b> | &#1069;&#1085;&#1077;&#1088;&#1075;&#1080;&#1103;: <b id="nrg">100</b>/<b id="max-nrg">100</b></div>
+    <div id="buff" style="color:#ffe066;font-size:12px;font-weight:bold;height:16px"></div>
+  </div>
+  <div id="bag-box"><div id="pet-grid"></div></div>
+  <div id="wardrobe-box"><div style="font-size:12px;color:#ffd60a;font-weight:bold;margin-bottom:4px">&#1057;&#1082;&#1080;&#1085;&#1099; (x25):</div><div id="sk-grid"></div></div>
+  <button type="button" id="berry" onclick="tap()">&#127827;</button>
+  <div id="drop-info" style="font-size:12px;color:#ffe066;font-weight:bold;height:16px">&#1046;&#1084;&#1080; &#1085;&#1072; &#1082;&#1083;&#1091;&#1073;&#1085;&#1080;&#1082;&#1091;!</div>
+  <div class="shop">
+    <button class="btn" id="b-world" onclick="enterWorld2()" style="flex:1 1 95%;background:linear-gradient(90deg,#3a0ca3,#4cc9f0);border-color:#fff;font-size:13px">&#1053;&#1086;&#1074;&#1099;&#1081; &#1084;&#1080;&#1088; (X50)</button>
+    <button class="btn" id="b-reb" onclick="doRebirth()" style="flex:1 1 95%;background:linear-gradient(90deg,#ff9e00,#ff0054);border-color:#ffd60a;color:#fff;font-size:13px">&#1055;&#1077;&#1088;&#1077;&#1088;&#1086;&#1078;&#1076;&#1077;&#1085;&#1080;&#1077; [0/25]</button>
+    <button class="btn" id="b-tap" onclick="buyTap()">&#1057;&#1080;&#1083;&#1072; +1 (<span id="c-tap">15</span>)</button>
+    <button class="btn" id="b-auto" onclick="buyAuto()">&#1050;&#1091;&#1089;&#1090; +1 (<span id="c-auto">50</span>)</button>
+    <button class="btn" id="b-nrg" onclick="buyNrg()" style="background:#005f73">&#1069;&#1085;&#1077;&#1088;&#1075;&#1080;&#1103; +50 (<span id="c-nrg">200</span>)</button>
+    <button class="btn" id="b-egg" onclick="buyEgg()" style="flex:1 1 95%;background:#7209b7;border-color:#f72585">&#1050;&#1091;&#1087;&#1080;&#1090;&#1100; &#1071;&#1081;&#1094;&#1086; &#1087;&#1080;&#1090;&#1086;&#1084;&#1094;&#1072; (500)</button>
+    <button class="btn w1-skin" id="b-gold" onclick="buySkin('gold',1000)" style="background:#b58300">&#1047;&#1086;&#1083;&#1086;&#1090;&#1086; (1000)</button>
+    <button class="btn w1-skin" id="b-diam" onclick="buySkin('diamond',10000)" style="background:#0077b6">&#1040;&#1083;&#1084;&#1072;&#1079; (10K)</button>
+    <button class="btn w1-skin" id="b-emer" onclick="buySkin('emerald',50000)" style="background:#2b9348">&#1048;&#1079;&#1091;&#1084;&#1088;&#1091;&#1076; (50K)</button>
+    <button class="btn w1-skin" id="b-ruby" onclick="buySkin('ruby',1000000)" style="flex:1 1 65%;background:#9b0000">&#1056;&#1091;&#1073;&#1080;&#1085; x50 (1M)</button>
+    <button class="btn w2-skin" id="b-obs" onclick="buySkin('obsidian',100000)" style="display:none;background:#3c096c;border-color:#c77dff">&#1054;&#1073;&#1089;&#1080;&#1076;&#1080;&#1072;&#1085; x25 (100K)</button>
+    <button class="btn w2-skin" id="b-sap" onclick="buySkin('sapphire',10000000)" style="display:none;background:#023e8a;border-color:#90e0ef">&#1057;&#1072;&#1087;&#1092;&#1080;&#1088; x50 (10M)</button>
+    <button class="btn w2-skin" id="b-pla" onclick="buySkin('platinum',1000000000)" style="display:none;flex:1 1 65%;background:#495057;border-color:#ffd60a">&#1055;&#1083;&#1072;&#1090;&#1080;&#1085;&#1072; x100 (1B)</button>
+    <button class="btn" onclick="resetAll()" style="flex:1 1 25%;background:#2b0611">&#1057;&#1073;&#1088;&#1086;&#1089;</button>
+  </div>
 </div>
 <script>
 function el(id){return document.getElementById(id)||{style:{}}}
-var score=0,maxScore=0,pwr=1,auto=0,nrg=100,maxNrg=100,cTap=15,cAuto=50,cNrg=200,taps=0,rebirths=0,world=1,lastTap=0;
-var skin='none',hasG=false,hasD=false,hasE=false,hasR=false,hasObs=false,hasSap=false,hasPla=false;
-var day=1,lastDate='',bMult=1,bSec=0,nick='\u0418\u0433\u0440\u043e\u043a',ava='&#127827;',bg='',bgm=null,bag='',eqPet=-1,friends=new Array(),qProg=0,mySkins=new Array(),eqEvSkin=-1,uMail='';
+var score=0,maxScore=0,pwr=1,auto=0,nrg=100,maxNrg=100;
+var cTap=15,cAuto=50,cNrg=200,taps=0,rebirths=0,world=1;
+var skin='none',hasG=false,hasD=false,hasE=false,hasR=false;
+var hasObs=false,hasSap=false,hasPla=false;
+var day=1,lastDate='',bMult=1,bSec=0;
+var nick='\u0418\u0433\u0440\u043e\u043a',ava='&#127827;',bg='',bgm=null;
+var bag='',eqPet=-1,friends=[],qProg=0,mySkins=[],eqEvSkin=-1,uMail='';
 
-var evNames='\u041f\u0440\u043e\u0442\u0438\u0432\u043e\u0433\u0430\u0437|\u0421\u043a\u0435\u043b\u0435\u0442|\u0422\u044b\u043a\u0432\u0430|\u0420\u0430\u0434\u0443\u0433\u0430|\u041a\u043e\u0442|\u0427\u0451\u0440\u043d\u0430\u044f|\u0420\u043e\u0431\u043e\u0442|\u0425\u043e\u043a\u043a\u0435\u0438\u0441\u0442|\u0411\u043e\u043a\u0441\u0451\u0440|\u041b\u044b\u0441\u044b\u0439 \u043a\u043e\u0442|\u041a\u0438\u0431\u0435\u0440|\u041f\u0440\u0438\u0437\u0440\u0430\u043a|\u0414\u0440\u0430\u043a\u043e\u043d|\u041d\u0438\u043d\u0434\u0437\u044f|\u041a\u043e\u0441\u043c\u043e\u0441|\u041f\u0438\u0440\u0430\u0442|\u041a\u043e\u0440\u043e\u043b\u044c|\u0412\u0430\u043c\u043f\u0438\u0440|\u041d\u041b\u041e|\u041e\u0433\u043e\u043d\u044c'.split('|');
-var evIcons='&#127827;&#128567;|&#128128;|&#127875;|&#127752;&#127827;|&#128049;|&#128420;&#127827;|&#129302;|&#127954;&#127827;|&#129354;&#127827;|&#128008;&#9829;|&#128374;&#127827;|&#128123;|&#128009;|&#129399;|&#128640;&#127827;|&#127988;&#8205;&#9760;&#65039;|&#128081;&#127827;|&#129499;|&#128125;|&#128293;&#127827;'.split('|');
-var prizes='+100|x2 (60\u0441)|+500|+2 \u0441\u0438\u043b\u0430|x3 (60\u0441)|+1 \u043a\u0443\u0441\u0442|+5000'.split('|');
-var avas='&#127827;|&#128526;|&#128081;|&#128049;|&#129302;|&#128293;'.split('|');
-var bgIds='|bg-night|bg-forest|bg-royal'.split('|'),bgNms='\u042f\u0433\u043e\u0434\u0430|\u041d\u043e\u0447\u044c|\u041b\u0435\u0441|\u041d\u0435\u043e\u043d'.split('|');
-var pRar='\u041e\u0431\u044b\u0447\u043d\u044b\u0439|\u0420\u0435\u0434\u043a\u0438\u0439|\u0421\u0432\u0435\u0440\u0445\u0440\u0435\u0434\u043a\u0438\u0439|\u042d\u043f\u0438\u043a|\u041c\u0438\u0444\u0438\u043a|\u041b\u0435\u0433\u0435\u043d\u0434\u0430'.split('|');
-var pNam='\u0426\u044b\u043f\u043b\u0451\u043d\u043e\u043a|\u0421\u043e\u0431\u0430\u043a\u0430|\u041f\u0430\u043d\u0434\u0430|\u0422\u0438\u0433\u0440|\u041a\u0430\u0440\u0430\u0441\u044c|\u041a\u043e\u0442'.split('|');
-var pIco='&#128037;|&#128054;|&#128060;|&#128047;|&#128031;|&#128049;'.split('|');
-var pMul='1.2|1.5|3|5|10|20'.split('|');
+var evNames=[
+  '\u041f\u0440\u043e\u0442\u0438\u0432\u043e\u0433\u0430\u0437','\u0421\u043a\u0435\u043b\u0435\u0442',
+  '\u0422\u044b\u043a\u0432\u0430','\u0420\u0430\u0434\u0443\u0433\u0430',
+  '\u041a\u043e\u0442','\u0427\u0451\u0440\u043d\u0430\u044f',
+  '\u0420\u043e\u0431\u043e\u0442','\u0425\u043e\u043a\u043a\u0435\u0438\u0441\u0442',
+  '\u0411\u043e\u043a\u0441\u0451\u0440','\u041b\u044b\u0441\u044b\u0439 \u043a\u043e\u0442',
+  '\u041a\u0438\u0431\u0435\u0440','\u041f\u0440\u0438\u0437\u0440\u0430\u043a',
+  '\u0414\u0440\u0430\u043a\u043e\u043d','\u041d\u0438\u043d\u0434\u0437\u044f',
+  '\u041a\u043e\u0441\u043c\u043e\u0441','\u041f\u0438\u0440\u0430\u0442',
+  '\u041a\u043e\u0440\u043e\u043b\u044c','\u0412\u0430\u043c\u043f\u0438\u0440',
+  '\u041d\u041b\u041e','\u041e\u0433\u043e\u043d\u044c'
+];
+var evIcons=[
+  '&#127827;&#128567;','&#128128;','&#127875;','&#127752;&#127827;',
+  '&#128049;','&#128420;&#127827;','&#129302;','&#127954;&#127827;',
+  '&#129354;&#127827;','&#128008;&#9829;','&#128374;&#127827;','&#128123;',
+  '&#128009;','&#129399;','&#128640;&#127827;','&#127988;&#8205;&#9760;&#65039;',
+  '&#128081;&#127827;','&#129499;','&#128125;','&#128293;&#127827;'
+];
+var prizes=['+100','x2 (60\u0441)','+500','+2 \u0441\u0438\u043b\u0430','x3 (60\u0441)','+1 \u043a\u0443\u0441\u0442','+5000'];
+var avas=['&#127827;','&#128526;','&#128081;','&#128049;','&#129302;','&#128293;'];
+var bgIds=['','bg-night','bg-forest','bg-royal'];
+var bgNms=['\u042f\u0433\u043e\u0434\u0430','\u041d\u043e\u0447\u044c','\u041b\u0435\u0441','\u041d\u0435\u043e\u043d'];
+var pRar=['\u041e\u0431\u044b\u0447\u043d\u044b\u0439','\u0420\u0435\u0434\u043a\u0438\u0439','\u0421\u0432\u0435\u0440\u0445\u0440\u0435\u0434\u043a\u0438\u0439','\u042d\u043f\u0438\u043a','\u041c\u0438\u0444\u0438\u043a','\u041b\u0435\u0433\u0435\u043d\u0434\u0430'];
+var pNam=['\u0426\u044b\u043f\u043b\u0451\u043d\u043e\u043a','\u0421\u043e\u0431\u0430\u043a\u0430','\u041f\u0430\u043d\u0434\u0430','\u0422\u0438\u0433\u0440','\u041a\u0430\u0440\u0430\u0441\u044c','\u041a\u043e\u0442'];
+var pIco=['&#128037;','&#128054;','&#128060;','&#128047;','&#128031;','&#128049;'];
+var pMul=[1.2,1.5,3,5,10,20];
 
 function gen8Id(){return String(Math.floor(10000000+Math.random()*90000000))}
 function is8Id(s){return typeof s==='string'&&s.length===8&&!isNaN(+s)&&+s>=10000000}
 var uid=gen8Id();
-var rebBase='100|500|1000|10000|25000|50000|100000|250000|500000'.split('|');
-var rebSteps='1|2.5|5'.split('|');
-function getRebCost(){if(rebirths<rebBase.length)return +rebBase.slice(rebirths,rebirths+1).shift();var idx=rebirths-rebBase.length,pow=Math.floor(idx/3)+6;return(+rebSteps.slice(idx%3,(idx%3)+1).shift())*Math.pow(10,pow)}
+var rebBase=[100,500,1000,10000,25000,50000,100000,250000,500000];
+var rebSteps=[1,2.5,5];
+
+function getRebCost(){
+  if(rebirths<rebBase.length)return rebBase[rebirths];
+  var idx=rebirths-rebBase.length,pow=Math.floor(idx/3)+6;
+  return rebSteps[idx%3]*Math.pow(10,pow);
+}
 function rebMult(){return Math.pow(2,rebirths)}
 function worldMult(){return world===2?50:1}
-function getPr(){var s=Math.max(Math.floor(score),Math.floor(maxScore));if(s>=1000000)return{n:'\u0411\u043e\u0433',m:10,nx:'MAX',cur:s};if(s>=250000)return{n:'\u041b\u0435\u0433\u0435\u043d\u0434\u0430',m:5,nx:1000000,cur:s};if(s>=50000)return{n:'\u041f\u0440\u043e',m:3,nx:250000,cur:s};if(s>=10000)return{n:'\u041f\u043e\u043b\u0443-\u043f\u0440\u043e',m:2,nx:50000,cur:s};if(s>=1000)return{n:'\u041b\u044e\u0431\u0438\u0442\u0435\u043b\u044c',m:1.5,nx:10000,cur:s};return{n:'\u041d\u043e\u0432\u0438\u0447\u043e\u043a',m:1,nx:1000,cur:s}}
+function getPr(){
+  var s=Math.max(Math.floor(score),Math.floor(maxScore));
+  if(s>=1000000)return{n:'\u0411\u043e\u0433',m:10,nx:'MAX',cur:s};
+  if(s>=250000)return{n:'\u041b\u0435\u0433\u0435\u043d\u0434\u0430',m:5,nx:1000000,cur:s};
+  if(s>=50000)return{n:'\u041f\u0440\u043e',m:3,nx:250000,cur:s};
+  if(s>=10000)return{n:'\u041f\u043e\u043b\u0443-\u043f\u0440\u043e',m:2,nx:50000,cur:s};
+  if(s>=1000)return{n:'\u041b\u044e\u0431\u0438\u0442\u0435\u043b\u044c',m:1.5,nx:10000,cur:s};
+  return{n:'\u041d\u043e\u0432\u0438\u0447\u043e\u043a',m:1,nx:1000,cur:s};
+}
 
 function snd(){
-    try{
-        var C=window.AudioContext||window.webkitAudioContext;
-        if(!C)return;
-        if(!window.ac)window.ac=new C();
-        if(window.ac.state==='suspended')window.ac.resume();
-        var t=window.ac.currentTime,o=window.ac.createOscillator(),g=window.ac.createGain();
-        o.type='triangle';
-        o.frequency.setValueAtTime(560+Math.random()*160,t);
-        o.frequency.exponentialRampToValueAtTime(120,t+0.055);
-        g.gain.setValueAtTime(0.32,t);
-        g.gain.exponentialRampToValueAtTime(0.01,t+0.055);
-        o.connect(g);g.connect(window.ac.destination);
-        o.start(t);o.stop(t+0.055);
-    }catch(e){}
+  try{
+    var C=window.AudioContext||window.webkitAudioContext;
+    if(!C)return;
+    if(!window.ac)window.ac=new C();
+    if(window.ac.state==='suspended')window.ac.resume();
+    var t=window.ac.currentTime,o=window.ac.createOscillator(),g=window.ac.createGain();
+    o.type='triangle';
+    o.frequency.setValueAtTime(560+Math.random()*160,t);
+    o.frequency.exponentialRampToValueAtTime(120,t+0.055);
+    g.gain.setValueAtTime(0.32,t);
+    g.gain.exponentialRampToValueAtTime(0.01,t+0.055);
+    o.connect(g);g.connect(window.ac.destination);
+    o.start(t);o.stop(t+0.055);
+  }catch(e){}
 }
 
-function petMult(){return(eqPet>=0&&eqPet<=5)?+pMul.slice(eqPet,eqPet+1).shift():1}
-function skinMult(){if(eqEvSkin>=0&&eqEvSkin<20)return 25;return skin==='gold'?2:skin==='diamond'?5:skin==='emerald'?15:skin==='ruby'?50:skin==='obsidian'?25:skin==='sapphire'?50:skin==='platinum'?100:1}
+function petMult(){return(eqPet>=0&&eqPet<=5)?pMul[eqPet]:1}
+function skinMult(){
+  if(eqEvSkin>=0&&eqEvSkin<20)return 25;
+  if(skin==='gold')return 2;if(skin==='diamond')return 5;
+  if(skin==='emerald')return 15;if(skin==='ruby')return 50;
+  if(skin==='obsidian')return 25;if(skin==='sapphire')return 50;
+  if(skin==='platinum')return 100;return 1;
+}
 function mult(){return skinMult()*bMult*getPr().m*petMult()*rebMult()*worldMult()}
 
-function tap(ev){
-    if(ev&&ev.preventDefault)ev.preventDefault();
-    var now=Date.now();
-    if(now-lastTap<35)return;
-    lastTap=now;
-    if(nrg>=1){
-        var g=pwr*mult();
-        taps++;score+=g;qProg+=g;nrg-=1;
-        snd();draw();save();
-    }
+function tap(){
+  if(nrg>=1){
+    var g=pwr*mult();
+    taps++;score+=g;qProg+=g;nrg-=1;
+    snd();draw();save();
+  }
 }
 
-function getObj(){if(score>maxScore)maxScore=score;return{uid:uid,score:Math.floor(score),maxScore:Math.floor(maxScore),power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,rebirths:rebirths,world:world,hasGold:hasG,hasDiamond:hasD,hasEmerald:hasE,hasRuby:hasR,hasObs:hasObs,hasSap:hasSap,hasPla:hasPla,skin:skin,day:day,lastDate:lastDate,nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet,friends:friends,qProg:Math.floor(qProg),mySkins:mySkins,eqEvSkin:eqEvSkin,uMail:uMail}}
-function setObj(d){if(!d)return;if(is8Id(String(d.uid)))uid=String(d.uid);score=+d.score||0;maxScore=Math.max(score,+d.maxScore||0);pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;taps=+d.taps||0;rebirths=Math.min(25,+d.rebirths||0);world=(d.world===2&&rebirths>=25)?2:1;hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;hasR=!!d.hasRuby;hasObs=!!d.hasObs;hasSap=!!d.hasSap;hasPla=!!d.hasPla;skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';if(d.nick&&d.nick.indexOf('?')===-1)nick=d.nick;if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;if(typeof d.bag==='string')bag=d.bag;if(typeof d.eqPet==='number')eqPet=d.eqPet;if(Array.isArray(d.friends))friends=d.friends;qProg=+d.qProg||0;if(Array.isArray(d.mySkins))mySkins=d.mySkins;if(typeof d.eqEvSkin==='number')eqEvSkin=d.eqEvSkin;if(d.uMail)uMail=d.uMail}
+function getObj(){
+  if(score>maxScore)maxScore=score;
+  return{
+    uid:uid,score:Math.floor(score),maxScore:Math.floor(maxScore),
+    power:pwr,auto:auto,energy:Math.floor(nrg),maxNrg:maxNrg,
+    costTap:cTap,costAuto:cAuto,costNrg:cNrg,taps:taps,
+    rebirths:rebirths,world:world,hasGold:hasG,hasDiamond:hasD,
+    hasEmerald:hasE,hasRuby:hasR,hasObs:hasObs,hasSap:hasSap,
+    hasPla:hasPla,skin:skin,day:day,lastDate:lastDate,
+    nick:nick,ava:ava,bgTheme:bg,bag:bag,eqPet:eqPet,
+    friends:friends,qProg:Math.floor(qProg),mySkins:mySkins,
+    eqEvSkin:eqEvSkin,uMail:uMail
+  };
+}
+function setObj(d){
+  if(!d)return;
+  if(is8Id(String(d.uid)))uid=String(d.uid);
+  score=+d.score||0;maxScore=Math.max(score,+d.maxScore||0);
+  pwr=+d.power||1;auto=+d.auto||0;nrg=+d.energy||100;maxNrg=+d.maxNrg||100;
+  cTap=+d.costTap||15;cAuto=+d.costAuto||50;cNrg=+d.costNrg||200;
+  taps=+d.taps||0;rebirths=Math.min(25,+d.rebirths||0);
+  world=(d.world===2&&rebirths>=25)?2:1;
+  hasG=!!d.hasGold;hasD=!!d.hasDiamond;hasE=!!d.hasEmerald;
+  hasR=!!d.hasRuby;hasObs=!!d.hasObs;hasSap=!!d.hasSap;hasPla=!!d.hasPla;
+  skin=d.skin||'none';day=+d.day||1;lastDate=d.lastDate||'';
+  if(d.nick&&d.nick.indexOf('?')===-1)nick=d.nick;
+  if(d.ava)ava=d.ava;if(d.bgTheme)bg=d.bgTheme;
+  if(typeof d.bag==='string')bag=d.bag;
+  if(typeof d.eqPet==='number')eqPet=d.eqPet;
+  if(Array.isArray(d.friends))friends=d.friends;
+  qProg=+d.qProg||0;if(Array.isArray(d.mySkins))mySkins=d.mySkins;
+  if(typeof d.eqEvSkin==='number')eqEvSkin=d.eqEvSkin;
+  if(d.uMail)uMail=d.uMail;
+}
 function makeCode(){return btoa(unescape(encodeURIComponent(JSON.stringify(getObj()))))}
-function parseCode(s){try{var c=s.trim(),p=c.indexOf('code=');if(p!==-1)c=decodeURIComponent(c.substring(p+5));var a=c.indexOf('&');if(a!==-1)c=c.substring(0,a);setObj(JSON.parse(decodeURIComponent(escape(atob(c)))));save();return true}catch(e){return false}}
-try{var sv=JSON.parse(localStorage.getItem('berry_v3')||localStorage.getItem('berry_v2')||localStorage.getItem('berry_v1'));if(sv)setObj(sv);if(location.search.indexOf('code=')!==-1&&parseCode(location.search))history.replaceState({},'',location.pathname);save()}catch(e){}
+function parseCode(s){
+  try{
+    var c=s.trim(),p=c.indexOf('code=');
+    if(p!==-1)c=decodeURIComponent(c.substring(p+5));
+    var a=c.indexOf('&');if(a!==-1)c=c.substring(0,a);
+    setObj(JSON.parse(decodeURIComponent(escape(atob(c)))));
+    save();return true;
+  }catch(e){return false}
+}
+try{
+  var raw=localStorage.getItem('berry_v3')||localStorage.getItem('berry_v2')||localStorage.getItem('berry_v1');
+  if(raw)setObj(JSON.parse(raw));
+  if(location.search.indexOf('code=')!==-1&&parseCode(location.search))history.replaceState({},'',location.pathname);
+  save();
+}catch(e){}
 function save(){try{if(score>maxScore)maxScore=score;localStorage.setItem('berry_v3',JSON.stringify(getObj()))}catch(e){}}
 
 function fmtNum(n){
-    if(n>=1e30)return Math.round(n/1e28)/100+'No';
-    if(n>=1e27)return Math.round(n/1e25)/100+'Oc';
-    if(n>=1e24)return Math.round(n/1e22)/100+'Sp';
-    if(n>=1e21)return Math.round(n/1e19)/100+'Sx';
-    if(n>=1e18)return Math.round(n/1e16)/100+'Qi';
-    if(n>=1e15)return Math.round(n/1e13)/100+'Qa';
-    if(n>=1e12)return Math.round(n/1e10)/100+'T';
-    if(n>=1e9)return Math.round(n/1e7)/100+'B';
-    if(n>=1e6)return Math.round(n/1e4)/100+'M';
-    if(n>=1e4)return Math.round(n/10)/100+'K';
-    return Math.floor(n);
+  if(n>=1e30)return Math.round(n/1e28)/100+'No';
+  if(n>=1e27)return Math.round(n/1e25)/100+'Oc';
+  if(n>=1e24)return Math.round(n/1e22)/100+'Sp';
+  if(n>=1e21)return Math.round(n/1e19)/100+'Sx';
+  if(n>=1e18)return Math.round(n/1e16)/100+'Qi';
+  if(n>=1e15)return Math.round(n/1e13)/100+'Qa';
+  if(n>=1e12)return Math.round(n/1e10)/100+'T';
+  if(n>=1e9)return Math.round(n/1e7)/100+'B';
+  if(n>=1e6)return Math.round(n/1e4)/100+'M';
+  if(n>=1e4)return Math.round(n/10)/100+'K';
+  return Math.floor(n);
 }
 
 function draw(){
-    try{
-        if(score>maxScore)maxScore=score;
-        var pr=getPr(),rm=rebMult(),rc=getRebCost(),wm=worldMult();
-        document.body.className=(world===2?'world2':bg);
-        el('fr-cnt').innerText=friends.length;el('bag-cnt').innerText=bag.length;el('sk-cnt').innerText=mySkins.length;
-        el('m-ava').innerHTML=ava;el('g-user').innerHTML=ava+' '+nick+(world===2?' [\u041c\u0418\u0420 2: X50]':'');
-        el('m-rank').innerText='\u0420\u0430\u043d\u0433: '+pr.n+' (x'+pr.m+')';
-        el('m-reb').innerText='\u041f\u0435\u0440\u0435\u0440\u043e\u0436\u0434\u0435\u043d\u0438\u0439: '+rebirths+' / 25 (x'+fmtNum(rm)+')'+(world===2?' | \u041c\u0418\u0420 2':'');
-        el('g-rank').innerText=(world===2?'\u041c\u0418\u0420 2 (X50) | ':'')+pr.n+' | \u041f\u0435\u0440\u0435\u0440\u043e\u0436\u0434: '+rebirths+'/25';
-        el('g-pet').innerHTML=(eqPet>=0&&eqPet<=5)?('\u041f\u0438\u0442\u043e\u043c\u0435\u0446: '+pIco.slice(eqPet,eqPet+1).shift()+' '+pNam.slice(eqPet,eqPet+1).shift()+' (x'+petMult()+')'):'\u041f\u0438\u0442\u043e\u043c\u0435\u0446: \u041d\u0435\u0442 (x1)';
-        el('score').innerText=fmtNum(score);el('m-info').innerText=nick+' (ID: '+uid+') | \u0421\u0447\u0451\u0442: '+fmtNum(score);
-        el('pwr').innerText=fmtNum(Math.round(pwr*mult()*10)/10);el('auto').innerText=fmtNum(auto*rm*wm);el('nrg').innerText=Math.floor(nrg);el('max-nrg').innerText=maxNrg;
-        el('c-tap').innerText=fmtNum(cTap);el('c-auto').innerText=fmtNum(cAuto);el('c-nrg').innerText=fmtNum(cNrg);
-        el('buff').innerText=bSec>0?('\u0411\u041e\u041d\u0423\u0421 x'+bMult+': '+bSec+'\u0441'):'';
+  try{
+    if(score>maxScore)maxScore=score;
+    var pr=getPr(),rm=rebMult(),rc=getRebCost(),wm=worldMult();
+    document.body.className=(world===2?'world2':bg);
+    el('fr-cnt').innerText=friends.length;
+    el('bag-cnt').innerText=bag.length;
+    el('sk-cnt').innerText=mySkins.length;
+    el('m-ava').innerHTML=ava;
+    el('g-user').innerHTML=ava+' '+nick+(world===2?' [\u041c\u0418\u0420 2: X50]':'');
+    el('m-rank').innerText='\u0420\u0430\u043d\u0433: '+pr.n+' (x'+pr.m+')';
+    el('m-reb').innerText='\u041f\u0435\u0440\u0435\u0440\u043e\u0436\u0434\u0435\u043d\u0438\u0439: '+rebirths+' / 25 (x'+fmtNum(rm)+')';
+    el('g-rank').innerText=(world===2?'\u041c\u0418\u0420 2 (X50) | ':'')+pr.n+' | R: '+rebirths+'/25';
+    el('g-pet').innerHTML=(eqPet>=0&&eqPet<=5)?('\u041f\u0438\u0442\u043e\u043c\u0435\u0446: '+pIco[eqPet]+' '+pNam[eqPet]+' (x'+petMult()+')'):'\u041f\u0438\u0442\u043e\u043c\u0435\u0446: \u041d\u0435\u0442 (x1)';
+    el('score').innerText=fmtNum(score);
+    el('m-info').innerText=nick+' (ID: '+uid+') | \u0421\u0447\u0451\u0442: '+fmtNum(score);
+    el('pwr').innerText=fmtNum(Math.round(pwr*mult()*10)/10);
+    el('auto').innerText=fmtNum(auto*rm*wm);
+    el('nrg').innerText=Math.floor(nrg);el('max-nrg').innerText=maxNrg;
+    el('c-tap').innerText=fmtNum(cTap);el('c-auto').innerText=fmtNum(cAuto);el('c-nrg').innerText=fmtNum(cNrg);
+    el('buff').innerText=bSec>0?('\u0411\u041e\u041d\u0423\u0421 x'+bMult+': '+bSec+'\u0441'):'';
 
-        var bW=el('b-world');
-        if(rebirths<25){bW.disabled=true;bW.innerText='\u041d\u043e\u0432\u044b\u0439 \u043c\u0438\u0440 (X50) — \u041d\u0443\u0436\u043d\u043e 25 \u043f\u0435\u0440\u0435\u0440\u043e\u0436\u0434. ['+rebirths+'/25]'}
-        else if(world===1){bW.disabled=false;bW.innerText='\u0412\u043e\u0439\u0442\u0438 \u0432 \u041d\u043e\u0432\u044b\u0439 \u043c\u0438\u0440 (X50) [\u0421\u0431\u0440\u043e\u0441 \u0432\u0441\u0435\u0433\u043e]'}
-        else{bW.disabled=true;bW.innerText='\u0412\u044b \u0432 \u041d\u043e\u0432\u043e\u043c \u043c\u0438\u0440\u0435 (X50) — \u0411\u043e\u043d\u0443\u0441 \u0430\u043a\u0442\u0438\u0432\u0435\u043d!'}
+    var bW=el('b-world');
+    if(rebirths<25){bW.disabled=true;bW.innerText='\u041d\u043e\u0432\u044b\u0439 \u043c\u0438\u0440 (X50) ['+rebirths+'/25]'}
+    else if(world===1){bW.disabled=false;bW.innerText='\u0412\u043e\u0439\u0442\u0438 \u0432 \u041d\u043e\u0432\u044b\u0439 \u043c\u0438\u0440 (X50)'}
+    else{bW.disabled=true;bW.innerText='\u041d\u043e\u0432\u044b\u0439 \u043c\u0438\u0440 (X50) \u0430\u043a\u0442\u0438\u0432\u0435\u043d!'}
 
-        var bReb=el('b-reb');
-        if(rebirths>=25){bReb.disabled=true;bReb.innerText='\u041c\u0410\u041a\u0421. \u041f\u0415\u0420\u0415\u0420\u041e\u0416\u0414\u0415\u041d\u0418\u0415 25/25 (x'+fmtNum(rm)+')'}
-        else{bReb.disabled=score<rc;bReb.innerText='\u041f\u0435\u0440\u0435\u0440\u043e\u0436\u0434\u0435\u043d\u0438\u0435 ['+rebirths+'/25] -> X2 ('+fmtNum(rc)+')'}
+    var bReb=el('b-reb');
+    if(rebirths>=25){bReb.disabled=true;bReb.innerText='\u041c\u0410\u041a\u0421. \u041f\u0415\u0420\u0415\u0420\u041e\u0416\u0414. 25/25 (x'+fmtNum(rm)+')'}
+    else{bReb.disabled=score<rc;bReb.innerText='\u041f\u0435\u0440\u0435\u0440\u043e\u0436\u0434\u0435\u043d\u0438\u0435 ['+rebirths+'/25] -> X2 ('+fmtNum(rc)+')'}
 
-        el('b-tap').disabled=score<cTap;el('b-auto').disabled=score<cAuto;el('b-nrg').disabled=score<cNrg;el('b-egg').disabled=score<500;
-        var bEl=el('berry');
-        if(eqEvSkin>=0&&eqEvSkin<20){bEl.className=eqEvSkin===5?'ev-black':(eqEvSkin===3?'ev-rainbow':'ev-skin');bEl.innerHTML='<div style="font-size:58px;line-height:1">'+evIcons.slice(eqEvSkin,eqEvSkin+1).shift()+'</div><div style="font-size:11px;font-weight:bold;color:#fff;margin-top:3px">'+evNames.slice(eqEvSkin,eqEvSkin+1).shift()+'</div>'}
-        else{bEl.className=skin==='none'?'':skin;bEl.innerHTML='&#127827;'}
+    el('b-tap').disabled=score<cTap;el('b-auto').disabled=score<cAuto;
+    el('b-nrg').disabled=score<cNrg;el('b-egg').disabled=score<500;
+    var bEl=el('berry');
+    if(eqEvSkin>=0&&eqEvSkin<20){
+      bEl.className=eqEvSkin===5?'ev-black':(eqEvSkin===3?'ev-rainbow':'ev-skin');
+      bEl.innerHTML='<div style="font-size:58px;line-height:1">'+evIcons[eqEvSkin]+'</div><div style="font-size:11px">'+evNames[eqEvSkin]+'</div>';
+    }else{bEl.className=skin==='none'?'':skin;bEl.innerHTML='&#127827;'}
 
-        var w1s=document.getElementsByClassName('w1-skin'),w2s=document.getElementsByClassName('w2-skin');
-        for(var i=0;i<w1s.length;i++)w1s.item(i).style.display=(world===1)?'inline-block':'none';
-        for(var j=0;j<w2s.length;j++)w2s.item(j).style.display=(world===2)?'inline-block':'none';
+    var w1s=document.getElementsByClassName('w1-skin'),w2s=document.getElementsByClassName('w2-skin');
+    for(var i=0;i<w1s.length;i++)w1s[i].style.display=(world===1)?'inline-block':'none';
+    for(var j=0;j<w2s.length;j++)w2s[j].style.display=(world===2)?'inline-block':'none';
 
-        el('b-gold').disabled=!hasG&&score<1000;el('b-gold').innerText=hasG?(skin==='gold'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0417\u043e\u043b\u043e\u0442\u043e':'\u0417\u043e\u043b\u043e\u0442\u043e (x2)'):'\u0417\u043e\u043b\u043e\u0442\u043e (1000)';
-        el('b-diam').disabled=!hasD&&score<10000;el('b-diam').innerText=hasD?(skin==='diamond'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0410\u043b\u043c\u0430\u0437':'\u0410\u043b\u043c\u0430\u0437 (x5)'):'\u0410\u043b\u043c\u0430\u0437 (10K)';
-        el('b-emer').disabled=!hasE&&score<50000;el('b-emer').innerText=hasE?(skin==='emerald'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0418\u0437\u0443\u043c\u0440\u0443\u0434':'\u0418\u0437\u0443\u043c\u0440\u0443\u0434 (x15)'):'\u0418\u0437\u0443\u043c\u0440\u0443\u0434 (50K)';
-        el('b-ruby').disabled=!hasR&&score<1000000;el('b-ruby').innerText=hasR?(skin==='ruby'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0420\u0443\u0431\u0438\u043d':'\u0420\u0443\u0431\u0438\u043d (x50)'):'\u0420\u0443\u0431\u0438\u043d x50 (1M)';
-        el('b-obs').disabled=!hasObs&&score<100000;el('b-obs').innerText=hasObs?(skin==='obsidian'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u041e\u0431\u0441\u0438\u0434\u0438\u0430\u043d':'\u041e\u0431\u0441\u0438\u0434\u0438\u0430\u043d (x25)'):'\u041e\u0431\u0441\u0438\u0434\u0438\u0430\u043d x25 (100K)';
-        el('b-sap').disabled=!hasSap&&score<10000000;el('b-sap').innerText=hasSap?(skin==='sapphire'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0421\u0430\u043f\u0444\u0438\u0440':'\u0421\u0430\u043f\u0444\u0438\u0440 (x50)'):'\u0421\u0430\u043f\u0444\u0438\u0440 x50 (10M)';
-        el('b-pla').disabled=!hasPla&&score<1000000000;el('b-pla').innerText=hasPla?(skin==='platinum'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u041f\u043b\u0430\u0442\u0438\u043d\u0443':'\u041f\u043b\u0430\u0442\u0438\u043d\u0430 (x100)'):'\u041f\u043b\u0430\u0442\u0438\u043d\u0430 x100 (1B)';
-    }catch(e){}
+    el('b-gold').disabled=!hasG&&score<1000;el('b-gold').innerText=hasG?(skin==='gold'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0417\u043e\u043b\u043e\u0442\u043e':'\u0417\u043e\u043b\u043e\u0442\u043e (x2)'):'\u0417\u043e\u043b\u043e\u0442\u043e (1000)';
+    el('b-diam').disabled=!hasD&&score<10000;el('b-diam').innerText=hasD?(skin==='diamond'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0410\u043b\u043c\u0430\u0437':'\u0410\u043b\u043c\u0430\u0437 (x5)'):'\u0410\u043b\u043c\u0430\u0437 (10K)';
+    el('b-emer').disabled=!hasE&&score<50000;el('b-emer').innerText=hasE?(skin==='emerald'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0418\u0437\u0443\u043c\u0440\u0443\u0434':'\u0418\u0437\u0443\u043c\u0440\u0443\u0434 (x15)'):'\u0418\u0437\u0443\u043c\u0440\u0443\u0434 (50K)';
+    el('b-ruby').disabled=!hasR&&score<1000000;el('b-ruby').innerText=hasR?(skin==='ruby'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0420\u0443\u0431\u0438\u043d':'\u0420\u0443\u0431\u0438\u043d (x50)'):'\u0420\u0443\u0431\u0438\u043d x50 (1M)';
+    el('b-obs').disabled=!hasObs&&score<100000;el('b-obs').innerText=hasObs?(skin==='obsidian'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u041e\u0431\u0441\u0438\u0434\u0438\u0430\u043d':'\u041e\u0431\u0441\u0438\u0434\u0438\u0430\u043d (x25)'):'\u041e\u0431\u0441\u0438\u0434\u0438\u0430\u043d x25 (100K)';
+    el('b-sap').disabled=!hasSap&&score<10000000;el('b-sap').innerText=hasSap?(skin==='sapphire'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u0421\u0430\u043f\u0444\u0438\u0440':'\u0421\u0430\u043f\u0444\u0438\u0440 (x50)'):'\u0421\u0430\u043f\u0444\u0438\u0440 x50 (10M)';
+    el('b-pla').disabled=!hasPla&&score<1000000000;el('b-pla').innerText=hasPla?(skin==='platinum'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u041f\u043b\u0430\u0442\u0438\u043d\u0443':'\u041f\u043b\u0430\u0442\u0438\u043d\u0430 (x100)'):'\u041f\u043b\u0430\u0442\u0438\u043d\u0430 x100 (1B)';
+  }catch(e){}
 }
-function enterWorld2(){if(rebirths<25||world===2)return;snd();world=2;score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;el('drop-info').innerText='\u041d\u041e\u0412\u042b\u0419 \u041c\u0418\u0420 (X50) \u0410\u041a\u0422\u0418\u0412\u0415\u041d!';save();draw();syncWorld()}
+
+function enterWorld2(){
+  if(rebirths<25||world===2)return;snd();world=2;score=0;pwr=1;auto=0;
+  nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';
+  hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;
+  el('drop-info').innerText='\u041d\u041e\u0412\u042b\u0419 \u041c\u0418\u0420 (X50)!';
+  save();draw();syncWorld();
+}
+function doRebirth(){
+  if(rebirths>=25)return;var rc=getRebCost();if(score<rc)return;snd();
+  rebirths++;score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;
+  taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;
+  el('drop-info').innerText='\u041f\u0415\u0420\u0415\u0420\u041e\u0416\u0414. #'+rebirths+'!';
+  save();draw();syncWorld();
+}
+function goGame(rst){snd();if(rst)resetAll();el('menu').style.display='none';el('game').style.display='flex';draw()}
+function goMenu(){snd();el('bag-box').style.display='none';el('wardrobe-box').style.display='none';el('game').style.display='none';el('menu').style.display='flex';draw();syncWorld()}
+function toggleBox(id){
+  snd();var x=el(id),op=x.style.display==='block';
+  el('quest-box').style
