@@ -258,5 +258,4 @@ function draw(){
         el('b-pla').disabled=!hasPla&&score<1000000000;el('b-pla').innerText=hasPla?(skin==='platinum'&&eqEvSkin===-1?'\u0421\u043d\u044f\u0442\u044c \u041f\u043b\u0430\u0442\u0438\u043d\u0443':'\u041f\u043b\u0430\u0442\u0438\u043d\u0430 (x100)'):'\u041f\u043b\u0430\u0442\u0438\u043d\u0430 x100 (1B)';
     }catch(e){}
 }
-
-function enterWorld2(){if(rebirths<25||world===2)return;snd();world=2;score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;el('drop-info').innerText='\u041d\u041e\u0412\u042b\u0419 \u041c\u0418\u0420 (X50) \u0410\u041a\
+function enterWorld2(){if(rebirths<25||world===2)return;snd();world=2;score=0;pwr=1;auto=0;nrg=100;maxNrg=100;cTap=15;cAuto=50;cNrg=200;taps=0;skin='none';hasG=hasD=hasE=hasR=false;bMult=1;bSec=0;bag='';eqPet=-1;el('drop-info').innerText='\u041d\u041e\u0412\u042b\u0419 \u041c\u0418\u0420 (X50) \u0410\u041a\u0422\u0418\u0412\u0415\u041d!';save();draw();syncWorld()}
